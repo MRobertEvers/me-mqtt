@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{dcde73ac-c32b-4384-b8e6-3e587a544984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asio">
+      <UniqueIdentifier>{7a35d41d-5c49-4ab7-8b5a-fb42b80966c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asio\Connection">
+      <UniqueIdentifier>{6f2a52fd-0333-48ba-b5dd-c127bd93c1e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asio\Server">
+      <UniqueIdentifier>{68e0da39-74a5-4ba2-befe-13c38ae7051f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asio\Service">
+      <UniqueIdentifier>{e0cc5b36-40f3-41b5-82e7-d93fe2e12361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT">
+      <UniqueIdentifier>{fa2eff00-a0a4-47cb-8375-1b7fc97670e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -21,6 +39,24 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ServerIOStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RingBuffer.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="AsioConnection.h">
+      <Filter>Asio\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="AsioServer.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="AsioService.h">
+      <Filter>Asio\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTTConnection.h">
+      <Filter>MQTT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -28,6 +64,24 @@
     </ClCompile>
     <ClCompile Include="MQTTBroker.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerIOStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RingBuffer.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="AsioConnection.cpp">
+      <Filter>Asio\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="AsioServer.cpp">
+      <Filter>Asio\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="AsioService.cpp">
+      <Filter>Asio\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTTConnection.cpp">
+      <Filter>MQTT</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

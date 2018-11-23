@@ -148,11 +148,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AsioConnection.h" />
+    <ClInclude Include="AsioServer.h" />
+    <ClInclude Include="AsioService.h" />
+    <ClInclude Include="MQTTConnection.h" />
+    <ClInclude Include="RingBuffer.h" />
+    <ClInclude Include="ServerIOStream.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AsioConnection.cpp" />
+    <ClCompile Include="AsioServer.cpp" />
+    <ClCompile Include="AsioService.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />
+    <ClCompile Include="MQTTConnection.cpp" />
+    <ClCompile Include="RingBuffer.cpp" />
+    <ClCompile Include="ServerIOStream.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
