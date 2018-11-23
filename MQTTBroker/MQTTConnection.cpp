@@ -11,7 +11,6 @@ MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, s
       apSock->get_io_context()
    ) );
 
-
    m_iNeedBytes = 1;
 }
 
@@ -80,6 +79,12 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
             m_iNeedBytes = 1;
             iG = 0;
             bufSize = m_szBuf.size();
+
+            std::string sz;
+            sz += (char)1 << 5;
+            sz += (char)2;
+            sz.append( 2, '\0' );
+            WriteAsync( sz.data(), sz.size() );
          }
          break;
       }
@@ -104,6 +109,9 @@ MQTTConnection::Start( AsioConnectionManager* aManager )
 
 void MQTTConnection::Stop()
 {
+   auto ec = GetLastError();
+   *m_pIOStream << "[" << std::this_thread::get_id()
+      << "] Error: " << ec << ", " << ec.message() << std::endl;
    AsioConnection::Stop();
    m_pConnectTimer->cancel();
 }
@@ -113,6 +121,7 @@ MQTTConnection::onConnectTimer( const asio::error_code& ec )
 {
    if( ec )
    {
+      SetError( ec );
       *m_pIOStream << "Message received within time limit." << std::endl;
       //*m_pIOStream << "[" << std::this_thread::get_id()
       //   << "] Error: " << ec << ", " << ec.message() << std::endl;

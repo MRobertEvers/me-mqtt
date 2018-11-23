@@ -18,11 +18,18 @@ public:
    virtual void Start( AsioConnectionManager* aManager );
    virtual void Stop();
 
+   virtual void SetError( const asio::error_code& aec );
+   virtual asio::error_code GetLastError() const;
+
+   void WriteAsync( char const* apBuf, size_t aNumBytes );
+   void Write( char const* apBuf, size_t aNumBytes );
+
    // 
    void ManagerClose();
 
 protected:
    virtual void onReceiveBytes( const asio::error_code& aec, size_t aNumBytes );
+   virtual void onSentBytes( const asio::error_code& aec, size_t aNumBytes );
    virtual void resetBuffer();
    virtual void resetReceive();
    virtual void awaitReceive();
@@ -35,5 +42,6 @@ private:
    std::shared_ptr<asio::io_context::strand> m_pStrand;
 
    AsioConnectionManager* m_Manager;
+   asio::error_code m_LastError;
 };
 

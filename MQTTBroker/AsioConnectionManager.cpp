@@ -14,7 +14,6 @@ AsioConnectionManager::AddConnection( std::shared_ptr<AsioConnection> apConnecti
 {
    m_setConnections.insert( apConnection );
    apConnection->Start(this);
-   apConnection->Stop();
 }
 
 void 

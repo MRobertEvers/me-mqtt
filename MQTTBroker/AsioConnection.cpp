@@ -36,6 +36,38 @@ AsioConnection::Stop()
 }
 
 void
+AsioConnection::SetError( const asio::error_code & aec )
+{
+   m_LastError = aec;
+}
+
+asio::error_code
+AsioConnection::GetLastError() const
+{
+   return m_LastError;
+}
+
+void 
+AsioConnection::WriteAsync( char const* apBuf, size_t aNumBytes )
+{
+   // Copy the data.
+   auto pByteBuf = std::make_shared<std::vector<char>>( apBuf, apBuf+aNumBytes );
+   auto pBuf = std::shared_ptr<asio::const_buffer>( new asio::const_buffer(pByteBuf->data(), pByteBuf->size()) );
+   m_pSock->async_send(
+      *pBuf,
+      [this, self = shared_from_this(), pBuf, pByteBuf]( const asio::error_code & aec, size_t aNumBytes )
+      {
+         onSentBytes( aec, aNumBytes );
+      } 
+   );
+}
+
+void 
+AsioConnection::Write( char const * apBuf, size_t aNumBytes )
+{
+}
+
+void
 AsioConnection::ManagerClose()
 {
    m_pSock->close();
@@ -48,13 +80,20 @@ AsioConnection::onReceiveBytes(
 {
    if( aec )
    {
-      
+      SetError( aec );
+      Stop();
    }
    else
    {
-      awaitReceive();
       OnReceiveBytes( m_pByteBuf, aNumBytes );
+
+      awaitReceive();
    }
+}
+
+void 
+AsioConnection::onSentBytes( const asio::error_code & aec, size_t aNumBytes )
+{
 }
 
 void
