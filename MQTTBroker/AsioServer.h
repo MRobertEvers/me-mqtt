@@ -1,6 +1,8 @@
 #pragma once
 #include "asio.hpp"
 #include "AsioService.h"
+#include "AsioConnection.h"
+#include "AsioConnectionManager.h"
 #include "ServerIOStream.h"
 #include <memory>
 #include <vector>
@@ -24,7 +26,10 @@ private:
    std::shared_ptr<asio::io_service::work> m_pWork;
    std::shared_ptr<asio::ip::tcp::acceptor> m_pAcceptSock;
    std::shared_ptr<ServerIOStream> m_pIOStream;
+   std::shared_ptr<AsioConnectionManager> m_pConnectionsManager;
 
    std::vector<std::shared_ptr<asio::ip::tcp::socket>> m_vecSocks;
+
+
 };
 

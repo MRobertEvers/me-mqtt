@@ -57,6 +57,9 @@
     <ClInclude Include="MQTTConnection.h">
       <Filter>MQTT</Filter>
     </ClInclude>
+    <ClInclude Include="AsioConnectionManager.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -82,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="MQTTConnection.cpp">
       <Filter>MQTT</Filter>
+    </ClCompile>
+    <ClCompile Include="AsioConnectionManager.cpp">
+      <Filter>Asio\Server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

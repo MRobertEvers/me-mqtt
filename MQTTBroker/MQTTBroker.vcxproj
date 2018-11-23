@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AsioConnection.h" />
+    <ClInclude Include="AsioConnectionManager.h" />
     <ClInclude Include="AsioServer.h" />
     <ClInclude Include="AsioService.h" />
     <ClInclude Include="MQTTConnection.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsioConnection.cpp" />
+    <ClCompile Include="AsioConnectionManager.cpp" />
     <ClCompile Include="AsioServer.cpp" />
     <ClCompile Include="AsioService.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />

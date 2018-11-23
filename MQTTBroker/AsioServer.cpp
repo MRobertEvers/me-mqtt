@@ -11,7 +11,8 @@ AsioServer::AsioServer( std::shared_ptr<AsioService> apIOService,
       std::shared_ptr<asio::io_service::work>( new asio::io_context::work( *apIOService->GetService() ) )
    ), // As long as this server is running, the service wont end..
    m_pIOStream(apIOStream),
-   m_pAcceptSock( new asio::ip::tcp::acceptor( *apIOService->GetService() ) )
+   m_pAcceptSock( new asio::ip::tcp::acceptor( *apIOService->GetService() ) ),
+   m_pConnectionsManager( new AsioConnectionManager() )
 {
    
 }
@@ -75,14 +76,18 @@ AsioServer::StartListener( const std::string& aszHost, const std::string& aszPor
 void AsioServer::awaitConnection()
 {
    auto sock = getNextSocket();
-   auto conn_handler = std::bind( &AsioServer::handleConnect, this, std::placeholders::_1, sock );
+   auto conn_handler = std::bind( 
+      &AsioServer::handleConnect, this, std::placeholders::_1, sock 
+   );
    m_pAcceptSock->async_accept( *sock, conn_handler );
 }
 
 std::shared_ptr<asio::ip::tcp::socket>
 AsioServer::getNextSocket()
 {
-   auto pSock = std::shared_ptr<asio::ip::tcp::socket>( new asio::ip::tcp::socket( *m_pService->GetService() ) );
+   auto pSock = std::shared_ptr<asio::ip::tcp::socket>(
+      new asio::ip::tcp::socket( *m_pService->GetService() ) 
+      );
    m_vecSocks.push_back( pSock );
    return pSock;
 }
@@ -102,7 +107,7 @@ AsioServer::handleConnect( const asio::error_code & ec, std::shared_ptr<asio::ip
       *m_pIOStream << "[" << std::this_thread::get_id()
          << "] Accepted!" << std::endl;
 
-      new MQTTConnection( sock, m_pIOStream );
+      m_pConnectionsManager->AddConnection( std::make_shared<MQTTConnection>( sock, *m_pConnectionsManager, m_pIOStream ) );
    }
 }
 
