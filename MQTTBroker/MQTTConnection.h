@@ -9,12 +9,14 @@
 class MQTTConnection: public AsioConnection
 {
 public:
-   MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, AsioConnectionManager& aManager, std::shared_ptr<ServerIOStream> apOStream );
-   ~MQTTConnection();
+   MQTTConnection( 
+      std::shared_ptr<asio::ip::tcp::socket> apSock,
+      std::shared_ptr<ServerIOStream> apOStream );
+   virtual ~MQTTConnection();
 
    // Inherited via AsioConnection
    virtual void OnReceiveBytes( char const* apBytes, size_t aNumBytes ) override;
-   virtual void Start() override;
+   virtual void Start( AsioConnectionManager* aManager ) override;
    virtual void Stop() override;
 
 protected:

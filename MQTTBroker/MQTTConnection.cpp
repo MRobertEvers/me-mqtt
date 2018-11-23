@@ -2,10 +2,10 @@
 #include "MQTTConnection.h"
 
 
-MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, AsioConnectionManager& aManager, std::shared_ptr<ServerIOStream> apOStream )
+MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, std::shared_ptr<ServerIOStream> apOStream )
    : m_iHaveBytes(0), m_iNeedBytes(0), m_eState(FIXED_HEADER_FLAGS),
    m_pIOStream(apOStream),
-   AsioConnection( apSock, aManager )
+   AsioConnection( apSock )
 {
    m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer( 
       apSock->get_io_context()
@@ -18,7 +18,6 @@ MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, A
 
 MQTTConnection::~MQTTConnection()
 {
-   m_pConnectTimer->cancel();
    *m_pIOStream << "Deleted MQTTConnection" << std::endl;
 }
 
@@ -88,18 +87,18 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
 }
 
 void 
-MQTTConnection::Start()
+MQTTConnection::Start( AsioConnectionManager* aManager )
 {
-   AsioConnection::Start();
+   AsioConnection::Start( aManager );
    m_pConnectTimer->expires_after(
       std::chrono::seconds( 5 )
    );
 
    m_pConnectTimer->async_wait( GetStrand()->wrap(
       [this, self = shared_from_this()]( std::error_code ec )
-   {
-      this->onConnectTimer( ec );
-   } )
+      {
+         this->onConnectTimer( ec );
+      } )
    );
 }
 

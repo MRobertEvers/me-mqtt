@@ -9,13 +9,13 @@ class AsioConnectionManager;
 class AsioConnection : public std::enable_shared_from_this<AsioConnection>
 {
 public:
-   AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, AsioConnectionManager& aManager );
+   AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock );
    virtual ~AsioConnection();
 
    virtual void OnReceiveBytes( char const* apBytes, size_t aNumBytes ) = 0;
    std::shared_ptr<asio::io_context::strand> GetStrand();
 
-   virtual void Start();
+   virtual void Start( AsioConnectionManager* aManager );
    virtual void Stop();
 
    // 
@@ -34,6 +34,6 @@ private:
    std::shared_ptr<asio::ip::tcp::socket> m_pSock;
    std::shared_ptr<asio::io_context::strand> m_pStrand;
 
-   AsioConnectionManager& m_Manager;
+   AsioConnectionManager* m_Manager;
 };
 

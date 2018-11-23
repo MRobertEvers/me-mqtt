@@ -2,11 +2,10 @@
 #include "AsioConnection.h"
 #include "AsioConnectionManager.h"
 
-AsioConnection::AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, AsioConnectionManager& aManager )
+AsioConnection::AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock )
    : m_pByteBuf(new char[MAX_BUFFER]), m_pSock(apSock),
    m_pMutableBuffer(new asio::mutable_buffer(m_pByteBuf, MAX_BUFFER)),
-   m_pStrand( new asio::io_context::strand( apSock->get_io_context() ) ),
-   m_Manager( aManager )
+   m_pStrand( new asio::io_context::strand( apSock->get_io_context() ) )
 {
 
 }
@@ -24,15 +23,16 @@ AsioConnection::GetStrand()
 }
 
 void
-AsioConnection::Start()
+AsioConnection::Start( AsioConnectionManager* aManager )
 {
+   m_Manager = aManager;
    awaitReceive();
 }
 
 void
 AsioConnection::Stop()
 {
-   m_Manager.CloseConnection( shared_from_this() );
+   m_Manager->CloseConnection( shared_from_this() );
 }
 
 void

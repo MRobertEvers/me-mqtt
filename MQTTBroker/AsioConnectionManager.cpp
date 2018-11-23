@@ -13,7 +13,7 @@ void
 AsioConnectionManager::AddConnection( std::shared_ptr<AsioConnection> apConnection )
 {
    m_setConnections.insert( apConnection );
-   apConnection->Start();
+   apConnection->Start(this);
    apConnection->Stop();
 }
 

@@ -107,7 +107,9 @@ AsioServer::handleConnect( const asio::error_code & ec, std::shared_ptr<asio::ip
       *m_pIOStream << "[" << std::this_thread::get_id()
          << "] Accepted!" << std::endl;
 
-      m_pConnectionsManager->AddConnection( std::make_shared<MQTTConnection>( sock, *m_pConnectionsManager, m_pIOStream ) );
+      m_pConnectionsManager->AddConnection(
+         std::shared_ptr<AsioConnection>( new MQTTConnection( sock, m_pIOStream ) )
+      );
    }
 }
 
