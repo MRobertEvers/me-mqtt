@@ -52,3 +52,5 @@ private:
    virtual std::string SerializeBody() const override;
 };
 
+
+CONTROL_PACKET_HANDLER( Connect )

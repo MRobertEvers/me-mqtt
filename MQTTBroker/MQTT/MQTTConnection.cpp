@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
+#include "PacketFactory.h"
 #include "Connect\ConnectPacket.h"
 #include "Connack\ConnackPacket.h"
+#include "Broker\BrokerClient.h"
 
 
-MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, std::shared_ptr<ServerIOStream> apOStream )
+MQTTConnection::MQTTConnection(
+   std::shared_ptr<asio::ip::tcp::socket> apSock,
+   std::shared_ptr<ServerIOStream> apOStream )
    : m_iHaveBytes(0), m_iNeedBytes(0), m_eState(FIXED_HEADER_FLAGS),
    m_pIOStream(apOStream),
    AsioConnection( apSock )
@@ -21,6 +25,27 @@ MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, s
 MQTTConnection::~MQTTConnection()
 {
    *m_pIOStream << "Deleted MQTTConnection" << std::endl;
+}
+
+void
+MQTTConnection::OnMessage( ControlPacket* apPacket )
+{
+   if( !m_pClient )
+   {
+      // TODO: 
+      throw;
+   }
+   else
+   {
+      m_pClient->HandlePacket( apPacket );
+   }
+}
+
+void
+MQTTConnection::OnMessage( ConnectPacket* apPacket )
+{
+   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient(this) );
+   m_pClient->HandleConnect( apPacket );
 }
 
 void 
@@ -42,6 +67,33 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
       }
    }
 }
+
+void 
+MQTTConnection::Start( AsioConnectionManager* aManager )
+{
+   AsioConnection::Start( aManager );
+   m_pConnectTimer->expires_after(
+      std::chrono::seconds( 5 )
+   );
+
+   m_pConnectTimer->async_wait( GetStrand()->wrap(
+      [this, self = shared_from_this()]( std::error_code ec )
+      {
+         this->onConnectTimer( ec );
+      } )
+   );
+}
+
+void 
+MQTTConnection::Stop()
+{
+   auto ec = GetLastError();
+   *m_pIOStream << "[" << std::this_thread::get_id()
+      << "] Error: " << ec << ", " << ec.message() << std::endl;
+   AsioConnection::Stop();
+   m_pConnectTimer->cancel();
+}
+
 
 void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
 {
@@ -85,7 +137,10 @@ void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
       {
          size_t len = m_szCurrentMessage.size();
          m_szCurrentMessage.append( m_iNeedBytes, ' ' );
-         memcpy_s( &m_szCurrentMessage[len], m_iNeedBytes, &m_szBuf[iG], m_iNeedBytes );
+         memcpy_s( 
+            &m_szCurrentMessage[len], m_iNeedBytes, 
+            &m_szBuf[iG], m_iNeedBytes 
+         );
          m_eState = FIXED_HEADER_MESSAGE_SIZE;
          iG += m_iNeedBytes;
 
@@ -98,8 +153,11 @@ void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
          iG = 0;
          bufSize = m_szBuf.size();
 
-         ConnackPacket pc( 0, 0x00 );
-         WriteAsync( pc.Serialize() );
+         // Handle the message.
+         OnMessage( PacketFactory::GetPacket( m_szCurrentMessage, iFixedHeaderSize ) );
+         iFixedHeaderSize = 0;
+         //ConnackPacket pc( 0, 0x00 );
+         //WriteAsync( pc.Serialize() );
          //std::string sz;
          //sz += (char)1 << 5;
          //sz += (char)2;
@@ -107,35 +165,10 @@ void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
          //WriteAsync( sz.data(), sz.size() );
 
          //ConnectPacket pc( m_szCurrentMessage, iFixedHeaderSize );
-         //iFixedHeaderSize = 0;
+         //
       }
       break;
    }
-}
-
-void 
-MQTTConnection::Start( AsioConnectionManager* aManager )
-{
-   AsioConnection::Start( aManager );
-   m_pConnectTimer->expires_after(
-      std::chrono::seconds( 5 )
-   );
-
-   m_pConnectTimer->async_wait( GetStrand()->wrap(
-      [this, self = shared_from_this()]( std::error_code ec )
-      {
-         this->onConnectTimer( ec );
-      } )
-   );
-}
-
-void MQTTConnection::Stop()
-{
-   auto ec = GetLastError();
-   *m_pIOStream << "[" << std::this_thread::get_id()
-      << "] Error: " << ec << ", " << ec.message() << std::endl;
-   AsioConnection::Stop();
-   m_pConnectTimer->cancel();
 }
 
 void

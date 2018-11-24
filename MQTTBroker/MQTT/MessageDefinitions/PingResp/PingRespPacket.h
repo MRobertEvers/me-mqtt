@@ -1,15 +1,15 @@
 #pragma once
 #include "ControlPacket.h"
 
-class PingReqPacket :
+class PingRespPacket :
    public ControlPacket
 {
 public:
-   PingReqPacket();
-   ~PingReqPacket();
+   PingRespPacket();
+   ~PingRespPacket();
 
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 };
 
-CONTROL_PACKET_HANDLER( PingReq )
+CONTROL_PACKET_HANDLER( PingResp )

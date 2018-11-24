@@ -2,19 +2,13 @@
 #include "PacketFactory.h"
 #include "MalformedFixedHeader.h"
 #include "ControlPacket.h"
+#include "Connect\ConnectPacket.h"
+#include "Connack\ConnackPacket.h"
+#include "PingReq\PingReqPacket.h"
 
 
-PacketFactory::PacketFactory()
-{
-}
-
-
-PacketFactory::~PacketFactory()
-{
-}
-
-std::shared_ptr<ControlPacket> 
-PacketFactory::GetPacket( std::string aszData, size_t aiFixedHeaderSize )
+ControlPacket*
+PacketFactory::GetPacket( std::string const& aszData, unsigned char aiFixedHeaderSize )
 {
    char const* data = aszData.data();
    size_t size = aszData.size();
@@ -24,7 +18,7 @@ PacketFactory::GetPacket( std::string aszData, size_t aiFixedHeaderSize )
    }
 
    unsigned char iTypeAndFlags = data[0];
-   unsigned char iType = (iTypeAndFlags & 0xF) >> 4;
+   unsigned char iType = (iTypeAndFlags & 0xF0) >> 4;
    if( iType == 0 || iType >= 0xF )
    {
       throw MalformedFixedHeader();
@@ -34,7 +28,10 @@ PacketFactory::GetPacket( std::string aszData, size_t aiFixedHeaderSize )
    switch( type )
    {
    case ControlPacket::PacketTypes::CONNECT:
+      return new ConnectPacket( aszData, aiFixedHeaderSize );
       break;
-      //return std::make_shared<ConnectPacket>(new ConnectPacket( std::forward<std::string>(aszData), aiFixedHeaderSize ));
+   case ControlPacket::PacketTypes::PINGREQ:
+      return new PingReqPacket();
+      break;
    }
 }

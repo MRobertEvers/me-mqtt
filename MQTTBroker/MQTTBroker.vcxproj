@@ -151,16 +151,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Asio\AsioConnection.h" />
+    <ClInclude Include="Asio\AsioConnectionFactory.h" />
     <ClInclude Include="Asio\AsioConnectionManager.h" />
     <ClInclude Include="Asio\AsioServer.h" />
     <ClInclude Include="Asio\AsioService.h" />
+    <ClInclude Include="MQTT\Broker\BrokerClient.h" />
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
     <ClInclude Include="MQTT\Errors\MalformedPacket.h" />
+    <ClInclude Include="MQTT\MQTTConnectionFactory.h" />
+    <ClInclude Include="MQTT\PacketHandler.h" />
     <ClInclude Include="MQTT\MessageDefinitions\Connack\ConnackPacket.h" />
     <ClInclude Include="MQTT\MessageDefinitions\Connect\ConnectPacket.h" />
     <ClInclude Include="MQTT\MessageDefinitions\ControlPacket.h" />
     <ClInclude Include="MQTT\MessageDefinitions\PacketFactory.h" />
     <ClInclude Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h" />
     <ClInclude Include="MQTT\MQTTConnection.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="ServerIOStream.h" />
@@ -169,15 +174,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Asio\AsioConnection.cpp" />
+    <ClCompile Include="Asio\AsioConnectionFactory.cpp" />
     <ClCompile Include="Asio\AsioConnectionManager.cpp" />
     <ClCompile Include="Asio\AsioServer.cpp" />
     <ClCompile Include="Asio\AsioService.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />
+    <ClCompile Include="MQTT\Broker\BrokerClient.cpp" />
+    <ClCompile Include="MQTT\MQTTConnectionFactory.cpp" />
+    <ClCompile Include="MQTT\PacketHandler.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\Connack\ConnackPacket.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\Connect\ConnectPacket.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacket.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\PacketFactory.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp" />
     <ClCompile Include="MQTT\MQTTConnection.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="ServerIOStream.cpp" />

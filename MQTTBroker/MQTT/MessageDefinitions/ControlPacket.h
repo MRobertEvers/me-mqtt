@@ -1,6 +1,13 @@
 #pragma once
 #include <string>
 
+#define CONTROL_PACKET_HANDLER( packetType ) \
+   class I##packetType##Packet\
+   {\
+   public:\
+      virtual void Handle##packetType(packetType##Packet* packet) = 0;\
+   };
+
 
 class ControlPacket
 {

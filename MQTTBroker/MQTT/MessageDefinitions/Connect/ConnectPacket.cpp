@@ -4,8 +4,9 @@
 #include "MalformedPacket.h"
 
 
-ConnectPacket::ConnectPacket( std::string const& aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacket( aszData[0] )
+ConnectPacket::ConnectPacket( 
+   std::string const& aszData, unsigned char aiFixedHeaderSize )
+   : ControlPacket( aszData[0]>>4 )
 {
    // Parse the connect Packet
    const char* data = aszData.data();
@@ -35,7 +36,7 @@ ConnectPacket::ConnectPacket( std::string const& aszData, unsigned char aiFixedH
    cur = 1;
    m_iFlags = pVarHeader[7];
    i += cur;
-   if( m_iFlags & 1 != 0 ) // Check reserved
+   if( (m_iFlags & 1) != 0 ) // Check reserved
    {
       throw MalformedPacket();
    }

@@ -49,6 +49,12 @@
     <Filter Include="MQTT\MessageDefinitions\PingReq">
       <UniqueIdentifier>{8369f6cb-5397-4689-8190-9582390c5c45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MQTT\Broker">
+      <UniqueIdentifier>{3d875fc1-6df5-4f4d-b308-f91a3bfe771b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\Server">
+      <UniqueIdentifier>{1b549460-827a-4f8d-a17b-f267a667419d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -99,6 +105,21 @@
     <ClInclude Include="MQTT\MessageDefinitions\PacketFactory.h">
       <Filter>MQTT\MessageDefinitions</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h">
+      <Filter>MQTT\MessageDefinitions\PingResp</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\BrokerClient.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\PacketHandler.h">
+      <Filter>MQTT</Filter>
+    </ClInclude>
+    <ClInclude Include="Asio\AsioConnectionFactory.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MQTTConnectionFactory.h">
+      <Filter>MQTT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -148,6 +169,21 @@
     </ClCompile>
     <ClCompile Include="MQTT\MessageDefinitions\PacketFactory.cpp">
       <Filter>MQTT\MessageDefinitions</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\PingResp</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\BrokerClient.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\PacketHandler.cpp">
+      <Filter>MQTT</Filter>
+    </ClCompile>
+    <ClCompile Include="Asio\AsioConnectionFactory.cpp">
+      <Filter>Asio\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MQTTConnectionFactory.cpp">
+      <Filter>MQTT</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
