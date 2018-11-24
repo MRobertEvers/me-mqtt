@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ASIO_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\Errors;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\Asio;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\MessageDefinitions;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>
       </LanguageStandard>
     </ClCompile>
@@ -150,35 +150,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AsioConnection.h" />
-    <ClInclude Include="AsioConnectionManager.h" />
-    <ClInclude Include="AsioServer.h" />
-    <ClInclude Include="AsioService.h" />
-    <ClInclude Include="ConnackPacket.h" />
-    <ClInclude Include="ConnectPacket.h" />
-    <ClInclude Include="ControlPacket.h" />
-    <ClInclude Include="MalformedFixedHeader.h" />
-    <ClInclude Include="MQTTConnection.h" />
-    <ClInclude Include="PacketFactory.h" />
+    <ClInclude Include="Asio\AsioConnection.h" />
+    <ClInclude Include="Asio\AsioConnectionManager.h" />
+    <ClInclude Include="Asio\AsioServer.h" />
+    <ClInclude Include="Asio\AsioService.h" />
+    <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
+    <ClInclude Include="MQTT\Errors\MalformedPacket.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\Connack\ConnackPacket.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\Connect\ConnectPacket.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\ControlPacket.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\PacketFactory.h" />
+    <ClInclude Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.h" />
+    <ClInclude Include="MQTT\MQTTConnection.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="ServerIOStream.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AsioConnection.cpp" />
-    <ClCompile Include="AsioConnectionManager.cpp" />
-    <ClCompile Include="AsioServer.cpp" />
-    <ClCompile Include="AsioService.cpp" />
-    <ClCompile Include="ConnackPacket.cpp" />
-    <ClCompile Include="ConnectPacket.cpp" />
-    <ClCompile Include="ControlPacket.cpp" />
-    <ClCompile Include="MalformedPacket.h">
-      <FileType>CppHeader</FileType>
-    </ClCompile>
+    <ClCompile Include="Asio\AsioConnection.cpp" />
+    <ClCompile Include="Asio\AsioConnectionManager.cpp" />
+    <ClCompile Include="Asio\AsioServer.cpp" />
+    <ClCompile Include="Asio\AsioService.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />
-    <ClCompile Include="MQTTConnection.cpp" />
-    <ClCompile Include="PacketFactory.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\Connack\ConnackPacket.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\Connect\ConnectPacket.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\ControlPacket.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\PacketFactory.cpp" />
+    <ClCompile Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.cpp" />
+    <ClCompile Include="MQTT\MQTTConnection.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="ServerIOStream.cpp" />
     <ClCompile Include="stdafx.cpp">

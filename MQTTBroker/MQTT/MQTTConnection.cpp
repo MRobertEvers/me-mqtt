@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
-#include "ConnectPacket.h"
-#include "ConnackPacket.h"
+#include "Connect\ConnectPacket.h"
+#include "Connack\ConnackPacket.h"
 
 
 MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, std::shared_ptr<ServerIOStream> apOStream )

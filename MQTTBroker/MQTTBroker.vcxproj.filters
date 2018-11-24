@@ -40,11 +40,14 @@
     <Filter Include="MQTT\MessageDefinitions\Connect">
       <UniqueIdentifier>{13f939bc-6d6e-4784-a566-cd3c1598b076}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NewFilter1">
-      <UniqueIdentifier>{74959bf5-77d5-4acd-89c2-8fda2d0b81a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MQTT\MessageDefinitions\Connack">
       <UniqueIdentifier>{db5019c3-17a5-4909-bcae-f3d21067eb6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\PingResp">
+      <UniqueIdentifier>{71d0abfb-740c-43bc-8a9a-7ea7723c84b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\PingReq">
+      <UniqueIdentifier>{8369f6cb-5397-4689-8190-9582390c5c45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,35 +63,41 @@
     <ClInclude Include="RingBuffer.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="AsioConnection.h">
-      <Filter>Asio\Connection</Filter>
-    </ClInclude>
-    <ClInclude Include="AsioServer.h">
-      <Filter>Asio\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="AsioService.h">
-      <Filter>Asio\Service</Filter>
-    </ClInclude>
-    <ClInclude Include="MQTTConnection.h">
-      <Filter>MQTT</Filter>
-    </ClInclude>
-    <ClInclude Include="AsioConnectionManager.h">
-      <Filter>Asio\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="MalformedFixedHeader.h">
+    <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h">
       <Filter>MQTT\Errors</Filter>
     </ClInclude>
-    <ClInclude Include="ControlPacket.h">
-      <Filter>MQTT\MessageDefinitions</Filter>
+    <ClInclude Include="MQTT\Errors\MalformedPacket.h">
+      <Filter>MQTT\Errors</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectPacket.h">
+    <ClInclude Include="MQTT\MQTTConnection.h">
+      <Filter>MQTT</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Connect\ConnectPacket.h">
       <Filter>MQTT\MessageDefinitions\Connect</Filter>
     </ClInclude>
-    <ClInclude Include="PacketFactory.h">
+    <ClInclude Include="MQTT\MessageDefinitions\Connack\ConnackPacket.h">
+      <Filter>MQTT\MessageDefinitions\Connack</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.h">
+      <Filter>MQTT\MessageDefinitions\PingReq</Filter>
+    </ClInclude>
+    <ClInclude Include="Asio\AsioConnection.h">
+      <Filter>Asio\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Asio\AsioConnectionManager.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Asio\AsioServer.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Asio\AsioService.h">
+      <Filter>Asio\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\ControlPacket.h">
       <Filter>MQTT\MessageDefinitions</Filter>
     </ClInclude>
-    <ClInclude Include="ConnackPacket.h">
-      <Filter>MQTT\MessageDefinitions\Connack</Filter>
+    <ClInclude Include="MQTT\MessageDefinitions\PacketFactory.h">
+      <Filter>MQTT\MessageDefinitions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,41 +113,41 @@
     <ClCompile Include="RingBuffer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="AsioConnection.cpp">
-      <Filter>Asio\Connection</Filter>
-    </ClCompile>
-    <ClCompile Include="AsioServer.cpp">
-      <Filter>Asio\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="AsioService.cpp">
-      <Filter>Asio\Service</Filter>
-    </ClCompile>
-    <ClCompile Include="MQTTConnection.cpp">
-      <Filter>MQTT</Filter>
-    </ClCompile>
-    <ClCompile Include="AsioConnectionManager.cpp">
-      <Filter>Asio\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="ControlPacket.cpp">
-      <Filter>MQTT\MessageDefinitions</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectPacket.cpp">
-      <Filter>MQTT\MessageDefinitions\Connect</Filter>
-    </ClCompile>
-    <ClCompile Include="PacketFactory.cpp">
-      <Filter>MQTT\MessageDefinitions</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.h">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="MalformedPacket.h">
-      <Filter>MQTT\Errors</Filter>
+    <ClCompile Include="MQTT\MQTTConnection.cpp">
+      <Filter>MQTT</Filter>
     </ClCompile>
-    <ClCompile Include="ConnackPacket.cpp">
+    <ClCompile Include="MQTT\MessageDefinitions\Connect\ConnectPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Connect</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Connack\ConnackPacket.cpp">
       <Filter>MQTT\MessageDefinitions\Connack</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\PingReq</Filter>
+    </ClCompile>
+    <ClCompile Include="Asio\AsioConnection.cpp">
+      <Filter>Asio\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Asio\AsioConnectionManager.cpp">
+      <Filter>Asio\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Asio\AsioServer.cpp">
+      <Filter>Asio\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Asio\AsioService.cpp">
+      <Filter>Asio\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\ControlPacket.cpp">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\PacketFactory.cpp">
+      <Filter>MQTT\MessageDefinitions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

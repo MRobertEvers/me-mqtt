@@ -1,7 +1,6 @@
 #pragma once
 #include "asio.hpp"
 #include "ServerIOStream.h"
-#include "FixedHeader.h"
 #include "RingBuffer.h"
 
 #define MAX_BUFFER 512
