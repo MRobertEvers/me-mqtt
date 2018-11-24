@@ -16,6 +16,7 @@ public:
 
    // Inherited via AsioConnection
    virtual void OnReceiveBytes( char const* apBytes, size_t aNumBytes ) override;
+   void handleBytes( size_t &iG, size_t &bufSize );
    virtual void Start( AsioConnectionManager* aManager ) override;
    virtual void Stop() override;
 

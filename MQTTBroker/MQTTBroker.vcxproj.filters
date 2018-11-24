@@ -31,6 +31,18 @@
     <Filter Include="MQTT">
       <UniqueIdentifier>{fa2eff00-a0a4-47cb-8375-1b7fc97670e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MQTT\MessageDefinitions">
+      <UniqueIdentifier>{b97acf91-b201-4453-827c-7e707e42f973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\Errors">
+      <UniqueIdentifier>{e9f9b4da-b31b-4ba2-95f4-602ae20adddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Connect">
+      <UniqueIdentifier>{13f939bc-6d6e-4784-a566-cd3c1598b076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{74959bf5-77d5-4acd-89c2-8fda2d0b81a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -60,6 +72,18 @@
     <ClInclude Include="AsioConnectionManager.h">
       <Filter>Asio\Server</Filter>
     </ClInclude>
+    <ClInclude Include="MalformedFixedHeader.h">
+      <Filter>MQTT\Errors</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlPacket.h">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectPacket.h">
+      <Filter>MQTT\MessageDefinitions\Connect</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketFactory.h">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -88,6 +112,21 @@
     </ClCompile>
     <ClCompile Include="AsioConnectionManager.cpp">
       <Filter>Asio\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlPacket.cpp">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Connect</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketFactory.cpp">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

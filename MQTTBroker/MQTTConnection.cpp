@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MQTTConnection.h"
+#include "MalformedFixedHeader.h"
 
 
 MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, std::shared_ptr<ServerIOStream> apOStream )
@@ -29,65 +30,78 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
    size_t bufSize = m_szBuf.size();
    while( iG + m_iNeedBytes <= bufSize )
    {
-      switch( m_eState )
+      try
       {
-      case FIXED_HEADER_FLAGS:
-         {
-            char iTypeAndFlags;
-            memcpy_s( &iTypeAndFlags, 1, &m_szBuf[iG++], 1 );
-            m_eState = FIXED_HEADER_MESSAGE_SIZE;
-            m_iNeedBytes = 1;
-            m_szCurrentMessage += iTypeAndFlags;
-         }
-         break;
-      case FIXED_HEADER_MESSAGE_SIZE:
-         {
-            static char iLenByte = 0;
-            static size_t multiplier = 1;
-            static size_t value = 0;
-            memcpy_s( &iLenByte, 1, &m_szBuf[iG++], 1 );
-            value += (iLenByte & 0x7F) * multiplier;
-            multiplier = multiplier << 7;
-            if( multiplier > 128 * 128 * 128 )
-            {
-               throw;
-            }
-            m_szCurrentMessage += iLenByte;
-            if( (iLenByte & 0x80) == 0 )
-            {
-               m_eState = MESSAGE_PAYLOAD;
-               m_iNeedBytes = value;
-               iLenByte = 0;
-               multiplier = 1;
-               value = 0;
-            }
-         }
-         break;
-      case MESSAGE_PAYLOAD:
-         {
-            size_t len = m_szCurrentMessage.size();
-            m_szCurrentMessage.append( m_iNeedBytes, ' ' );
-            memcpy_s( &m_szCurrentMessage[len], m_iNeedBytes, &m_szBuf[iG], m_iNeedBytes );
-            m_eState = FIXED_HEADER_MESSAGE_SIZE;
-            iG += m_iNeedBytes;
-
-            // *m_pIOStream << m_szCurrentMessage << std::endl;
-
-            // Reset message reader state.
-            m_pConnectTimer->cancel(); // We have received a message.
-            m_szBuf = m_szBuf.substr( iG );
-            m_iNeedBytes = 1;
-            iG = 0;
-            bufSize = m_szBuf.size();
-
-            std::string sz;
-            sz += (char)1 << 5;
-            sz += (char)2;
-            sz.append( 2, '\0' );
-            WriteAsync( sz.data(), sz.size() );
-         }
-         break;
+         handleBytes( iG, bufSize );
       }
+      catch( MalformedFixedHeader )
+      {
+         Stop();
+      }
+   }
+}
+
+void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
+{
+   switch( m_eState )
+   {
+   case FIXED_HEADER_FLAGS:
+      {
+         char iTypeAndFlags;
+         memcpy_s( &iTypeAndFlags, 1, &m_szBuf[iG++], 1 );
+         m_eState = FIXED_HEADER_MESSAGE_SIZE;
+         m_iNeedBytes = 1;
+         m_szCurrentMessage += iTypeAndFlags;
+      }
+      break;
+   case FIXED_HEADER_MESSAGE_SIZE:
+      {
+         static char iLenByte = 0;
+         static size_t multiplier = 1;
+         static size_t value = 0;
+         memcpy_s( &iLenByte, 1, &m_szBuf[iG++], 1 );
+         value += (iLenByte & 0x7F) * multiplier;
+         multiplier = multiplier << 7;
+         if( multiplier > 128 * 128 * 128 )
+         {
+            throw MalformedFixedHeader();
+         }
+         m_szCurrentMessage += iLenByte;
+         if( (iLenByte & 0x80) == 0 )
+         {
+            m_eState = MESSAGE_PAYLOAD;
+            m_iNeedBytes = value;
+            iLenByte = 0;
+            multiplier = 1;
+            value = 0;
+         }
+      }
+      break;
+   case MESSAGE_PAYLOAD:
+      {
+         size_t len = m_szCurrentMessage.size();
+         m_szCurrentMessage.append( m_iNeedBytes, ' ' );
+         memcpy_s( &m_szCurrentMessage[len], m_iNeedBytes, &m_szBuf[iG], m_iNeedBytes );
+         m_eState = FIXED_HEADER_MESSAGE_SIZE;
+         iG += m_iNeedBytes;
+
+         // *m_pIOStream << m_szCurrentMessage << std::endl;
+
+         // Reset message reader state.
+         m_pConnectTimer->cancel(); // We have received a message.
+         m_szBuf = m_szBuf.substr( iG );
+         m_iNeedBytes = 1;
+         iG = 0;
+         bufSize = m_szBuf.size();
+
+         std::string sz;
+         sz += (char)1 << 5;
+         sz += (char)2;
+         sz.append( 2, '\0' );
+         WriteAsync( sz.data(), sz.size() );
+         m_szCurrentMessage = std::string();
+      }
+      break;
    }
 }
 

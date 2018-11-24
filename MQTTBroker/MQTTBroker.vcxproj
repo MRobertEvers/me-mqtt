@@ -91,6 +91,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ASIO_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +154,11 @@
     <ClInclude Include="AsioConnectionManager.h" />
     <ClInclude Include="AsioServer.h" />
     <ClInclude Include="AsioService.h" />
+    <ClInclude Include="ConnectPacket.h" />
+    <ClInclude Include="ControlPacket.h" />
+    <ClInclude Include="MalformedFixedHeader.h" />
     <ClInclude Include="MQTTConnection.h" />
+    <ClInclude Include="PacketFactory.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="ServerIOStream.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,8 +169,11 @@
     <ClCompile Include="AsioConnectionManager.cpp" />
     <ClCompile Include="AsioServer.cpp" />
     <ClCompile Include="AsioService.cpp" />
+    <ClCompile Include="ConnectPacket.cpp" />
+    <ClCompile Include="ControlPacket.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />
     <ClCompile Include="MQTTConnection.cpp" />
+    <ClCompile Include="PacketFactory.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="ServerIOStream.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -172,6 +181,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Utils.h">
+      <FileType>CppHeader</FileType>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
