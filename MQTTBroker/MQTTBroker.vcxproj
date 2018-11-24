@@ -154,6 +154,7 @@
     <ClInclude Include="AsioConnectionManager.h" />
     <ClInclude Include="AsioServer.h" />
     <ClInclude Include="AsioService.h" />
+    <ClInclude Include="ConnackPacket.h" />
     <ClInclude Include="ConnectPacket.h" />
     <ClInclude Include="ControlPacket.h" />
     <ClInclude Include="MalformedFixedHeader.h" />
@@ -169,8 +170,12 @@
     <ClCompile Include="AsioConnectionManager.cpp" />
     <ClCompile Include="AsioServer.cpp" />
     <ClCompile Include="AsioService.cpp" />
+    <ClCompile Include="ConnackPacket.cpp" />
     <ClCompile Include="ConnectPacket.cpp" />
     <ClCompile Include="ControlPacket.cpp" />
+    <ClCompile Include="MalformedPacket.h">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClCompile Include="MQTTBroker.cpp" />
     <ClCompile Include="MQTTConnection.cpp" />
     <ClCompile Include="PacketFactory.cpp" />

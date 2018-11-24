@@ -1,127 +1,253 @@
 #include "stdafx.h"
 #include "ConnectPacket.h"
 #include "Utils.h"
+#include "MalformedPacket.h"
 
 
-ConnectPacket::ConnectPacket( std::string& aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacket( std::forward<std::string>(aszData) )
+ConnectPacket::ConnectPacket( std::string const& aszData, unsigned char aiFixedHeaderSize )
+   : ControlPacket( aszData[0] )
 {
-   /*m_iVariableHeaderStart = aiFixedHeaderSize;
-   m_iPayloadStart = aiFixedHeaderSize + 4+GetProtocolName().size();
+   // Parse the connect Packet
+   const char* data = aszData.data();
+   size_t i = aiFixedHeaderSize;
 
-   m_iClientNameStart = m_iPayloadStart;
-   size_t last = m_iClientNameStart;
+   // Variable Header Stuff
+   const char* pVarHeader = data + i;
+   // Protocol Name
+   size_t cur = utils::read_utf8_string_size( pVarHeader );
+   m_szProtocolName = std::string( pVarHeader+2, cur );
+   i += cur+2;
+   if( m_szProtocolName != "MQTT" )
+   {
+      throw MalformedPacket();
+   }
+
+   // Protocol Level
+   cur = 1;
+   m_iProtocolLevel = pVarHeader[6];
+   i += cur;
+   if( m_iProtocolLevel != 4 )
+   {
+      throw MalformedPacket();
+   }
+
+   // ConnectFlags
+   cur = 1;
+   m_iFlags = pVarHeader[7];
+   i += cur;
+   if( m_iFlags & 1 != 0 ) // Check reserved
+   {
+      throw MalformedPacket();
+   }
+
+   // Keep Alive timeout
+   cur = 2;
+   m_iKeepAlive = (((unsigned short)pVarHeader[8]) << 8) | pVarHeader[9];
+   i += cur;
+
+   // Payload
+   const char* pPayload = data + i;
+   // Client Identifier.
+   cur = utils::read_utf8_string_size( pPayload );
+   m_szClientName = std::string( pPayload+2, cur );
+   i += cur + 2;
+   pPayload += cur + 2;
+
    if( GetWillPresent() )
    {
-      m_iWillTopicStart = last + 2 + utils::read_utf8_string_size( data() + last );
-      last = m_iWillTopicStart;
-      m_iWillPayloadStart = last + 2 + utils::read_utf8_string_size( data() + last );
-      last = m_iWillPayloadStart;
+      // Will Topic.
+      cur = utils::read_utf8_string_size( pPayload );
+      if( i + cur + 2 > aszData.size() )
+      {
+         throw MalformedPacket();
+      }
+
+      m_szWillTopic = std::string( pPayload+2, cur );
+      if( i + cur + 2 > aszData.size() )
+      {
+         throw MalformedPacket();
+      }
+
+      i += cur + 2;
+      pPayload += cur + 2;
+
+      // Will Payload.
+      cur = utils::read_utf8_string_size( pPayload );
+      if( i + cur + 2 > aszData.size() )
+      {
+         throw MalformedPacket();
+      }
+
+      m_szWillPayload = std::string( pPayload + 2, cur );
+      i += cur + 2;
+      pPayload += cur + 2;
    }
+
    if( GetUsernamePresent() )
    {
-      m_iUsernameStart = last + 2 + utils::read_utf8_string_size( data() + last );
-      last = m_iUsernameStart;
+      // Username.
+      cur = utils::read_utf8_string_size( pPayload );
+      if( i + cur + 2 > aszData.size() )
+      {
+         throw MalformedPacket();
+      }
+
+      m_szUsername = std::string( pPayload + 2, cur );
+      i += cur + 2;
+      pPayload += cur + 2;
    }
+
    if( GetPasswordPresent() )
    {
-      m_iPasswordStart = last + 2 + utils::read_utf8_string_size( data() + last );
-   }*/
+      // Password.
+      cur = utils::read_utf8_string_size( pPayload );
+      if( i + cur + 2 > aszData.size() )
+      {
+         throw MalformedPacket();
+      }
+
+      m_szPassword = std::string( pPayload + 2, cur );
+      i += cur + 2;
+      pPayload += cur + 2;
+   }
+
+   if( i != aszData.size() )
+   {
+      throw MalformedPacket();
+   }
 }
 
 
 ConnectPacket::~ConnectPacket()
 {
 }
-//
-//std::string 
-//ConnectPacket::GetProtocolName() const
-//{
-//   return utils::read_utf8_string(GetBody(), GetLength());
-//}
-//
-//unsigned char ConnectPacket::GetProtocolLevel() const
-//{
-//   return GetVariableHeader()[6];
-//}
-//
-//unsigned char ConnectPacket::GetConnectFlags() const
-//{
-//   return GetVariableHeader()[7];
-//}
-//
-//unsigned short ConnectPacket::GetKeepAlive() const
-//{
-//   return GetVariableHeader()[8] << 8 & GetVariableHeader()[9];
-//}
-//
-//bool ConnectPacket::GetCleanSession() const
-//{
-//   return (GetConnectFlags() & (1<<1)) > 0;
-//}
-//
-//bool ConnectPacket::GetWillPresent() const
-//{
-//   return (GetConnectFlags() & (1 << 2)) > 0;
-//}
-//
-//unsigned char ConnectPacket::GetWillQOS() const
-//{
-//   return (GetConnectFlags() & (0x3 << 3)) >> 3;
-//}
-//
-//bool ConnectPacket::GetWillRetain() const
-//{
-//   return (GetConnectFlags() & (1 << 5)) > 0;;
-//}
-//
-//bool ConnectPacket::GetUsernamePresent() const
-//{
-//   return (GetConnectFlags() & (1 << 6)) > 0;;
-//}
-//
-//bool ConnectPacket::GetPasswordPresent() const
-//{
-//   return (GetConnectFlags() & (1 << 7)) > 0;;
-//}
-//
-//std::string
-//ConnectPacket::GetClientName() const
-//{
-//   return std::string(data()+m_iClientNameStart, m_iWillTopicStart - m_iClientNameStart);
-//}
-//
-//std::string 
-//ConnectPacket::GetWillTopic() const
-//{
-//   return std::string( data() + m_iWillTopicStart, m_iWillPayloadStart - m_iWillTopicStart );
-//}
-//
-//std::string
-//ConnectPacket::GetWillPayload() const
-//{
-//   return std::string( data() + m_iWillPayloadStart, m_iUsernameStart - m_iWillPayloadStart );
-//}
-//
-//std::string 
-//ConnectPacket::GetUsername() const
-//{
-//   return std::string( data() + m_iUsernameStart, m_iPasswordStart - m_iUsernameStart );
-//}
-//
-//std::string
-//ConnectPacket::GetPassword() const
-//{
-//   return std::string( data() + m_iPasswordStart, size() - m_iPasswordStart );
-//}
-//
-//char const * 
-//ConnectPacket::GetVariableHeader() const
-//{
-//   return data()+m_iVariableHeaderStart;
-//}
-//
-//char const * ConnectPacket::GetPayload() const
-//{
-//   return data()+m_iPayloadStart;
-//}
+
+std::string 
+ConnectPacket::GetProtocolName() const
+{
+   return m_szProtocolName;
+}
+
+unsigned char 
+ConnectPacket::GetProtocolLevel() const
+{
+   return m_iProtocolLevel;
+}
+
+unsigned char
+ConnectPacket::GetConnectFlags() const
+{
+   return m_iFlags;
+}
+
+unsigned short ConnectPacket::GetKeepAlive() const
+{
+   return m_iKeepAlive;
+}
+
+bool ConnectPacket::GetCleanSession() const
+{
+   return (GetConnectFlags() & (1<<1)) > 0;
+}
+
+bool 
+ConnectPacket::GetWillPresent() const
+{
+   return (GetConnectFlags() & (1 << 2)) > 0;
+}
+
+unsigned char
+ConnectPacket::GetWillQOS() const
+{
+   return (GetConnectFlags() & (0x3 << 3)) >> 3;
+}
+
+bool 
+ConnectPacket::GetWillRetain() const
+{
+   return (GetConnectFlags() & (1 << 5)) > 0;;
+}
+
+bool
+ConnectPacket::GetUsernamePresent() const
+{
+   return (GetConnectFlags() & (1 << 6)) > 0;;
+}
+
+bool
+ConnectPacket::GetPasswordPresent() const
+{
+   return (GetConnectFlags() & (1 << 7)) > 0;;
+}
+
+std::string const
+ConnectPacket::GetClientName() const
+{
+   return m_szClientName;
+}
+
+std::string const 
+ConnectPacket::GetWillTopic() const
+{
+   return m_szWillTopic;
+}
+
+std::string const
+ConnectPacket::GetWillPayload() const
+{
+   return m_szWillPayload;
+}
+
+std::string const
+ConnectPacket::GetUsername() const
+{
+   return m_szUsername;
+}
+
+std::string const 
+ConnectPacket::GetPassword() const
+{
+   return m_szPassword;
+}
+
+bool
+ConnectPacket::SetCleanSession( bool abCleanSession )
+{
+   return false;
+}
+
+bool 
+ConnectPacket::SetWillPresent( bool abWillPresent )
+{
+   return false;
+}
+
+unsigned char 
+ConnectPacket::SetWillQOS( unsigned char abWillQOS )
+{
+   return 0;
+}
+
+bool 
+ConnectPacket::SetWillRetain( bool abWillRetain )
+{
+   return false;
+}
+
+bool
+ConnectPacket::SetUsernamePresent( bool abUsernamePresent )
+{
+   return false;
+}
+
+bool 
+ConnectPacket::SetPasswordPresent( bool abPasswordPresent )
+{
+   return false;
+}
+
+std::string
+ConnectPacket::SerializeBody() const
+{
+   return std::string();
+}

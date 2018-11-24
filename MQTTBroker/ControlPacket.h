@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+
 class ControlPacket
 {
 public:
@@ -25,18 +26,20 @@ public:
    };
 
 public:
-   ControlPacket( std::string aszData );
-   virtual ~ControlPacket();
+   PacketTypes GetType() const;
 
-   PacketTypes GetType();
-   size_t GetLength();
+   std::string Serialize() const;
+
 
 protected:
-   char const* data() const noexcept;
-   size_t size() const noexcept;
+   ControlPacket( unsigned char aPacketType );
+   virtual ~ControlPacket();
+
+   void setType( unsigned char aiType );
+
+   virtual std::string SerializeBody() const = 0;
 
 private:
-   std::string m_szData;
-   size_t m_iLength;
+   PacketTypes m_iPacketType;
 };
 

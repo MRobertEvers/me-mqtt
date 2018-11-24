@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
+#include "ConnectPacket.h"
+#include "ConnackPacket.h"
 
 
 MQTTConnection::MQTTConnection( std::shared_ptr<asio::ip::tcp::socket> apSock, std::shared_ptr<ServerIOStream> apOStream )
@@ -43,6 +45,7 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
 
 void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
 {
+   static char iFixedHeaderSize = 0;
    switch( m_eState )
    {
    case FIXED_HEADER_FLAGS:
@@ -66,9 +69,10 @@ void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
          {
             throw MalformedFixedHeader();
          }
-         m_szCurrentMessage += iLenByte;
+         m_szCurrentMessage.append( 1, iLenByte );
          if( (iLenByte & 0x80) == 0 )
          {
+            iFixedHeaderSize = m_szCurrentMessage.size();
             m_eState = MESSAGE_PAYLOAD;
             m_iNeedBytes = value;
             iLenByte = 0;
@@ -94,12 +98,16 @@ void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
          iG = 0;
          bufSize = m_szBuf.size();
 
-         std::string sz;
-         sz += (char)1 << 5;
-         sz += (char)2;
-         sz.append( 2, '\0' );
-         WriteAsync( sz.data(), sz.size() );
-         m_szCurrentMessage = std::string();
+         ConnackPacket pc( 0, 0x00 );
+         WriteAsync( pc.Serialize() );
+         //std::string sz;
+         //sz += (char)1 << 5;
+         //sz += (char)2;
+         //sz.append( 2, '\0' );
+         //WriteAsync( sz.data(), sz.size() );
+
+         //ConnectPacket pc( m_szCurrentMessage, iFixedHeaderSize );
+         //iFixedHeaderSize = 0;
       }
       break;
    }

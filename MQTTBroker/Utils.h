@@ -7,7 +7,7 @@ namespace utils
    inline
    unsigned short read_utf8_string_size( const char* apData )
    {
-      return ((unsigned short)apData[1]) << 8 & apData[0];
+      return (((unsigned short)apData[0]) << 8) | apData[1];
    }
 
    std::string

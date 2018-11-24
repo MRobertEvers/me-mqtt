@@ -2,42 +2,53 @@
 #include "ControlPacket.h"
 #include <string>
 
+
 class ConnectPacket :
    public ControlPacket
 {
 public:
-   ConnectPacket( std::string& aszData, unsigned char aiFixedHeaderSize );
+   ConnectPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
    ~ConnectPacket();
 
-   //std::string_view GetProtocolName() const;
-   //unsigned char GetProtocolLevel() const;
-   //unsigned char GetConnectFlags() const;
-   //unsigned short GetKeepAlive() const;
+   std::string GetProtocolName() const;
+   unsigned char GetProtocolLevel() const;
+   unsigned char GetConnectFlags() const;
+   unsigned short GetKeepAlive() const;
 
-   //bool GetCleanSession() const;
-   //bool GetWillPresent() const;
-   //unsigned char GetWillQOS() const;
-   //bool GetWillRetain() const;
-   //bool GetUsernamePresent() const;
-   //bool GetPasswordPresent() const;
+   bool GetCleanSession() const;
+   bool GetWillPresent() const;
+   unsigned char GetWillQOS() const;
+   bool GetWillRetain() const;
+   bool GetUsernamePresent() const;
+   bool GetPasswordPresent() const;
 
-   //std::string_view const GetClientName() const;
-   //std::string_view const GetWillTopic() const;
-   //std::string_view const GetWillPayload() const;
-   //std::string_view const GetUsername() const;
-   //std::string_view const GetPassword() const;
+   std::string const GetClientName() const;
+   std::string const GetWillTopic() const;
+   std::string const GetWillPayload() const;
+   std::string const GetUsername() const;
+   std::string const GetPassword() const;
 
-   //char const* GetVariableHeader() const;
-   //char const* GetPayload() const;
+   bool SetCleanSession(bool abCleanSession);
+   bool SetWillPresent(bool abWillPresent);
+   unsigned char SetWillQOS(unsigned char abWillQOS);
+   bool SetWillRetain(bool abWillRetain);
+   bool SetUsernamePresent(bool abUsernamePresent);
+   bool SetPasswordPresent(bool abPasswordPresent);
+
 private:
-   
-   //size_t m_iVariableHeaderStart;
-   //size_t m_iPayloadStart;
+   unsigned char m_iFlags;
+   unsigned char m_iProtocolLevel;
+   unsigned short m_iKeepAlive;
 
-   //std::string_view m_szClientName;
-   //std::string_view m_szWillTopic;
-   //std::string_view m_szWillPayload;
-   //std::string_view m_szUsername;
-   //std::string_view m_szPassword;
+   std::string m_szProtocolName;
+
+   std::string m_szClientName;
+   std::string m_szWillTopic;
+   std::string m_szWillPayload;
+   std::string m_szUsername;
+   std::string m_szPassword;
+
+   // Inherited via ControlPacket
+   virtual std::string SerializeBody() const override;
 };
 

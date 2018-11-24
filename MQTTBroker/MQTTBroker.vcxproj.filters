@@ -43,6 +43,9 @@
     <Filter Include="NewFilter1">
       <UniqueIdentifier>{74959bf5-77d5-4acd-89c2-8fda2d0b81a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Connack">
+      <UniqueIdentifier>{db5019c3-17a5-4909-bcae-f3d21067eb6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -83,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="PacketFactory.h">
       <Filter>MQTT\MessageDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnackPacket.h">
+      <Filter>MQTT\MessageDefinitions\Connack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,12 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MalformedPacket.h">
+      <Filter>MQTT\Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnackPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Connack</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

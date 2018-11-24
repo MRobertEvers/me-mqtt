@@ -47,7 +47,13 @@ AsioConnection::GetLastError() const
    return m_LastError;
 }
 
-void 
+void
+AsioConnection::WriteAsync( std::string const & aszMsg )
+{
+   WriteAsync( aszMsg.data(), aszMsg.size() );
+}
+
+void
 AsioConnection::WriteAsync( char const* apBuf, size_t aNumBytes )
 {
    // Copy the data.
