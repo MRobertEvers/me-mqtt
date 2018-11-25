@@ -8,6 +8,7 @@ namespace me
 {
 class BroadcasterClient;
 class ClientState;
+class ClientStateLedger;
 
 class Broadcaster : public std::enable_shared_from_this<Broadcaster>
 {
@@ -27,6 +28,6 @@ private:
    std::shared_ptr<asio::io_service::work> m_pWork;
    std::shared_ptr<asio::io_context::strand> m_pStrand;
 
-   std::map<me::pcstring, std::shared_ptr<ClientState>> m_mapStates;
+   std::shared_ptr<ClientStateLedger> m_pClients;
 };
 }
