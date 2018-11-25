@@ -159,6 +159,10 @@ AsioConnection::queueWrite()
             queueWrite();
          }
       }
+      else
+      {
+         // TODO;
+      }
    };
 
    asio::async_write( 

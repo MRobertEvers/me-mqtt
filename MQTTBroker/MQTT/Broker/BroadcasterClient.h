@@ -8,8 +8,11 @@ class Broadcaster;
 class BroadcasterClient
 {
 public:
-   BroadcasterClient( me::pcstring aszClientName, Broadcaster* apBroadcaster );
+   BroadcasterClient( Broadcaster* apBroadcaster );
    ~BroadcasterClient();
+
+   me::pcstring GetClientName() const;
+   void SetClientName( me::pcstring apszName );
 
    void BroadcastPublishMessage( 
       me::pcstring apszTopic, me::pcstring apszPayload, 

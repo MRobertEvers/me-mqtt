@@ -14,7 +14,7 @@ public:
    ~Broadcaster();
 
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
-   std::shared_ptr<BroadcasterClient> CreateClient( me::pcstring apszName );
+   std::shared_ptr<BroadcasterClient> CreateClient();
 
 private:
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );

@@ -11,7 +11,9 @@ class BroadcasterClient;
 class BrokerClient : public IMessageHandler
 {
 public:
-   BrokerClient( std::shared_ptr<BroadcasterClient> apBroadcaster, AsioConnection* apConnection );
+   BrokerClient(
+      std::shared_ptr<BroadcasterClient> apBroadcaster,
+      AsioConnection* apConnection );
    virtual ~BrokerClient();
 
    me::pcstring GetClientName() const;

@@ -15,7 +15,7 @@ class MQTTConnectionFactory : public AsioConnectionFactory
 public:
    MQTTConnectionFactory( 
       std::shared_ptr<ServerIOStream> aIOStream,
-      std::shared_ptr<AsioService> apIOService );
+      std::shared_ptr<Broadcaster> apBroadcaster );
    ~MQTTConnectionFactory();
 
    virtual std::shared_ptr<AsioConnection>

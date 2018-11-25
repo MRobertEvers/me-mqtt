@@ -5,14 +5,26 @@
 
 namespace me
 {
-BroadcasterClient::BroadcasterClient( me::pcstring aszClientName, Broadcaster * apBroadcaster )
-   : m_szClientName( aszClientName ), m_pBroadcaster( apBroadcaster )
+BroadcasterClient::BroadcasterClient( Broadcaster * apBroadcaster )
+   : m_pBroadcaster( apBroadcaster )
 {
 }
 
 BroadcasterClient::~BroadcasterClient()
 {
 
+}
+
+me::pcstring 
+BroadcasterClient::GetClientName() const
+{
+   return m_szClientName;
+}
+
+void 
+BroadcasterClient::SetClientName( me::pcstring apszName )
+{
+   m_szClientName = apszName;
 }
 
 void 

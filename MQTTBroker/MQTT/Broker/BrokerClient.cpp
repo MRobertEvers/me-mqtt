@@ -35,6 +35,8 @@ BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
    {
       m_pConnectPacket = apPacket;
 
+      m_pBroadcaster->SetClientName( apPacket->GetClientName() );
+
       m_pConnection->WriteAsync( ConnackPacket( 0, 0x00 ).Serialize() );
    }
    else

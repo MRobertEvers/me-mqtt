@@ -28,9 +28,9 @@ Broadcaster::BroadcastMessage(
 }
 
 std::shared_ptr<BroadcasterClient>
-Broadcaster::CreateClient( me::pcstring apszName )
+Broadcaster::CreateClient()
 {
-   return std::make_shared<BroadcasterClient>( apszName, this );
+   return std::make_shared<BroadcasterClient>(this );
 }
 
 void Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
