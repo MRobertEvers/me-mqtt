@@ -5,7 +5,8 @@
 
 namespace me
 {
-BroadcasterClient::BroadcasterClient( Broadcaster * apBroadcaster )
+BroadcasterClient::BroadcasterClient( 
+   std::shared_ptr<Broadcaster> apBroadcaster )
    : m_pBroadcaster( apBroadcaster )
 {
 }

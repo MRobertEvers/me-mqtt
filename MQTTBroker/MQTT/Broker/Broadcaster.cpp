@@ -30,10 +30,11 @@ Broadcaster::BroadcastMessage(
 std::shared_ptr<BroadcasterClient>
 Broadcaster::CreateClient()
 {
-   return std::make_shared<BroadcasterClient>(this );
+   return std::make_shared<BroadcasterClient>( shared_from_this() );
 }
 
-void Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
+void 
+Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {
    std::cout << "Published" << *apMessage->GetPayload() << std::endl;
 }

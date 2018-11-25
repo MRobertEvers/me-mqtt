@@ -8,7 +8,8 @@ class Broadcaster;
 class BroadcasterClient
 {
 public:
-   BroadcasterClient( Broadcaster* apBroadcaster );
+   // TODO: This should be a shared_ptr?
+   BroadcasterClient( std::shared_ptr<Broadcaster> pBroadcaster );
    ~BroadcasterClient();
 
    me::pcstring GetClientName() const;
@@ -20,6 +21,6 @@ public:
 
 private:
    me::pcstring m_szClientName;
-   Broadcaster* m_pBroadcaster;
+   std::shared_ptr<Broadcaster> m_pBroadcaster;
 };
 }
