@@ -1,24 +1,20 @@
 #include "stdafx.h"
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
-#include "PacketFactory.h"
-#include "Connect\ConnectPacket.h"
-#include "Connack\ConnackPacket.h"
+#include "MalformedPacket.h"
 #include "Broker\BrokerClient.h"
 
+const MQTTConnection::StateVars MQTTConnection::StateVars::resetter;
 
 MQTTConnection::MQTTConnection(
    std::shared_ptr<asio::ip::tcp::socket> apSock,
    std::shared_ptr<ServerIOStream> apOStream )
-   : m_iHaveBytes(0), m_iNeedBytes(0), m_eState(FIXED_HEADER_FLAGS),
-   m_pIOStream(apOStream),
-   AsioConnection( apSock )
+   : m_pIOStream(apOStream), AsioConnection( apSock )
 {
+   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient(this) );
    m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer( 
       apSock->get_io_context()
    ) );
-
-   m_iNeedBytes = 1;
 }
 
 
@@ -27,42 +23,25 @@ MQTTConnection::~MQTTConnection()
    *m_pIOStream << "Deleted MQTTConnection" << std::endl;
 }
 
-void
-MQTTConnection::OnMessage( ControlPacket* apPacket )
-{
-   if( !m_pClient )
-   {
-      // TODO: 
-      throw;
-   }
-   else
-   {
-      m_pClient->HandlePacket( apPacket );
-   }
-}
-
-void
-MQTTConnection::OnMessage( ConnectPacket* apPacket )
-{
-   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient(this) );
-   m_pClient->HandleConnect( apPacket );
-}
-
 void 
 MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
 {
-   static size_t iG = 0;
    m_szBuf.append( apBytes, aNumBytes );
 
-   size_t bufSize = m_szBuf.size();
-   while( iG + m_iNeedBytes <= bufSize )
+   while( m_State.iReadIndex + m_State.iNeedBytes <= m_szBuf.size() )
    {
       try
       {
-         handleBytes( iG, bufSize );
+         handleBytes();
       }
       catch( MalformedFixedHeader )
       {
+         *m_pIOStream << "Bad Fixed Header";
+         Stop();
+      }
+      catch( MalformedPacket )
+      {
+         *m_pIOStream << "Bad Packet";
          Stop();
       }
    }
@@ -95,81 +74,140 @@ MQTTConnection::Stop()
 }
 
 
-void MQTTConnection::handleBytes( size_t &iG, size_t &bufSize )
+void 
+MQTTConnection::dispatchMessage( std::string const& aszData, unsigned char aiFixedHeaderSize )
 {
-   static char iFixedHeaderSize = 0;
-   switch( m_eState )
+   // Validate as much of the input that we can.
+   char const* data = aszData.data();
+   size_t size = aszData.size();
+   if( size < 2 )
+   {
+      throw MalformedFixedHeader();
+   }
+
+   unsigned char iTypeAndFlags = data[0];
+   unsigned char iType = (iTypeAndFlags & 0xF0) >> 4;
+   if( iType == 0 || iType >= 0xF )
+   {
+      throw MalformedFixedHeader();
+   }
+
+   // Dispatch.
+   ControlPacket::PacketTypes type = (ControlPacket::PacketTypes)iType;
+   switch( type )
+   {
+   case ControlPacket::PacketTypes::CONNECT:
+      m_pClient->HandleConnect( 
+         std::make_shared<ConnectPacket>( aszData, aiFixedHeaderSize ) 
+      );
+      break;
+   case ControlPacket::PacketTypes::PUBLISH:
+      m_pClient->HandlePublish(
+         std::make_shared<PublishPacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::PUBACK:
+      m_pClient->HandlePuback(
+         std::make_shared<PubackPacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::PUBREC:
+      m_pClient->HandlePubrec(
+         std::make_shared<PubrecPacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::PUBREL:
+      m_pClient->HandlePubrel(
+         std::make_shared<PubrelPacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::PUBCOMP:
+      m_pClient->HandlePubcomp(
+         std::make_shared<PubcompPacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::SUBSCRIBE:
+      m_pClient->HandleSubscribe(
+         std::make_shared<SubscribePacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::UNSUBSCRIBE:
+      m_pClient->HandleUnsubscribe(
+         std::make_shared<UnsubscribePacket>( aszData, aiFixedHeaderSize )
+      );
+      break;
+   case ControlPacket::PacketTypes::PINGREQ:
+      m_pClient->HandlePingReq(
+         std::make_shared<PingReqPacket>()
+      );
+      break;
+   case ControlPacket::PacketTypes::DISCONNECT:
+      m_pClient->HandleDisconnect(
+         std::make_shared<DisconnectPacket>()
+      );
+      break;
+   }
+}
+
+void
+MQTTConnection::handleBytes()
+{
+   switch( m_State.iState )
    {
    case FIXED_HEADER_FLAGS:
       {
          char iTypeAndFlags;
-         memcpy_s( &iTypeAndFlags, 1, &m_szBuf[iG++], 1 );
-         m_eState = FIXED_HEADER_MESSAGE_SIZE;
-         m_iNeedBytes = 1;
+         memcpy_s( &iTypeAndFlags, 1, &m_szBuf[m_State.iReadIndex++], 1 );
+         m_State.iState = FIXED_HEADER_MESSAGE_SIZE;
+         m_State.iNeedBytes = 1;
          m_szCurrentMessage += iTypeAndFlags;
       }
       break;
    case FIXED_HEADER_MESSAGE_SIZE:
       {
-         static char iLenByte = 0;
-         static size_t multiplier = 1;
-         static size_t value = 0;
-         memcpy_s( &iLenByte, 1, &m_szBuf[iG++], 1 );
-         value += (iLenByte & 0x7F) * multiplier;
-         multiplier = multiplier << 7;
-         if( multiplier > 128 * 128 * 128 )
+         memcpy_s( &m_State.iMessageLenByte, 1, &m_szBuf[m_State.iReadIndex++], 1 );
+         m_State.iMessageLenValue += (m_State.iMessageLenByte & 0x7F) * m_State.iMessageLenMultiplier;
+         m_State.iMessageLenMultiplier = m_State.iMessageLenMultiplier << 7;
+         if( m_State.iMessageLenMultiplier > 128 * 128 * 128 )
          {
             throw MalformedFixedHeader();
          }
-         m_szCurrentMessage.append( 1, iLenByte );
-         if( (iLenByte & 0x80) == 0 )
+         m_szCurrentMessage.append( 1, m_State.iMessageLenByte );
+         if( (m_State.iMessageLenByte & 0x80) == 0 )
          {
-            iFixedHeaderSize = m_szCurrentMessage.size();
-            m_eState = MESSAGE_PAYLOAD;
-            m_iNeedBytes = value;
-            iLenByte = 0;
-            multiplier = 1;
-            value = 0;
+            m_State.iFixedHeaderSize = m_szCurrentMessage.size();
+            m_State.iState = MESSAGE_PAYLOAD;
+            m_State.iNeedBytes = m_State.iMessageLenValue;
          }
       }
-      break;
+      if( m_State.iNeedBytes != 0 )
+      {
+         break;
+      }
    case MESSAGE_PAYLOAD:
       {
          size_t len = m_szCurrentMessage.size();
-         m_szCurrentMessage.append( m_iNeedBytes, ' ' );
-         memcpy_s( 
-            &m_szCurrentMessage[len], m_iNeedBytes, 
-            &m_szBuf[iG], m_iNeedBytes 
+         m_szCurrentMessage.append( m_State.iNeedBytes, ' ' );
+         memcpy_s(
+            &m_szCurrentMessage[len], m_State.iNeedBytes,
+            &m_szBuf[m_State.iReadIndex], m_State.iNeedBytes
          );
-         m_eState = FIXED_HEADER_MESSAGE_SIZE;
-         iG += m_iNeedBytes;
+         m_State.iState = FIXED_HEADER_MESSAGE_SIZE;
+         m_State.iReadIndex += m_State.iNeedBytes;
+         m_pConnectTimer->cancel(); // We have received a message.
 
          // *m_pIOStream << m_szCurrentMessage << std::endl;
+         dispatchMessage( m_szCurrentMessage, m_State.iFixedHeaderSize );
 
          // Reset message reader state.
-         m_pConnectTimer->cancel(); // We have received a message.
-         m_szBuf = m_szBuf.substr( iG );
-         m_iNeedBytes = 1;
-         iG = 0;
-         bufSize = m_szBuf.size();
-
-         // Handle the message.
-         OnMessage( PacketFactory::GetPacket( m_szCurrentMessage, iFixedHeaderSize ) );
-         iFixedHeaderSize = 0;
-         //ConnackPacket pc( 0, 0x00 );
-         //WriteAsync( pc.Serialize() );
-         //std::string sz;
-         //sz += (char)1 << 5;
-         //sz += (char)2;
-         //sz.append( 2, '\0' );
-         //WriteAsync( sz.data(), sz.size() );
-
-         //ConnectPacket pc( m_szCurrentMessage, iFixedHeaderSize );
-         //
+         m_szBuf = m_szBuf.substr( m_State.iReadIndex );
+         m_State.Reset();
+         m_szCurrentMessage.clear();
       }
       break;
    }
 }
+
 
 void
 MQTTConnection::onConnectTimer( const asio::error_code& ec )

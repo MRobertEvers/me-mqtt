@@ -48,6 +48,12 @@ AsioConnection::GetLastError() const
 }
 
 void
+AsioConnection::WriteAsync( std::string&& aszMsg )
+{
+   WriteAsync( aszMsg.data(), aszMsg.size() );
+}
+
+void
 AsioConnection::WriteAsync( std::string const & aszMsg )
 {
    WriteAsync( aszMsg.data(), aszMsg.size() );

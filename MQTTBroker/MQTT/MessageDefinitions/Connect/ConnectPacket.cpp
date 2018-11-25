@@ -6,7 +6,7 @@
 
 ConnectPacket::ConnectPacket( 
    std::string const& aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacket( aszData[0]>>4 )
+   : ControlPacket( aszData[0]>>4, 0x00 )
 {
    // Parse the connect Packet
    const char* data = aszData.data();

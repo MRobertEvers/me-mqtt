@@ -29,4 +29,4 @@ private:
 
 };
 
-CONTROL_PACKET_HANDLER( Connack )
+

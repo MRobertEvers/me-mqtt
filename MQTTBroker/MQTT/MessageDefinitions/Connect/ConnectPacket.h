@@ -2,7 +2,6 @@
 #include "ControlPacket.h"
 #include <string>
 
-
 class ConnectPacket :
    public ControlPacket
 {
@@ -51,6 +50,3 @@ private:
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 };
-
-
-CONTROL_PACKET_HANDLER( Connect )

@@ -20,6 +20,7 @@ public:
    virtual void SetError( const asio::error_code& aec );
    virtual asio::error_code GetLastError() const;
 
+   void WriteAsync( std::string&& aszMsg );
    void WriteAsync( std::string const& aszMsg );
    void WriteAsync( char const* apBuf, size_t aNumBytes );
    void Write( char const* apBuf, size_t aNumBytes );

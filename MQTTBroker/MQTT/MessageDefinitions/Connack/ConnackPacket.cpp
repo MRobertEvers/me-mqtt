@@ -4,7 +4,7 @@
 
 
 ConnackPacket::ConnackPacket( bool abSessionPresent, unsigned char abCode )
-   : m_bSessionPresent(abSessionPresent), ControlPacket( 0x02 )
+   : m_bSessionPresent(abSessionPresent), ControlPacket( 0x02, 0x00 )
 {
    if( abCode > 5 )
    {

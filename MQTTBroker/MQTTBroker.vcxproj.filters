@@ -55,6 +55,36 @@
     <Filter Include="MQTT\Server">
       <UniqueIdentifier>{1b549460-827a-4f8d-a17b-f267a667419d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Disconnect">
+      <UniqueIdentifier>{5bf5a732-1041-4764-b945-4b190358cad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Unsubscribe">
+      <UniqueIdentifier>{113846d8-6374-4b2e-8918-356258ad3764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Subscribe">
+      <UniqueIdentifier>{54097567-a3e1-46aa-b3c7-5b997841f100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Suback">
+      <UniqueIdentifier>{ae000880-5dc9-4f2f-8e6d-64e832de41a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Unsuback">
+      <UniqueIdentifier>{949bb3b1-98a3-43cd-b0dd-267da3b73387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Publish">
+      <UniqueIdentifier>{f697a18b-806a-4000-b6bc-3f2f9824c9c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Puback">
+      <UniqueIdentifier>{27749c25-1e49-4226-9f09-03e1f94becd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Pubrel">
+      <UniqueIdentifier>{36cf1a3e-bc91-40d4-b4c2-56535a056589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Pubrec">
+      <UniqueIdentifier>{e14f202a-1849-41db-a3b2-a7b31666ec58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\MessageDefinitions\Pubcomp">
+      <UniqueIdentifier>{9e6a3c23-0bf8-4084-a9c9-a687ab8bb51d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -102,23 +132,53 @@
     <ClInclude Include="MQTT\MessageDefinitions\ControlPacket.h">
       <Filter>MQTT\MessageDefinitions</Filter>
     </ClInclude>
-    <ClInclude Include="MQTT\MessageDefinitions\PacketFactory.h">
-      <Filter>MQTT\MessageDefinitions</Filter>
-    </ClInclude>
     <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
     </ClInclude>
     <ClInclude Include="MQTT\Broker\BrokerClient.h">
       <Filter>MQTT\Broker</Filter>
     </ClInclude>
-    <ClInclude Include="MQTT\PacketHandler.h">
-      <Filter>MQTT</Filter>
-    </ClInclude>
     <ClInclude Include="Asio\AsioConnectionFactory.h">
       <Filter>Asio\Server</Filter>
     </ClInclude>
     <ClInclude Include="MQTT\MQTTConnectionFactory.h">
       <Filter>MQTT</Filter>
+    </ClInclude>
+    <ClInclude Include="IMessageHandler.h">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Disconnect\DisconnectPacket.h">
+      <Filter>MQTT\MessageDefinitions\Disconnect</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Publish\PublishPacket.h">
+      <Filter>MQTT\MessageDefinitions\Publish</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\ControlPacketId.h">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Puback\PubackPacket.h">
+      <Filter>MQTT\MessageDefinitions\Puback</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Pubrel\PubrelPacket.h">
+      <Filter>MQTT\MessageDefinitions\Pubrel</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Pubrec\PubrecPacket.h">
+      <Filter>MQTT\MessageDefinitions\Pubrec</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Pubcomp\PubcompPacket.h">
+      <Filter>MQTT\MessageDefinitions\Pubcomp</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Unsuback\UnsubackPacket.h">
+      <Filter>MQTT\MessageDefinitions\Unsuback</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Suback\SubackPacket.h">
+      <Filter>MQTT\MessageDefinitions\Suback</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Subscribe\SubscribePacket.h">
+      <Filter>MQTT\MessageDefinitions\Subscribe</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\MessageDefinitions\Unsubscribe\UnsubscribePacket.h">
+      <Filter>MQTT\MessageDefinitions\Unsubscribe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -167,23 +227,50 @@
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacket.cpp">
       <Filter>MQTT\MessageDefinitions</Filter>
     </ClCompile>
-    <ClCompile Include="MQTT\MessageDefinitions\PacketFactory.cpp">
-      <Filter>MQTT\MessageDefinitions</Filter>
-    </ClCompile>
     <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\Broker\BrokerClient.cpp">
       <Filter>MQTT\Broker</Filter>
     </ClCompile>
-    <ClCompile Include="MQTT\PacketHandler.cpp">
-      <Filter>MQTT</Filter>
-    </ClCompile>
     <ClCompile Include="Asio\AsioConnectionFactory.cpp">
       <Filter>Asio\Server</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\MQTTConnectionFactory.cpp">
       <Filter>MQTT</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Disconnect\DisconnectPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Disconnect</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Publish\PublishPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Publish</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\ControlPacketId.cpp">
+      <Filter>MQTT\MessageDefinitions</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Puback\PubackPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Puback</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Pubrel\PubrelPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Pubrel</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Pubrec\PubrecPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Pubrec</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Pubcomp\PubcompPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Pubcomp</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Unsuback\UnsubackPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Unsuback</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Suback\SubackPacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Suback</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Subscribe\SubscribePacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Subscribe</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\MessageDefinitions\Unsubscribe\UnsubscribePacket.cpp">
+      <Filter>MQTT\MessageDefinitions\Unsubscribe</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

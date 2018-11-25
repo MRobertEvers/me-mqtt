@@ -3,7 +3,7 @@
 
 
 PingReqPacket::PingReqPacket()
-   : ControlPacket(0x12)
+   : ControlPacket(12, 0x00)
 {
 }
 

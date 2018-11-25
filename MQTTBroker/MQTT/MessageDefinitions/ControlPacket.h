@@ -1,12 +1,6 @@
 #pragma once
 #include <string>
 
-#define CONTROL_PACKET_HANDLER( packetType ) \
-   class I##packetType##Packet\
-   {\
-   public:\
-      virtual void Handle##packetType(packetType##Packet* packet) = 0;\
-   };
 
 
 class ControlPacket
@@ -37,16 +31,17 @@ public:
 
    std::string Serialize() const;
 
-
 protected:
-   ControlPacket( unsigned char aPacketType );
+   ControlPacket( unsigned char aPacketType, unsigned char aiReserved );
    virtual ~ControlPacket();
 
    void setType( unsigned char aiType );
+   virtual unsigned char getFixedHeaderReserved() const;
 
    virtual std::string SerializeBody() const = 0;
 
 private:
    PacketTypes m_iPacketType;
+   unsigned char m_iReserved;
 };
 

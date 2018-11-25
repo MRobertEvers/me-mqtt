@@ -1,12 +1,12 @@
 #pragma once
 #include "ControlPacket.h"
 
-class PingRespPacket :
+class DisconnectPacket :
    public ControlPacket
 {
 public:
-   PingRespPacket();
-   ~PingRespPacket();
+   DisconnectPacket();
+   ~DisconnectPacket();
 
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;

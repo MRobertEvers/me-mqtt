@@ -11,5 +11,3 @@ public:
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 };
-
-CONTROL_PACKET_HANDLER( PingReq )
