@@ -3,13 +3,16 @@
 #include "AsioConnection.h"
 #include "Connect\ConnectPacket.h"
 #include "Connack\ConnackPacket.h"
+#include "Broker/BroadcasterClient.h"
 #include "PingResp\PingRespPacket.h"
 
 namespace me
 {
 
-BrokerClient::BrokerClient( AsioConnection* apConnection )
-   : m_pConnection( apConnection )
+BrokerClient::BrokerClient(
+   std::shared_ptr<BroadcasterClient> apBroadcaster,
+   AsioConnection* apConnection )
+   : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster)
 {
 
 }
@@ -73,6 +76,11 @@ void
 BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 {
    assertConnected();
+
+   m_pBroadcaster->BroadcastPublishMessage(
+      apPacket->GetTopicName(), apPacket->GetPayload(),
+      apPacket->GetQOS(), apPacket->GetRetainFlag()
+   );
 
    unsigned char iQos = apPacket->GetQOS();
    if( iQos == 1 )

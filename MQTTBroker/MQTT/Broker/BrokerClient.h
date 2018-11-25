@@ -6,13 +6,12 @@ class AsioConnection;
 
 namespace me
 {
-class ControlPacket;
-class ConnectPacket;
+class BroadcasterClient;
 
 class BrokerClient : public IMessageHandler
 {
 public:
-   BrokerClient( AsioConnection* apConnection );
+   BrokerClient( std::shared_ptr<BroadcasterClient> apBroadcaster, AsioConnection* apConnection );
    virtual ~BrokerClient();
 
    me::pcstring GetClientName() const;
@@ -36,6 +35,7 @@ private:
    void assertConnected();
 
    std::shared_ptr<ConnectPacket> m_pConnectPacket;
+   std::shared_ptr<BroadcasterClient> m_pBroadcaster;
    AsioConnection* m_pConnection;
 };
 

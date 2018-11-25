@@ -1,23 +1,25 @@
 #pragma once
+#include "Definitions.h"
 #include <string>
+
 namespace me
 {
 class ApplicationMessage
 {
 public:
    ApplicationMessage(
-      std::string const& aszTopic, std::string const& aszPayload,
+      me::pcstring aszTopic, me::pcstring aszPayload,
       unsigned char aiQOS, bool abRetain );
    ~ApplicationMessage();
 
-   std::string GetTopic() const;
-   std::string GetPayload() const;
+   me::pcstring GetTopic() const;
+   me::pcstring GetPayload() const;
    unsigned char GetQOS() const;
    bool GetRetainFlag() const;
 
 private:
-   std::string m_szTopic;
-   std::string m_szPayload;
+   me::pcstring m_szTopic;
+   me::pcstring m_szPayload;
    unsigned char m_iQOS;
    bool m_bRetain;
 };

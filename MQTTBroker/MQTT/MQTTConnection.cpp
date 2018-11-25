@@ -2,6 +2,7 @@
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
 #include "MalformedPacket.h"
+#include "Broker\Broadcaster.h"
 #include "Broker\BrokerClient.h"
 namespace me
 {
@@ -9,10 +10,12 @@ const MQTTConnection::StateVars MQTTConnection::StateVars::resetter;
 
 MQTTConnection::MQTTConnection(
    std::shared_ptr<asio::ip::tcp::socket> apSock,
+   std::shared_ptr<Broadcaster> apBroadcaster,
    std::shared_ptr<ServerIOStream> apOStream )
-   : m_pIOStream( apOStream ), AsioConnection( apSock )
+   : m_pIOStream( apOStream ), m_pBroadcaster(apBroadcaster), AsioConnection( apSock )
 {
-   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient( this ) );
+   m_pszCurrentMessage = new std::string;
+   m_pClient = std::make_shared<BrokerClient>( m_pBroadcaster->CreateClient(std::make_shared<std::string>("toots")), this );
    m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer(
       apSock->get_io_context()
    ) );
@@ -196,14 +199,14 @@ MQTTConnection::handleBytes()
          size_t len = m_pszCurrentMessage->size();
          m_pszCurrentMessage->append( m_State.iNeedBytes, ' ' );
          memcpy_s(
-            &m_pszCurrentMessage[len], m_State.iNeedBytes,
+            &(*m_pszCurrentMessage)[len], m_State.iNeedBytes,
             &m_szBuf[m_State.iReadIndex], m_State.iNeedBytes
          );
          m_State.iState = FIXED_HEADER_MESSAGE_SIZE;
          m_State.iReadIndex += m_State.iNeedBytes;
          m_pConnectTimer->cancel(); // We have received a message.
 
-         *m_pIOStream << m_pszCurrentMessage << std::endl;
+         *m_pIOStream << *m_pszCurrentMessage << std::endl;
          dispatchMessage( 
             std::shared_ptr<const std::string>(m_pszCurrentMessage),
             m_State.iFixedHeaderSize 

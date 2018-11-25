@@ -12,12 +12,14 @@ namespace me
 class BrokerClient;
 class ControlPacket;
 class ConnectPacket;
+class Broadcaster;
 
 class MQTTConnection : public AsioConnection
 {
 public:
    MQTTConnection(
       std::shared_ptr<asio::ip::tcp::socket> apSock,
+      std::shared_ptr<Broadcaster> apBroadcaster,
       std::shared_ptr<ServerIOStream> apOStream );
    virtual ~MQTTConnection();
 
@@ -39,6 +41,7 @@ private:
 
    std::shared_ptr<asio::steady_timer> m_pConnectTimer;
    std::shared_ptr<BrokerClient> m_pClient;
+   std::shared_ptr<Broadcaster> m_pBroadcaster;
 
 private:
    enum State : unsigned char
