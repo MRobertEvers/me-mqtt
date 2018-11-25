@@ -6,7 +6,7 @@ class PubackPacket :
    public ControlPacketId
 {
 public:
-   PubackPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   PubackPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    PubackPacket( unsigned short aiPacketId );
    ~PubackPacket();
 

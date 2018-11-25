@@ -77,12 +77,12 @@ MQTTConnection::Stop()
 
 void
 MQTTConnection::dispatchMessage(
-   std::string const& aszData,
+   me::pcstring aszData,
    unsigned char aiFixedHeaderSize )
 {
    // Validate as much of the input that we can.
-   char const* data = aszData.data();
-   size_t size = aszData.size();
+   char const* data = aszData->data();
+   size_t size = aszData->size();
    if( size < 2 )
    {
       throw MalformedFixedHeader();
@@ -163,7 +163,7 @@ MQTTConnection::handleBytes()
          memcpy_s( &iTypeAndFlags, 1, &m_szBuf[m_State.iReadIndex++], 1 );
          m_State.iState = FIXED_HEADER_MESSAGE_SIZE;
          m_State.iNeedBytes = 1;
-         m_szCurrentMessage += iTypeAndFlags;
+         *m_pszCurrentMessage += iTypeAndFlags;
       }
       break;
    case FIXED_HEADER_MESSAGE_SIZE:
@@ -179,10 +179,10 @@ MQTTConnection::handleBytes()
          {
             throw MalformedFixedHeader();
          }
-         m_szCurrentMessage.append( 1, m_State.iMessageLenByte );
+         m_pszCurrentMessage->append( 1, m_State.iMessageLenByte );
          if( (m_State.iMessageLenByte & 0x80) == 0 )
          {
-            m_State.iFixedHeaderSize = m_szCurrentMessage.size();
+            m_State.iFixedHeaderSize = m_pszCurrentMessage->size();
             m_State.iState = MESSAGE_PAYLOAD;
             m_State.iNeedBytes = m_State.iMessageLenValue;
          }
@@ -193,23 +193,26 @@ MQTTConnection::handleBytes()
       }
    case MESSAGE_PAYLOAD:
       {
-         size_t len = m_szCurrentMessage.size();
-         m_szCurrentMessage.append( m_State.iNeedBytes, ' ' );
+         size_t len = m_pszCurrentMessage->size();
+         m_pszCurrentMessage->append( m_State.iNeedBytes, ' ' );
          memcpy_s(
-            &m_szCurrentMessage[len], m_State.iNeedBytes,
+            &m_pszCurrentMessage[len], m_State.iNeedBytes,
             &m_szBuf[m_State.iReadIndex], m_State.iNeedBytes
          );
          m_State.iState = FIXED_HEADER_MESSAGE_SIZE;
          m_State.iReadIndex += m_State.iNeedBytes;
          m_pConnectTimer->cancel(); // We have received a message.
 
-         *m_pIOStream << m_szCurrentMessage << std::endl;
-         dispatchMessage( m_szCurrentMessage, m_State.iFixedHeaderSize );
+         *m_pIOStream << m_pszCurrentMessage << std::endl;
+         dispatchMessage( 
+            std::shared_ptr<const std::string>(m_pszCurrentMessage),
+            m_State.iFixedHeaderSize 
+         );
 
          // Reset message reader state.
          m_szBuf = m_szBuf.substr( m_State.iReadIndex );
          m_State.Reset();
-         m_szCurrentMessage.clear();
+         m_pszCurrentMessage = new std::string();
       }
       break;
    }

@@ -4,16 +4,16 @@
 
 namespace me
 {
-PubrelPacket::PubrelPacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
+PubrelPacket::PubrelPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 5, 1 << 1 )
 {
-   if( ((aszData[0] & 0xF) & (1 << 1)) == 0 )
+   if( ((aszData->data()[0] & 0xF) & (1 << 1)) == 0 )
    {
       throw MalformedPacket();
    }
 
    // Parse the connect Packet
-   const char* data = aszData.data();
+   const char* data = aszData->data();
    size_t i = aiFixedHeaderSize;
 
    // Variable Header Stuff

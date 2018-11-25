@@ -1,5 +1,7 @@
 #pragma once
 #include "ControlPacketId.h"
+#include "Definitions.h"
+
 namespace me
 {
 struct SubscribeRequest
@@ -22,7 +24,7 @@ class SubscribePacket :
    public ControlPacketId
 {
 public:
-   SubscribePacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   SubscribePacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    SubscribePacket( unsigned short aiPacketId );
    ~SubscribePacket();
 

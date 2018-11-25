@@ -15,7 +15,7 @@ public:
    BrokerClient( AsioConnection* apConnection );
    virtual ~BrokerClient();
 
-   std::string const& GetClientName() const;
+   me::pcstring GetClientName() const;
 
    // Inherited via IMessageHandler
    virtual void HandleConnect( std::shared_ptr<ConnectPacket> apPacket ) override;

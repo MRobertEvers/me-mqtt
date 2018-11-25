@@ -1,16 +1,18 @@
 #pragma once
 #include "ControlPacket.h"
+#include "Definitions.h"
 #include <string>
+
 namespace me
 {
 class ConnectPacket :
    public ControlPacket
 {
 public:
-   ConnectPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   ConnectPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    ~ConnectPacket();
 
-   std::string GetProtocolName() const;
+   me::pcstring GetProtocolName() const;
    unsigned char GetProtocolLevel() const;
    unsigned char GetConnectFlags() const;
    unsigned short GetKeepAlive() const;
@@ -22,11 +24,11 @@ public:
    bool GetUsernamePresent() const;
    bool GetPasswordPresent() const;
 
-   std::string const GetClientName() const;
-   std::string const GetWillTopic() const;
-   std::string const GetWillPayload() const;
-   std::string const GetUsername() const;
-   std::string const GetPassword() const;
+   me::pcstring const GetClientName() const;
+   me::pcstring const GetWillTopic() const;
+   me::pcstring const GetWillPayload() const;
+   me::pcstring const GetUsername() const;
+   me::pcstring const GetPassword() const;
 
    bool SetCleanSession( bool abCleanSession );
    bool SetWillPresent( bool abWillPresent );
@@ -40,13 +42,13 @@ private:
    unsigned char m_iProtocolLevel;
    unsigned short m_iKeepAlive;
 
-   std::string m_szProtocolName;
+   me::pcstring m_szProtocolName;
 
-   std::string m_szClientName;
-   std::string m_szWillTopic;
-   std::string m_szWillPayload;
-   std::string m_szUsername;
-   std::string m_szPassword;
+   me::pcstring m_szClientName;
+   me::pcstring m_szWillTopic;
+   me::pcstring m_szWillPayload;
+   me::pcstring m_szUsername;
+   me::pcstring m_szPassword;
 
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;

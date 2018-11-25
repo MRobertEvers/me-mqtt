@@ -5,11 +5,11 @@
 
 namespace me
 {
-PublishPacket::PublishPacket( std::string const& aszData, unsigned char aiFixedHeaderSize )
+PublishPacket::PublishPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
    : ControlPacket( 3, 0x00 )
 {
    m_iPacketId = 0;
-   const char* data = aszData.data();
+   const char* data = aszData->data();
 
    // Fixed header reserved flags
    unsigned char iReserved = data[0] & 0xF;
@@ -26,7 +26,7 @@ PublishPacket::PublishPacket( std::string const& aszData, unsigned char aiFixedH
    size_t i = aiFixedHeaderSize;
    // Topic Name
    size_t cur = utils::read_utf8_string_size( pVarHeader );
-   m_szTopicName = std::string( pVarHeader + 2, cur );
+   m_szTopicName = std::make_shared<std::string>( pVarHeader + 2, cur );
    i += cur + 2;
 
    if( m_iQOS > 0 )
@@ -37,7 +37,7 @@ PublishPacket::PublishPacket( std::string const& aszData, unsigned char aiFixedH
 
    // Payload stuff
    const char* pPayload = data + i;
-   m_szPayload = std::string( pPayload, aszData.size() - i );
+   m_szPayload = std::make_shared<std::string>( pPayload, aszData->size() - i );
 }
 
 
@@ -63,7 +63,7 @@ PublishPacket::GetRetainFlag() const
    return m_bRetainFlag;
 }
 
-std::string
+me::pcstring
 PublishPacket::GetTopicName() const
 {
    return m_szTopicName;
@@ -75,7 +75,7 @@ PublishPacket::GetPacketId() const
    return m_iPacketId;
 }
 
-std::string
+me::pcstring
 PublishPacket::GetPayload() const
 {
    return m_szPayload;

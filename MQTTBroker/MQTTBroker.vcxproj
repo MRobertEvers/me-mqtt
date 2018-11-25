@@ -155,6 +155,7 @@
     <ClInclude Include="Asio\AsioConnectionManager.h" />
     <ClInclude Include="Asio\AsioServer.h" />
     <ClInclude Include="Asio\AsioService.h" />
+    <ClInclude Include="Definitions.h" />
     <ClInclude Include="IMessageHandler.h" />
     <ClInclude Include="MQTT\Broker\ApplicationMessage.h" />
     <ClInclude Include="MQTT\Broker\Broadcaster.h" />

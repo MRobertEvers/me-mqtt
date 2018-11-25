@@ -6,20 +6,21 @@ namespace me
 {
 
 ConnectPacket::ConnectPacket(
-   std::string const& aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacket( aszData[0] >> 4, 0x00 )
+   me::pcstring aszData, unsigned char aiFixedHeaderSize )
+   : ControlPacket( aszData->data()[0] >> 4, 0x00 )
 {
    // Parse the connect Packet
-   const char* data = aszData.data();
+   const char* data = aszData->data();
+   size_t size = aszData->size();
    size_t i = aiFixedHeaderSize;
 
    // Variable Header Stuff
    const char* pVarHeader = data + i;
    // Protocol Name
    size_t cur = utils::read_utf8_string_size( pVarHeader );
-   m_szProtocolName = std::string( pVarHeader + 2, cur );
+   m_szProtocolName = std::make_shared<const std::string>( pVarHeader + 2, cur );
    i += cur + 2;
-   if( m_szProtocolName != "MQTT" )
+   if( *m_szProtocolName != "MQTT" )
    {
       throw MalformedPacket();
    }
@@ -51,7 +52,7 @@ ConnectPacket::ConnectPacket(
    const char* pPayload = data + i;
    // Client Identifier.
    cur = utils::read_utf8_string_size( pPayload );
-   m_szClientName = std::string( pPayload + 2, cur );
+   m_szClientName = std::make_shared<const std::string>( pPayload + 2, cur );
    i += cur + 2;
    pPayload += cur + 2;
 
@@ -59,13 +60,13 @@ ConnectPacket::ConnectPacket(
    {
       // Will Topic.
       cur = utils::read_utf8_string_size( pPayload );
-      if( i + cur + 2 > aszData.size() )
+      if( i + cur + 2 > size )
       {
          throw MalformedPacket();
       }
 
-      m_szWillTopic = std::string( pPayload + 2, cur );
-      if( i + cur + 2 > aszData.size() )
+      m_szWillTopic = std::make_shared<const std::string>( pPayload + 2, cur );
+      if( i + cur + 2 > size )
       {
          throw MalformedPacket();
       }
@@ -75,12 +76,12 @@ ConnectPacket::ConnectPacket(
 
       // Will Payload.
       cur = utils::read_utf8_string_size( pPayload );
-      if( i + cur + 2 > aszData.size() )
+      if( i + cur + 2 > size )
       {
          throw MalformedPacket();
       }
 
-      m_szWillPayload = std::string( pPayload + 2, cur );
+      m_szWillPayload = std::make_shared<const std::string>( pPayload + 2, cur );
       i += cur + 2;
       pPayload += cur + 2;
    }
@@ -89,12 +90,12 @@ ConnectPacket::ConnectPacket(
    {
       // Username.
       cur = utils::read_utf8_string_size( pPayload );
-      if( i + cur + 2 > aszData.size() )
+      if( i + cur + 2 > size )
       {
          throw MalformedPacket();
       }
 
-      m_szUsername = std::string( pPayload + 2, cur );
+      m_szUsername = std::make_shared<const std::string>( pPayload + 2, cur );
       i += cur + 2;
       pPayload += cur + 2;
    }
@@ -103,17 +104,17 @@ ConnectPacket::ConnectPacket(
    {
       // Password.
       cur = utils::read_utf8_string_size( pPayload );
-      if( i + cur + 2 > aszData.size() )
+      if( i + cur + 2 > size )
       {
          throw MalformedPacket();
       }
 
-      m_szPassword = std::string( pPayload + 2, cur );
+      m_szPassword = std::make_shared<const std::string>( pPayload + 2, cur );
       i += cur + 2;
       pPayload += cur + 2;
    }
 
-   if( i != aszData.size() )
+   if( i != size )
    {
       throw MalformedPacket();
    }
@@ -124,7 +125,7 @@ ConnectPacket::~ConnectPacket()
 {
 }
 
-std::string
+me::pcstring
 ConnectPacket::GetProtocolName() const
 {
    return m_szProtocolName;
@@ -182,31 +183,31 @@ ConnectPacket::GetPasswordPresent() const
    return (GetConnectFlags() & (1 << 7)) > 0;;
 }
 
-std::string const
+me::pcstring const
 ConnectPacket::GetClientName() const
 {
    return m_szClientName;
 }
 
-std::string const
+me::pcstring const
 ConnectPacket::GetWillTopic() const
 {
    return m_szWillTopic;
 }
 
-std::string const
+me::pcstring const
 ConnectPacket::GetWillPayload() const
 {
    return m_szWillPayload;
 }
 
-std::string const
+me::pcstring const
 ConnectPacket::GetUsername() const
 {
    return m_szUsername;
 }
 
-std::string const
+me::pcstring const
 ConnectPacket::GetPassword() const
 {
    return m_szPassword;

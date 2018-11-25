@@ -2,6 +2,7 @@
 #include "asio.hpp"
 #include "asio/basic_waitable_timer.hpp"
 #include "AsioConnection.h"
+#include "Definitions.h"
 #include "ServerIOStream.h"
 #include <string>
 #include <sstream>
@@ -27,13 +28,13 @@ public:
 
 protected:
 
-   void dispatchMessage( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   void dispatchMessage( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    void handleBytes();
    void onConnectTimer( const asio::error_code& ec );
 
 private:
    std::shared_ptr<ServerIOStream> m_pIOStream;
-   std::string m_szCurrentMessage;
+   std::string* m_pszCurrentMessage;
    std::string m_szBuf;
 
    std::shared_ptr<asio::steady_timer> m_pConnectTimer;

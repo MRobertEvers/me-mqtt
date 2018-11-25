@@ -3,11 +3,11 @@
 namespace me
 {
 
-PubcompPacket::PubcompPacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
+PubcompPacket::PubcompPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 7, 0x00 )
 {
    // Parse the connect Packet
-   const char* data = aszData.data();
+   const char* data = aszData->data();
    size_t i = aiFixedHeaderSize;
 
    // Variable Header Stuff

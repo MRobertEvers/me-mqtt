@@ -189,6 +189,9 @@
     <ClInclude Include="MQTT\Broker\ApplicationMessage.h">
       <Filter>MQTT\Broker</Filter>
     </ClInclude>
+    <ClInclude Include="Definitions.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

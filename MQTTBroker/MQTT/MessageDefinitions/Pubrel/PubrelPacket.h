@@ -6,7 +6,7 @@ class PubrelPacket :
    public ControlPacketId
 {
 public:
-   PubrelPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   PubrelPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    PubrelPacket( unsigned short aiPacketId );
    ~PubrelPacket();
 

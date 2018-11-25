@@ -19,7 +19,7 @@ BrokerClient::~BrokerClient()
 
 }
 
-std::string const &
+me::pcstring
 BrokerClient::GetClientName() const
 {
    return m_pConnectPacket->GetClientName();

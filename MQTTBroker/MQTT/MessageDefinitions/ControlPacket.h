@@ -1,5 +1,7 @@
 #pragma once
+#include "Definitions.h"
 #include <string>
+#include <memory>
 
 namespace me
 {

@@ -6,15 +6,15 @@ class PublishPacket :
    public ControlPacket
 {
 public:
-   PublishPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   PublishPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    ~PublishPacket();
 
    bool GetDuplicateFlag() const;
    unsigned char GetQOS() const;
    bool GetRetainFlag() const;
-   std::string GetTopicName() const;
+   me::pcstring GetTopicName() const;
    unsigned short GetPacketId() const;
-   std::string GetPayload() const;
+   me::pcstring GetPayload() const;
 
 protected:
    virtual unsigned char getFixedHeaderReserved() const override;
@@ -27,9 +27,9 @@ private:
    unsigned char m_iQOS;
    bool m_bRetainFlag;
 
-   std::string m_szTopicName;
+   me::pcstring m_szTopicName;
    unsigned short m_iPacketId;
 
-   std::string m_szPayload;
+   me::pcstring m_szPayload;
 };
 }

@@ -6,7 +6,7 @@ class PubcompPacket :
    public ControlPacketId
 {
 public:
-   PubcompPacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
+   PubcompPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
    PubcompPacket( unsigned short aiPacketId );
    ~PubcompPacket();
 
