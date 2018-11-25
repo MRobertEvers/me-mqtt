@@ -16,16 +16,10 @@ BroadcasterClient::~BroadcasterClient()
 
 }
 
-me::pcstring 
-BroadcasterClient::GetClientName() const
+void
+BroadcasterClient::Connect( std::weak_ptr<BrokerClient> apClient )
 {
-   return m_szClientName;
-}
-
-void 
-BroadcasterClient::SetClientName( me::pcstring apszName )
-{
-   m_szClientName = apszName;
+   m_pClient = apClient;
 }
 
 void 

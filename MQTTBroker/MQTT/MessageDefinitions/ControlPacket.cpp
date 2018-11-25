@@ -36,19 +36,7 @@ ControlPacket::Serialize() const
    szRetval.append( 1, m_iPacketType << 4 | getFixedHeaderReserved() );
 
    std::string szBody = SerializeBody();
-   size_t iSize = szBody.size();
-   do
-   {
-      unsigned char byte = iSize % 0x80;
-      iSize = iSize / 0x80;
-
-      if( iSize > 0 )
-      {
-         byte = byte | 0x80;
-      }
-      szRetval.append( 1, byte );
-   } while( iSize > 0 );
-
+   SerializeLength( szRetval, szBody.size() );
    szRetval.append( szBody );
    return szRetval;
 }
@@ -67,6 +55,23 @@ unsigned char
 ControlPacket::getFixedHeaderReserved() const
 {
    return 0;
+}
+
+void
+ControlPacket::SerializeLength( std::string& aszBuf, size_t aiLen ) const
+{
+   size_t iSize = aiLen;
+   do
+   {
+      unsigned char byte = iSize % 0x80;
+      iSize = iSize / 0x80;
+
+      if( iSize > 0 )
+      {
+         byte = byte | 0x80;
+      }
+      aszBuf.append( 1, byte );
+   } while( iSize > 0 );
 }
 
 }

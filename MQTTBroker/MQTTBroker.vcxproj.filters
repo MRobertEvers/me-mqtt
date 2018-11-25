@@ -192,8 +192,11 @@
     <ClInclude Include="Definitions.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="StateManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MQTT\Broker\ClientStateLedger.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\ClientState.h">
+      <Filter>MQTT\Broker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,8 +299,11 @@
     <ClCompile Include="MQTT\Broker\ApplicationMessage.cpp">
       <Filter>MQTT\Broker</Filter>
     </ClCompile>
-    <ClCompile Include="StateManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MQTT\Broker\ClientStateLedger.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\ClientState.cpp">
+      <Filter>MQTT\Broker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

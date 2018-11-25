@@ -161,6 +161,8 @@
     <ClInclude Include="MQTT\Broker\Broadcaster.h" />
     <ClInclude Include="MQTT\Broker\BroadcasterClient.h" />
     <ClInclude Include="MQTT\Broker\BrokerClient.h" />
+    <ClInclude Include="MQTT\Broker\ClientState.h" />
+    <ClInclude Include="MQTT\Broker\ClientStateLedger.h" />
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
     <ClInclude Include="MQTT\Errors\MalformedPacket.h" />
     <ClInclude Include="MQTT\MessageDefinitions\ControlPacketId.h" />
@@ -183,7 +185,6 @@
     <ClInclude Include="MQTT\MQTTConnection.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="ServerIOStream.h" />
-    <ClInclude Include="StateManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -198,6 +199,8 @@
     <ClCompile Include="MQTT\Broker\Broadcaster.cpp" />
     <ClCompile Include="MQTT\Broker\BroadcasterClient.cpp" />
     <ClCompile Include="MQTT\Broker\BrokerClient.cpp" />
+    <ClCompile Include="MQTT\Broker\ClientState.cpp" />
+    <ClCompile Include="MQTT\Broker\ClientStateLedger.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacketId.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\Disconnect\DisconnectPacket.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\Puback\PubackPacket.cpp" />
@@ -218,7 +221,6 @@
     <ClCompile Include="MQTT\MQTTConnection.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="ServerIOStream.cpp" />
-    <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

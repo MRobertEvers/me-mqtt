@@ -6,9 +6,10 @@ class AsioConnection;
 
 namespace me
 {
+class ApplicationMessage;
 class BroadcasterClient;
 
-class BrokerClient : public IMessageHandler
+class BrokerClient : public IMessageHandler, std::enable_shared_from_this<BrokerClient>
 {
 public:
    BrokerClient(
@@ -17,6 +18,8 @@ public:
    virtual ~BrokerClient();
 
    me::pcstring GetClientName() const;
+
+   void PublishTo( std::shared_ptr<ApplicationMessage> apMsg );
 
    // Inherited via IMessageHandler
    virtual void HandleConnect( std::shared_ptr<ConnectPacket> apPacket ) override;

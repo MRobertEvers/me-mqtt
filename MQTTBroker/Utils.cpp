@@ -14,4 +14,15 @@ utils::read_utf8_string( const char* apData, size_t aDataSize )
    }
    return szRetval;
 }
+
+void
+encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
+{
+   char const* data = aszStr.data();
+   size_t len = aszStr.size() & 0xFFFF;
+
+   rpBuf[0] = len >> 8;
+   rpBuf[1] = len & 0x00FF;
+   memcpy_s( rpBuf, aiBufSize, data, len );
+}
 }

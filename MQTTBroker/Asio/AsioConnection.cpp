@@ -5,7 +5,7 @@
 AsioConnection::AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock )
    : m_pByteBuf(new char[MAX_BUFFER]), m_pSock(apSock),
    m_pMutableBuffer(new asio::mutable_buffer(m_pByteBuf, MAX_BUFFER)),
-   m_pWriteStrand( new asio::io_context::strand( apSock->get_io_context() ) )
+   m_pStrand( new asio::io_context::strand( apSock->get_io_context() ) )
 {
 
 }
@@ -19,7 +19,7 @@ AsioConnection::~AsioConnection()
 std::shared_ptr<asio::io_context::strand>
 AsioConnection::GetStrand()
 {
-   return m_pWriteStrand;
+   return m_pStrand;
 }
 
 void
@@ -64,7 +64,7 @@ AsioConnection::WriteAsync( std::shared_ptr<std::string const> apszMsg )
 
    asio::post(
       m_pSock->get_io_context().get_executor(),
-      m_pWriteStrand->wrap(pWriteCB)
+      m_pStrand->wrap(pWriteCB)
    );
 }
 
@@ -128,8 +128,9 @@ AsioConnection::resetReceive()
       self->onReceiveBytes( ec, bytes_transferred );
    };
 
-   // Receiver doesn't use a strand because we handle the 
+   // Normally, the Receiver doesn't need to use a strand because we handle the 
    // incoming bytes before we start listening again.
+   // But! Other objects use the strand to interact with this connection.
    m_pSock->async_receive(
       *m_pMutableBuffer,
       recvCB
@@ -161,13 +162,14 @@ AsioConnection::queueWrite()
       }
       else
       {
-         // TODO;
+         // TODO: Check if the error indeicates that the socket is closed.
+         // This will stop the write cycle...
       }
    };
 
    asio::async_write( 
       *m_pSock,
       asio::buffer( m_qOutQueue.front()->data(), m_qOutQueue.front()->length() ),
-      m_pWriteStrand->wrap(writeCB)
+      m_pStrand->wrap(writeCB)
    );
 }

@@ -40,6 +40,25 @@ PublishPacket::PublishPacket( me::pcstring aszData, unsigned char aiFixedHeaderS
    m_szPayload = std::make_shared<std::string>( pPayload, aszData->size() - i );
 }
 
+PublishPacket::PublishPacket( 
+   me::pcstring aszTopic, me::pcstring aszPayload, bool abDuplicate, 
+   unsigned char aiQOS, bool abRetain, unsigned short aiPacketId )
+   : ControlPacket(0x3, 0x00)
+{
+   // Set the reserved flags
+   m_bDuplicateFlag = abDuplicate;
+   m_iQOS = aiQOS;
+   if( m_iQOS > 2 )
+   {
+      throw MalformedPacket();
+   }
+   m_bRetainFlag = abRetain;
+
+   m_szTopicName = aszTopic;
+   m_iPacketId = aiPacketId;
+   m_szPayload = aszPayload;
+}
+
 
 PublishPacket::~PublishPacket()
 {
@@ -84,12 +103,39 @@ PublishPacket::GetPayload() const
 unsigned char
 PublishPacket::getFixedHeaderReserved() const
 {
-   return 0;
+   unsigned char c = 0;
+   if( m_bDuplicateFlag )
+   {
+      c |= 1 << 3;
+   }
+   c |= m_iQOS << 1;
+
+   if( m_bRetainFlag )
+   {
+      c |= 1;
+   }
+
+   return c;
 }
 
 std::string
 PublishPacket::SerializeBody() const
 {
-   return std::string();
+   size_t i = 0;
+   std::string szRetval( m_szTopicName->size()+2, ' ' );
+
+   // Encode topic name
+   me::utils::encode_utf8_string( *m_szTopicName, &szRetval[0], m_szTopicName->size() + 2 );
+   
+   // Encode packet id
+   if( m_iQOS > 0 )
+   {
+      szRetval.append( 1, m_iPacketId >> 8 );
+      szRetval.append( 1, m_iPacketId & 0xFF );
+   }
+
+   // Encode payload
+   szRetval += *m_szPayload;
+   return szRetval;
 }
 }

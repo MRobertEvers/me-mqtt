@@ -6,7 +6,8 @@ namespace me
 {
 
 Broadcaster::Broadcaster( std::shared_ptr<AsioService> apService )
-   : m_pService(apService)
+   : m_pService(apService),
+   m_pStrand( new asio::io_context::strand( *apService->GetService() ) )
 {
    m_pWork =
       std::make_shared<asio::io_service::work>( *m_pService->GetService() );
@@ -31,6 +32,12 @@ std::shared_ptr<BroadcasterClient>
 Broadcaster::CreateClient()
 {
    return std::make_shared<BroadcasterClient>( shared_from_this() );
+}
+
+std::shared_ptr<ClientState> 
+me::Broadcaster::GetState()
+{
+   return std::shared_ptr<ClientState>();
 }
 
 void 

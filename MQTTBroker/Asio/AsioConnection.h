@@ -43,7 +43,7 @@ private:
    std::shared_ptr<asio::mutable_buffer> m_pMutableBuffer;
 
    std::shared_ptr<asio::ip::tcp::socket> m_pSock;
-   std::shared_ptr<asio::io_context::strand> m_pWriteStrand;
+   std::shared_ptr<asio::io_context::strand> m_pStrand;
    AsioConnectionManager* m_Manager;
    asio::error_code m_LastError;
 

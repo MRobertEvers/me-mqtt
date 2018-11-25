@@ -35,6 +35,7 @@ public:
    std::string Serialize() const;
 
 protected:
+   // Leave reserved as 0x00 if overriding getFixedHeaderReserved
    ControlPacket( unsigned char aPacketType, unsigned char aiReserved );
    virtual ~ControlPacket();
 
@@ -42,6 +43,7 @@ protected:
    virtual unsigned char getFixedHeaderReserved() const;
 
    virtual std::string SerializeBody() const = 0;
+   virtual void SerializeLength( std::string& aszBuf, size_t aiLen ) const;
 
 private:
    PacketTypes m_iPacketType;

@@ -2,10 +2,12 @@
 #include "AsioService.h"
 #include "ApplicationMessage.h"
 #include "Definitions.h"
+#include <map>
 
 namespace me
 {
 class BroadcasterClient;
+class ClientState;
 
 class Broadcaster : public std::enable_shared_from_this<Broadcaster>
 {
@@ -16,10 +18,15 @@ public:
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
 
+   std::shared_ptr<ClientState> GetState( me::pcstring apszClientName );
+
 private:
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );
 
    std::shared_ptr<AsioService> m_pService;
    std::shared_ptr<asio::io_service::work> m_pWork;
+   std::shared_ptr<asio::io_context::strand> m_pStrand;
+
+   std::map<me::pcstring, std::shared_ptr<ClientState>> m_mapStates;
 };
 }

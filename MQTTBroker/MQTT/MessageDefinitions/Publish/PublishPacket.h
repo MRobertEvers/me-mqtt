@@ -7,6 +7,9 @@ class PublishPacket :
 {
 public:
    PublishPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize );
+   PublishPacket(
+      me::pcstring aszTopic, me::pcstring aszPayload,
+      bool abDuplicate, unsigned char aiQOS, bool abRetain, unsigned short aiPacketId = 0 );
    ~PublishPacket();
 
    bool GetDuplicateFlag() const;

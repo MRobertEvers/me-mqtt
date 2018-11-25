@@ -5,6 +5,7 @@
 #include "Connack\ConnackPacket.h"
 #include "Broker/BroadcasterClient.h"
 #include "PingResp\PingRespPacket.h"
+#include "ApplicationMessage.h"
 
 namespace me
 {
@@ -14,18 +15,24 @@ BrokerClient::BrokerClient(
    AsioConnection* apConnection )
    : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster)
 {
-
+   // Subscribe to state
 }
 
 BrokerClient::~BrokerClient()
 {
-
+   // Unsubscribe to state
 }
 
 me::pcstring
 BrokerClient::GetClientName() const
 {
    return m_pConnectPacket->GetClientName();
+}
+
+void 
+BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
+{
+   PublishPacket()
 }
 
 void
@@ -35,7 +42,7 @@ BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
    {
       m_pConnectPacket = apPacket;
 
-      m_pBroadcaster->SetClientName( apPacket->GetClientName() );
+      m_pBroadcaster->Connect( shared_from_this() );
 
       m_pConnection->WriteAsync( ConnackPacket( 0, 0x00 ).Serialize() );
    }
