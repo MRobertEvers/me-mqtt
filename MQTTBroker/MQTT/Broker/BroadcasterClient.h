@@ -16,12 +16,14 @@ public:
    BroadcasterClient( std::shared_ptr<Broadcaster> pBroadcaster );
    ~BroadcasterClient();
 
-   void Connect( std::weak_ptr<BrokerClient> apClient );
-   std::weak_ptr<BrokerClient> GetClient();
+   void ConnectClient( std::weak_ptr<BrokerClient> apClient );
+   std::weak_ptr<BrokerClient> GetClient() const;
+   me::pcstring GetClientName() const;
 
    void BroadcastPublishMessage( 
       me::pcstring apszTopic, me::pcstring apszPayload, 
-      unsigned char aiQOS, bool abRetain );
+      unsigned char aiQOS, bool abRetain ) const;
+   void SubscribeToTopic( me::pcstring apszTopicFilter ) const;
 
 private:
    me::pcstring m_szClientName;

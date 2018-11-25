@@ -31,11 +31,9 @@ BrokerSession::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
    else
    {
       // Look up if state exists. Etc.
-      auto c = m_pBroadcaster->CreateClient();
       m_pBrokerClient = std::make_shared<BrokerClient>(
-         apPacket, c, m_pConnection );
-      c->Connect( m_pBrokerClient );
-      m_pConnection->WriteAsync( ConnackPacket( 0, 0x00 ).Serialize() );
+         apPacket, m_pBroadcaster->CreateClient(), m_pConnection );
+      m_pBrokerClient->HandleConnect( apPacket );
    }
 }
 

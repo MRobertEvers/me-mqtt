@@ -16,12 +16,14 @@ public:
    Broadcaster( std::shared_ptr<AsioService> apIOService );
    ~Broadcaster();
 
+   void Subscribe( me::pcstring apszClient, me::pcstring apszTopic );
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
 
-   void Connect( std::weak_ptr<BroadcasterClient> apClient );
+   void ConnectClient( std::weak_ptr<BroadcasterClient> apClient );
 
 private:
+   void subscribe( me::pcstring apszClient, me::pcstring apszTopic );
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );
 
    std::shared_ptr<AsioService> m_pService;

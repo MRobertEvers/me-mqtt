@@ -23,25 +23,47 @@ Broadcaster::~Broadcaster()
 {
 }
 
-void 
+void
+Broadcaster::Subscribe( me::pcstring apszClient, me::pcstring apszTopic )
+{
+   auto postCB =
+      [this, self=shared_from_this(), client=apszClient, topic=apszTopic]
+   ()
+   {
+      self->subscribe( client, topic );
+   };
+
+   asio::post(
+      m_pService->GetService()->get_executor(),
+      m_pStrand->wrap( postCB )
+   );
+}
+
+void
 Broadcaster::BroadcastMessage( 
    std::shared_ptr<ApplicationMessage> apMessage )
 {
-   asio::post( 
-      m_pService->GetService()->get_executor(),
-      [this, self = shared_from_this(), msg=apMessage]()->void{
+   auto postCB = 
+      [this, self = shared_from_this(), msg = apMessage]
+   ()
+   {
       self->broadcast( msg );
-   });
+   };
+
+   asio::post(
+      m_pService->GetService()->get_executor(),
+      m_pStrand->wrap( postCB )
+   );
 }
 
 std::shared_ptr<BroadcasterClient>
-Broadcaster::CreateClient( )
+Broadcaster::CreateClient()
 {
    return std::make_shared<BroadcasterClient>( shared_from_this() );
 }
 
 void 
-me::Broadcaster::Connect( std::weak_ptr<BroadcasterClient> apClient )
+me::Broadcaster::ConnectClient( std::weak_ptr<BroadcasterClient> apClient )
 {
    auto pClient = apClient.lock()->GetClient().lock();
 
@@ -59,6 +81,12 @@ me::Broadcaster::Connect( std::weak_ptr<BroadcasterClient> apClient )
 }
 
 void 
+Broadcaster::subscribe( me::pcstring apszClient, me::pcstring apszTopic )
+{
+
+}
+
+void
 Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {
    auto p = std::make_shared<std::string>( "MQTT_FX_Client" );

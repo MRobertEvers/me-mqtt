@@ -201,6 +201,18 @@
     <ClInclude Include="MQTT\Broker\BrokerSession.h">
       <Filter>MQTT\Broker</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\Broker\Subscription.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\Topic.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\TopicManager.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\SubscriptionManager.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -309,6 +321,18 @@
       <Filter>MQTT\Broker</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\Broker\BrokerSession.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\Subscription.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\Topic.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\TopicManager.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\SubscriptionManager.cpp">
       <Filter>MQTT\Broker</Filter>
     </ClCompile>
   </ItemGroup>

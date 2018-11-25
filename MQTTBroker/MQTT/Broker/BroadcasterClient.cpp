@@ -18,14 +18,25 @@ BroadcasterClient::~BroadcasterClient()
 }
 
 void
-BroadcasterClient::Connect( std::weak_ptr<BrokerClient> apClient )
+BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
 {
-   m_pClient = apClient;
-   m_pBroadcaster->Connect( shared_from_this() );
+   auto pClient = apClient.lock();
+   if( pClient )
+   {
+      m_pClient = apClient;
+      m_pBroadcaster->ConnectClient( shared_from_this() );
+      m_szClientName = pClient->GetClientName();
+   }
+}
+
+me::pcstring 
+BroadcasterClient::GetClientName() const
+{
+   return m_szClientName;
 }
 
 std::weak_ptr<BrokerClient>
-BroadcasterClient::GetClient()
+BroadcasterClient::GetClient() const
 {
    return m_pClient;
 }
@@ -33,13 +44,19 @@ BroadcasterClient::GetClient()
 void 
 BroadcasterClient::BroadcastPublishMessage( 
    me::pcstring apszTopic, me::pcstring apszPayload, 
-   unsigned char aiQOS, bool abRetain )
+   unsigned char aiQOS, bool abRetain ) const
 {
    auto pMessage = std::make_shared<ApplicationMessage>( 
       apszTopic, apszPayload, aiQOS, abRetain 
       );
 
    m_pBroadcaster->BroadcastMessage( pMessage );
+}
+
+void
+BroadcasterClient::SubscribeToTopic( me::pcstring apszTopicFilter ) const
+{
+
 }
 
 }

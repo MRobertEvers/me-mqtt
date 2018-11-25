@@ -9,7 +9,7 @@ namespace me
 class ApplicationMessage;
 class BroadcasterClient;
 
-class BrokerClient : public IMessageHandler, std::enable_shared_from_this<BrokerClient>
+class BrokerClient : public IMessageHandler, public std::enable_shared_from_this<BrokerClient>
 {
 public:
    BrokerClient(
@@ -18,6 +18,9 @@ public:
       AsioConnection* apConnection );
    virtual ~BrokerClient();
 
+   void Accept( bool abSessionPresent );
+   void Reject( unsigned char aiReason );
+   void Respond( bool abSessionPresent, unsigned char aiResponse );
    void Disconnect();
 
    me::pcstring GetClientName() const;
@@ -44,6 +47,7 @@ private:
    std::shared_ptr<ConnectPacket> m_pConnectPacket;
    std::shared_ptr<BroadcasterClient> m_pBroadcaster;
    AsioConnection* m_pConnection;
+
 };
 
 }

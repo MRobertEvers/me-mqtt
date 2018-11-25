@@ -15,14 +15,36 @@ BrokerClient::BrokerClient(
    std::shared_ptr<ConnectPacket> apConnectPacket,
    std::shared_ptr<BroadcasterClient> apBroadcaster,
    AsioConnection* apConnection )
-   : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster), m_pConnectPacket(apConnectPacket)
+   : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster),
+   m_pConnectPacket(apConnectPacket)
 {
 
 }
 
 BrokerClient::~BrokerClient()
 {
-   // Unsubscribe to state
+   // Unsubscribe to state; Actually we dont need to do 
+   // this because the weak pointer will see
+   // we have disconnected.
+}
+
+void 
+BrokerClient::Accept( bool abSessionPresent )
+{
+   Respond( abSessionPresent, 0x00 );
+}
+
+void
+BrokerClient::Reject( unsigned char aiReason )
+{
+   Respond( false, aiReason );
+}
+
+void
+BrokerClient::Respond( bool abSessionPresent, unsigned char aiResponse )
+{
+   // Does not perform any validation of response.
+   m_pConnection->WriteAsync( ConnackPacket( aiResponse, aiResponse ).Serialize() );
 }
 
 void
@@ -37,6 +59,8 @@ BrokerClient::GetClientName() const
    return m_pConnectPacket->GetClientName();
 }
 
+
+
 void 
 BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
@@ -48,7 +72,17 @@ BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 void
 BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
 {
-
+   // If this is the same packet we were initialized with.
+   if( m_pConnectPacket == apPacket ) 
+   {
+      // TODO: Validate packet.
+      Accept(false);
+      m_pBroadcaster->ConnectClient( shared_from_this() );
+   }
+   else
+   {
+      throw;
+   }
 }
 
 void
