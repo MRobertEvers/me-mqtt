@@ -9,7 +9,7 @@ class Broadcaster;
 class BrokerClient;
 
 // Acts as the synchronization bridge between the Broadcaster and the client.
-class BroadcasterClient
+class BroadcasterClient : public std::enable_shared_from_this<BroadcasterClient>
 {
 public:
    // TODO: This should be a shared_ptr?
@@ -17,6 +17,7 @@ public:
    ~BroadcasterClient();
 
    void Connect( std::weak_ptr<BrokerClient> apClient );
+   std::weak_ptr<BrokerClient> GetClient();
 
    void BroadcastPublishMessage( 
       me::pcstring apszTopic, me::pcstring apszPayload, 

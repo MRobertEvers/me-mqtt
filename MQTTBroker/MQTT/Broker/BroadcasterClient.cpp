@@ -22,6 +22,12 @@ BroadcasterClient::Connect( std::weak_ptr<BrokerClient> apClient )
    m_pClient = apClient;
 }
 
+std::weak_ptr<BrokerClient>
+BroadcasterClient::GetClient()
+{
+   return m_pClient;
+}
+
 void 
 BroadcasterClient::BroadcastPublishMessage( 
    me::pcstring apszTopic, me::pcstring apszPayload, 

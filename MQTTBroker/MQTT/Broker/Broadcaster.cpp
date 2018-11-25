@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Broadcaster.h"
 #include "BroadcasterClient.h"
+#include "BrokerClient.h"
 #include "ClientStateLedger.h"
 #include <iostream>
 
@@ -36,6 +37,12 @@ std::shared_ptr<BroadcasterClient>
 Broadcaster::CreateClient()
 {
    return std::make_shared<BroadcasterClient>( shared_from_this() );
+}
+
+void 
+me::Broadcaster::Connect( std::weak_ptr<BroadcasterClient> apClient )
+{
+   auto pClient = apClient.lock()->GetClient();
 }
 
 void 

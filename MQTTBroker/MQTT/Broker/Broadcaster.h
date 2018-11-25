@@ -19,7 +19,7 @@ public:
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
 
-   std::shared_ptr<ClientState> GetState( me::pcstring apszClientName );
+   void Connect( std::weak_ptr<BroadcasterClient> apClient );
 
 private:
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );
