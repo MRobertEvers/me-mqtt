@@ -16,7 +16,7 @@ utils::read_utf8_string( const char* apData, size_t aDataSize )
 }
 
 void
-encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
+utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
 {
    char const* data = aszStr.data();
    size_t len = aszStr.size() & 0xFFFF;

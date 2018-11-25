@@ -32,7 +32,9 @@ BrokerClient::GetClientName() const
 void 
 BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
-   PublishPacket()
+   m_pConnection->WriteAsync( PublishPacket(
+      apMsg->GetTopic(), apMsg->GetPayload(), false, 0, false, 0
+   ).Serialize() );
 }
 
 void

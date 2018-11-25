@@ -34,12 +34,6 @@ Broadcaster::CreateClient()
    return std::make_shared<BroadcasterClient>( shared_from_this() );
 }
 
-std::shared_ptr<ClientState> 
-me::Broadcaster::GetState()
-{
-   return std::shared_ptr<ClientState>();
-}
-
 void 
 Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {

@@ -18,8 +18,6 @@ public:
 
    void Connect( std::weak_ptr<BrokerClient> apClient );
 
-   void 
-
    void BroadcastPublishMessage( 
       me::pcstring apszTopic, me::pcstring apszPayload, 
       unsigned char aiQOS, bool abRetain );

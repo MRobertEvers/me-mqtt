@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ClientState.h"
+#include "BrokerClient.h"
 
 namespace me
 {
@@ -27,7 +28,15 @@ ClientState::GetPendingOutbound()
 void 
 ClientState::AddPendingOutbound( std::shared_ptr<ApplicationMessage> apMsg )
 {
-   m_qPendingOutbound.push( apMsg );
+   auto s = m_pSource.lock();
+   if( s )
+   {
+      s->PublishTo( apMsg );
+   }
+   else
+   {
+      m_qPendingOutbound.push( apMsg );
+   }
 }
 
 std::queue<std::shared_ptr<ApplicationMessage>>& 
