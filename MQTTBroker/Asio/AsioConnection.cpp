@@ -5,7 +5,7 @@
 AsioConnection::AsioConnection( std::shared_ptr<asio::ip::tcp::socket> apSock )
    : m_pByteBuf(new char[MAX_BUFFER]), m_pSock(apSock),
    m_pMutableBuffer(new asio::mutable_buffer(m_pByteBuf, MAX_BUFFER)),
-   m_pStrand( new asio::io_context::strand( apSock->get_io_context() ) )
+   m_pWriteStrand( new asio::io_context::strand( apSock->get_io_context() ) )
 {
 
 }
@@ -19,7 +19,7 @@ AsioConnection::~AsioConnection()
 std::shared_ptr<asio::io_context::strand>
 AsioConnection::GetStrand()
 {
-   return m_pStrand;
+   return m_pWriteStrand;
 }
 
 void
@@ -48,13 +48,28 @@ AsioConnection::GetLastError() const
 }
 
 void
-AsioConnection::WriteAsync( std::string&& aszMsg )
+AsioConnection::WriteAsync( std::shared_ptr<std::string const> apszMsg )
 {
-   WriteAsync( aszMsg.data(), aszMsg.size() );
+   // Since this function is available from outside the callbacks
+   // of the strand, we use the stand to protect the queue.
+   auto pWriteCB = [this, self = shared_from_this(), msg = apszMsg]()->void
+   {
+      bool bInflight = !m_qOutQueue.empty();
+      m_qOutQueue.push( msg );
+      if( !bInflight )
+      {
+         queueWrite();
+      }
+   };
+
+   asio::post(
+      m_pSock->get_io_context().get_executor(),
+      m_pWriteStrand->wrap(pWriteCB)
+   );
 }
 
 void
-AsioConnection::WriteAsync( std::string const & aszMsg )
+AsioConnection::WriteAsync( std::string const& aszMsg )
 {
    WriteAsync( aszMsg.data(), aszMsg.size() );
 }
@@ -63,21 +78,10 @@ void
 AsioConnection::WriteAsync( char const* apBuf, size_t aNumBytes )
 {
    // Copy the data.
-   auto pByteBuf = std::make_shared<std::vector<char>>( apBuf, apBuf+aNumBytes );
-   auto pBuf = std::shared_ptr<asio::const_buffer>( new asio::const_buffer(pByteBuf->data(), pByteBuf->size()) );
-   m_pSock->async_send(
-      *pBuf,
-      [this, self = shared_from_this(), pBuf, pByteBuf]( const asio::error_code & aec, size_t aNumBytes )
-      {
-         onSentBytes( aec, aNumBytes );
-      } 
-   );
+   auto pByteBuf = std::make_shared<std::string>( apBuf, apBuf+aNumBytes );
+   WriteAsync( pByteBuf );
 }
 
-void 
-AsioConnection::Write( char const * apBuf, size_t aNumBytes )
-{
-}
 
 void
 AsioConnection::ManagerClose()
@@ -117,12 +121,18 @@ AsioConnection::resetBuffer()
 void 
 AsioConnection::resetReceive()
 {
+   auto recvCB = 
+      [this, self = shared_from_this()]
+   ( std::error_code ec, std::size_t bytes_transferred )
+   {
+      self->onReceiveBytes( ec, bytes_transferred );
+   };
+
+   // Receiver doesn't use a strand because we handle the 
+   // incoming bytes before we start listening again.
    m_pSock->async_receive(
       *m_pMutableBuffer,
-      m_pStrand->wrap( [this, self=shared_from_this()]( std::error_code ec, std::size_t bytes_transferred )
-         {
-            this->onReceiveBytes( ec, bytes_transferred );
-         })
+      recvCB
    );
 }
 
@@ -131,4 +141,29 @@ AsioConnection::awaitReceive()
 {
    resetBuffer();
    resetReceive();
+}
+
+void
+AsioConnection::queueWrite()
+{
+   // Resets the async_writer.
+   auto writeCB = 
+      [this, self = shared_from_this()]
+   ( std::error_code ec, std::size_t aBytesWritten )
+   {
+      if( !ec )
+      {
+         m_qOutQueue.pop();
+         if( !m_qOutQueue.empty() )
+         {
+            queueWrite();
+         }
+      }
+   };
+
+   asio::async_write( 
+      *m_pSock,
+      asio::buffer( m_qOutQueue.front()->data(), m_qOutQueue.front()->length() ),
+      m_pWriteStrand->wrap(writeCB)
+   );
 }
