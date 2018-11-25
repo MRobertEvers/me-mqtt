@@ -161,6 +161,7 @@
     <ClInclude Include="MQTT\Broker\Broadcaster.h" />
     <ClInclude Include="MQTT\Broker\BroadcasterClient.h" />
     <ClInclude Include="MQTT\Broker\BrokerClient.h" />
+    <ClInclude Include="MQTT\Broker\BrokerSession.h" />
     <ClInclude Include="MQTT\Broker\ClientState.h" />
     <ClInclude Include="MQTT\Broker\ClientStateLedger.h" />
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="MQTT\Broker\Broadcaster.cpp" />
     <ClCompile Include="MQTT\Broker\BroadcasterClient.cpp" />
     <ClCompile Include="MQTT\Broker\BrokerClient.cpp" />
+    <ClCompile Include="MQTT\Broker\BrokerSession.cpp" />
     <ClCompile Include="MQTT\Broker\ClientState.cpp" />
     <ClCompile Include="MQTT\Broker\ClientStateLedger.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacketId.cpp" />

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BroadcasterClient.h"
 #include "Broadcaster.h"
+#include "BrokerClient.h"
 #include "ApplicationMessage.h"
 
 namespace me
@@ -20,6 +21,7 @@ void
 BroadcasterClient::Connect( std::weak_ptr<BrokerClient> apClient )
 {
    m_pClient = apClient;
+   m_pBroadcaster->Connect( shared_from_this() );
 }
 
 std::weak_ptr<BrokerClient>

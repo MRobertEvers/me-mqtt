@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ClientStateLedger.h"
+#include "ClientState.h"
 
 namespace me
 {
@@ -36,11 +37,15 @@ ClientStateLedger::CreateClient( me::pcstring apszClientname )
       throw;
    }
 
-   std::shared_ptr<ClientState> p;
+   auto p = std::make_shared<ClientState>();
+   m_mapStates.emplace( apszClientname, p );
+   
+   return p;
 }
 
 void 
 ClientStateLedger::DeleteClient( me::pcstring apszClientname )
 {
+   m_mapStates.erase( apszClientname );
 }
 }

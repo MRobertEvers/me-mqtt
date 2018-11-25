@@ -2,6 +2,7 @@
 #include "MQTTConnection.h"
 #include "MalformedFixedHeader.h"
 #include "MalformedPacket.h"
+#include "Broker\BrokerSession.h"
 #include "Broker\Broadcaster.h"
 #include "Broker\BroadcasterClient.h"
 #include "Broker\BrokerClient.h"
@@ -12,12 +13,12 @@ const MQTTConnection::StateVars MQTTConnection::StateVars::resetter;
 
 MQTTConnection::MQTTConnection(
    std::shared_ptr<asio::ip::tcp::socket> apSock,
-   std::shared_ptr<BroadcasterClient> apBroadcaster,
+   std::shared_ptr<Broadcaster> apBroadcaster,
    std::shared_ptr<ServerIOStream> apOStream )
    : m_pIOStream( apOStream ), m_pBroadcaster(apBroadcaster), AsioConnection( apSock )
 {
    m_pszCurrentMessage = new std::string;
-   m_pClient = std::make_shared<BrokerClient>( apBroadcaster, this );
+   m_pClient = std::make_shared<BrokerSession>( apBroadcaster, this );
    m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer(
       apSock->get_io_context()
    ) );

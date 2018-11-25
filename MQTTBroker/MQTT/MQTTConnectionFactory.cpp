@@ -21,6 +21,6 @@ MQTTConnectionFactory::~MQTTConnectionFactory()
 std::shared_ptr<AsioConnection>
 MQTTConnectionFactory::NewConnection( std::shared_ptr<asio::ip::tcp::socket> sock )
 {
-   return std::shared_ptr<AsioConnection>( new MQTTConnection( sock, m_pBroadcaster->CreateClient(), m_pIOStream ) );
+   return std::shared_ptr<AsioConnection>( new MQTTConnection( sock, m_pBroadcaster, m_pIOStream ) );
 }
 }

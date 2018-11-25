@@ -1,28 +1,18 @@
 #pragma once
 #include "IMessageHandler.h"
-#include <memory>
-
 class AsioConnection;
-
 namespace me
 {
-class ApplicationMessage;
-class BroadcasterClient;
+class BrokerClient;
+class Broadcaster;
 
-class BrokerClient : public IMessageHandler, std::enable_shared_from_this<BrokerClient>
+class BrokerSession : public IMessageHandler
 {
 public:
-   BrokerClient(
-      std::shared_ptr<ConnectPacket> apConnectPacket,
-      std::shared_ptr<BroadcasterClient> apBroadcaster,
+   BrokerSession( 
+      std::shared_ptr<Broadcaster> apBroadcaster,
       AsioConnection* apConnection );
-   virtual ~BrokerClient();
-
-   void Disconnect();
-
-   me::pcstring GetClientName() const;
-
-   void PublishTo( std::shared_ptr<ApplicationMessage> apMsg );
+   ~BrokerSession();
 
    // Inherited via IMessageHandler
    virtual void HandleConnect( std::shared_ptr<ConnectPacket> apPacket ) override;
@@ -39,10 +29,12 @@ public:
    virtual void HandleSuback( std::shared_ptr<SubackPacket> apPacket ) override;
    virtual void HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket ) override;
    virtual void HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket ) override;
-private:
 
-   std::shared_ptr<ConnectPacket> m_pConnectPacket;
-   std::shared_ptr<BroadcasterClient> m_pBroadcaster;
+private:
+   void assertConnected();
+
+   std::shared_ptr<BrokerClient> m_pBrokerClient;
+   std::shared_ptr<Broadcaster> m_pBroadcaster;
    AsioConnection* m_pConnection;
 };
 

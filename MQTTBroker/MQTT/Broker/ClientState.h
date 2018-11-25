@@ -16,6 +16,7 @@ public:
    ~ClientState();
 
    void SetWatcher( std::weak_ptr<BrokerClient> apSource );
+   void DisconnectWatch();
 
    std::queue<std::shared_ptr<ApplicationMessage>>& GetPendingOutbound();
    void AddPendingOutbound( std::shared_ptr<ApplicationMessage> apMsg );

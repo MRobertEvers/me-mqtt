@@ -4,6 +4,15 @@
 
 namespace me
 {
+struct pcless
+{
+public:
+   bool operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
+   {
+      return *lhs < *rhs;
+   }
+};
+
 class ClientState;
 
 class ClientStateLedger
@@ -17,7 +26,7 @@ public:
    void DeleteClient( me::pcstring apszClientname );
 
 private:
-   std::map<me::pcstring, std::shared_ptr<ClientState>> m_mapStates;
+   std::map<me::pcstring, std::shared_ptr<ClientState>, pcless> m_mapStates;
 };
 
 }

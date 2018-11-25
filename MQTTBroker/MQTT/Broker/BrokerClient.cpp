@@ -6,21 +6,29 @@
 #include "Broker/BroadcasterClient.h"
 #include "PingResp\PingRespPacket.h"
 #include "ApplicationMessage.h"
+#include "BroadcasterClient.h"
 
 namespace me
 {
 
 BrokerClient::BrokerClient(
+   std::shared_ptr<ConnectPacket> apConnectPacket,
    std::shared_ptr<BroadcasterClient> apBroadcaster,
    AsioConnection* apConnection )
-   : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster)
+   : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster), m_pConnectPacket(apConnectPacket)
 {
-   // Subscribe to state
+
 }
 
 BrokerClient::~BrokerClient()
 {
    // Unsubscribe to state
+}
+
+void
+BrokerClient::Disconnect()
+{
+   m_pConnection->Stop();
 }
 
 me::pcstring
@@ -40,54 +48,36 @@ BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 void
 BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
 {
-   if( !m_pConnectPacket )
-   {
-      m_pConnectPacket = apPacket;
 
-      m_pBroadcaster->Connect( shared_from_this() );
-
-      m_pConnection->WriteAsync( ConnackPacket( 0, 0x00 ).Serialize() );
-   }
-   else
-   {
-      // TODO:
-      throw;
-   }
 }
 
 void
 BrokerClient::HandleConnack( std::shared_ptr<ConnackPacket> apPacket )
 {
-   assertConnected();
+
 }
 
 void
 BrokerClient::HandlePingReq( std::shared_ptr<PingReqPacket> apPacket )
 {
-   assertConnected();
-
    m_pConnection->WriteAsync( PingRespPacket().Serialize() );
 }
 
 void
 BrokerClient::HandlePingResp( std::shared_ptr<PingRespPacket> apPacket )
 {
-   assertConnected();
+
 }
 
 void
 BrokerClient::HandleDisconnect( std::shared_ptr<DisconnectPacket> apPacket )
 {
-   assertConnected();
-
    m_pConnection->Stop();
 }
 
 void
 BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 {
-   assertConnected();
-
    m_pBroadcaster->BroadcastPublishMessage(
       apPacket->GetTopicName(), apPacket->GetPayload(),
       apPacket->GetQOS(), apPacket->GetRetainFlag()
@@ -107,37 +97,28 @@ BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 void
 BrokerClient::HandlePuback( std::shared_ptr<PubackPacket> apPacket )
 {
-   assertConnected();
 }
 
 void
 BrokerClient::HandlePubrec( std::shared_ptr<PubrecPacket> apPacket )
 {
-   assertConnected();
-
    m_pConnection->WriteAsync( PubrelPacket( apPacket->GetPacketId() ).Serialize() );
 }
 
 void
 BrokerClient::HandlePubrel( std::shared_ptr<PubrelPacket> apPacket )
 {
-   assertConnected();
-
    m_pConnection->WriteAsync( PubcompPacket( apPacket->GetPacketId() ).Serialize() );
 }
 
 void
 BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 {
-   assertConnected();
-
-
 }
 
 void
 BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 {
-   assertConnected();
    std::vector<unsigned char> vecResponses;
    for( auto subReqs : apPacket->GetSubscribeRequests() )
    {
@@ -151,30 +132,17 @@ BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 void
 BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
 {
-   assertConnected();
 }
 
 void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
-   assertConnected();
-
    m_pConnection->WriteAsync( UnsubackPacket( apPacket->GetPacketId() ).Serialize() );
 }
 
 void
 BrokerClient::HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket )
 {
-   assertConnected();
-}
-
-void
-BrokerClient::assertConnected()
-{
-   if( !m_pConnectPacket )
-   {
-      throw;
-   }
 }
 
 }

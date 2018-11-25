@@ -19,6 +19,16 @@ ClientState::SetWatcher( std::weak_ptr<BrokerClient> apSource )
    m_pSource = apSource;
 }
 
+void 
+ClientState::DisconnectWatch()
+{
+   auto s = m_pSource.lock();
+   if( s )
+   {
+      s->Disconnect();
+   }
+}
+
 std::queue<std::shared_ptr<ApplicationMessage>>& 
 ClientState::GetPendingOutbound()
 {

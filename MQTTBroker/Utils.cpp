@@ -23,6 +23,6 @@ utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned shor
 
    rpBuf[0] = len >> 8;
    rpBuf[1] = len & 0x00FF;
-   memcpy_s( rpBuf, aiBufSize, data, len );
+   memcpy_s( rpBuf+2, aiBufSize-2, data, len );
 }
 }
