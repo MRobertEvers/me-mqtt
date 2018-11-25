@@ -1,7 +1,8 @@
 #pragma once
 #include "ControlPacket.h"
 #include <string>
-
+namespace me
+{
 class ConnectPacket :
    public ControlPacket
 {
@@ -27,12 +28,12 @@ public:
    std::string const GetUsername() const;
    std::string const GetPassword() const;
 
-   bool SetCleanSession(bool abCleanSession);
-   bool SetWillPresent(bool abWillPresent);
-   unsigned char SetWillQOS(unsigned char abWillQOS);
-   bool SetWillRetain(bool abWillRetain);
-   bool SetUsernamePresent(bool abUsernamePresent);
-   bool SetPasswordPresent(bool abPasswordPresent);
+   bool SetCleanSession( bool abCleanSession );
+   bool SetWillPresent( bool abWillPresent );
+   unsigned char SetWillQOS( unsigned char abWillQOS );
+   bool SetWillRetain( bool abWillRetain );
+   bool SetUsernamePresent( bool abUsernamePresent );
+   bool SetPasswordPresent( bool abPasswordPresent );
 
 private:
    unsigned char m_iFlags;
@@ -50,3 +51,4 @@ private:
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 };
+}

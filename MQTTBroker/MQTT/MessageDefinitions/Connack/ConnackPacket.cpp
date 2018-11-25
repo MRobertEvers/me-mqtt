@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "ConnackPacket.h"
 #include "MalformedPacket.h"
-
+namespace me
+{
 
 ConnackPacket::ConnackPacket( bool abSessionPresent, unsigned char abCode )
-   : m_bSessionPresent(abSessionPresent), ControlPacket( 0x02, 0x00 )
+   : m_bSessionPresent( abSessionPresent ), ControlPacket( 0x02, 0x00 )
 {
    if( abCode > 5 )
    {
@@ -25,13 +26,13 @@ ConnackPacket::GetSessionPresent() const
    return m_bSessionPresent;
 }
 
-ConnackPacket::ReturnCodes 
+ConnackPacket::ReturnCodes
 ConnackPacket::GetReturnCode() const
 {
    return m_iReturnCode;
 }
 
-std::string 
+std::string
 ConnackPacket::SerializeBody() const
 {
    std::string szRetval;
@@ -44,4 +45,5 @@ ConnackPacket::SerializeBody() const
    szRetval.append( 1, b1 );
    szRetval.append( 1, m_iReturnCode );
    return szRetval;
+}
 }

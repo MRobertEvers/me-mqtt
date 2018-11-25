@@ -1,16 +1,17 @@
 #include "stdafx.h"
 #include "SubackPacket.h"
 
-
-SubackPacket::SubackPacket(unsigned short aiPacketId, std::vector<unsigned char> avecResponses )
-  : m_vecResponseCodes(avecResponses), ControlPacketId(aiPacketId, 9, 0x00)
+namespace me
+{
+SubackPacket::SubackPacket( unsigned short aiPacketId, std::vector<unsigned char> avecResponses )
+   : m_vecResponseCodes( avecResponses ), ControlPacketId( aiPacketId, 9, 0x00 )
 {
    /*
    Allowed return codes:
-0x00 - Success - Maximum QoS 0 
-0x01 - Success - Maximum QoS 1 
-0x02 - Success - Maximum QoS 2 
-0x80 - Failure 
+0x00 - Success - Maximum QoS 0
+0x01 - Success - Maximum QoS 1
+0x02 - Success - Maximum QoS 2
+0x80 - Failure
    */
 }
 
@@ -33,4 +34,5 @@ SubackPacket::SerializeBody() const
    }
 
    return szRetval;
+}
 }

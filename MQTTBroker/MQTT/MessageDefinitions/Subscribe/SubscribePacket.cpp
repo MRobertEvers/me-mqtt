@@ -2,7 +2,8 @@
 #include "SubscribePacket.h"
 #include "Utils.h"
 #include "MalformedPacket.h"
-
+namespace me
+{
 
 SubscribePacket::SubscribePacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 8, 1 << 1 )
@@ -43,8 +44,8 @@ SubscribePacket::SubscribePacket( std::string const & aszData, unsigned char aiF
    }
 }
 
-SubscribePacket::SubscribePacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 8, 1 << 1 )
+SubscribePacket::SubscribePacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 8, 1 << 1 )
 {
 }
 
@@ -63,4 +64,5 @@ std::string
 SubscribePacket::SerializeBody() const
 {
    return std::string();
+}
 }

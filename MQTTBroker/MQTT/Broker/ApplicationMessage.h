@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-
+namespace me
+{
 class ApplicationMessage
 {
 public:
@@ -21,3 +22,4 @@ private:
    bool m_bRetain;
 };
 
+}

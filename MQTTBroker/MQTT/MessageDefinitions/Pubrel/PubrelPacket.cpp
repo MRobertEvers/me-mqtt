@@ -2,7 +2,8 @@
 #include "PubrelPacket.h"
 #include "MalformedPacket.h"
 
-
+namespace me
+{
 PubrelPacket::PubrelPacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 5, 1 << 1 )
 {
@@ -22,8 +23,8 @@ PubrelPacket::PubrelPacket( std::string const & aszData, unsigned char aiFixedHe
    i += 2;
 }
 
-PubrelPacket::PubrelPacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 6, 1 << 1)
+PubrelPacket::PubrelPacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 6, 1 << 1 )
 {
 }
 
@@ -40,4 +41,5 @@ PubrelPacket::SerializeBody() const
    szRetval.append( 1, id >> 8 );
    szRetval.append( 1, id & 0x0F );
    return szRetval;
+}
 }

@@ -2,11 +2,14 @@
 #include "IMessageHandler.h"
 #include <memory>
 
-class ControlPacket;
-class ConnectPacket;
 class AsioConnection;
 
-class BrokerClient: public IMessageHandler
+namespace me
+{
+class ControlPacket;
+class ConnectPacket;
+
+class BrokerClient : public IMessageHandler
 {
 public:
    BrokerClient( AsioConnection* apConnection );
@@ -35,3 +38,5 @@ private:
    std::shared_ptr<ConnectPacket> m_pConnectPacket;
    AsioConnection* m_pConnection;
 };
+
+}

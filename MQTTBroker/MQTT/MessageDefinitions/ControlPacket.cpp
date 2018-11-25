@@ -2,7 +2,8 @@
 #include "ControlPacket.h"
 #include "MalformedPacket.h"
 
-
+namespace me
+{
 ControlPacket::ControlPacket( unsigned char aPacketType, unsigned char aiReserved = 0x00 )
 {
    // Constructor of derived class SHOULD set length
@@ -20,7 +21,9 @@ ControlPacket::~ControlPacket()
 {
 }
 
-ControlPacket::PacketTypes 
+
+
+ControlPacket::PacketTypes
 ControlPacket::GetType() const
 {
    return m_iPacketType;
@@ -30,7 +33,7 @@ std::string
 ControlPacket::Serialize() const
 {
    std::string szRetval;
-   szRetval.append( 1, m_iPacketType<<4 | getFixedHeaderReserved() );
+   szRetval.append( 1, m_iPacketType << 4 | getFixedHeaderReserved() );
 
    std::string szBody = SerializeBody();
    size_t iSize = szBody.size();
@@ -45,24 +48,25 @@ ControlPacket::Serialize() const
       }
       szRetval.append( 1, byte );
    } while( iSize > 0 );
-   
+
    szRetval.append( szBody );
    return szRetval;
 }
 
-void 
+void
 ControlPacket::setType( unsigned char aiType )
 {
    if( aiType == 0 || aiType > 14 )
    {
       throw MalformedPacket();
    }
-
    m_iPacketType = (PacketTypes)aiType;
 }
 
 unsigned char
 ControlPacket::getFixedHeaderReserved() const
 {
-   return m_iReserved;
+   return 0;
+}
+
 }

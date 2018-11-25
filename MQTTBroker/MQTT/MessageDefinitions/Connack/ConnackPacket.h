@@ -1,7 +1,8 @@
 #pragma once
 #include "ControlPacket.h"
-
-class ConnackPacket: public ControlPacket
+namespace me
+{
+class ConnackPacket : public ControlPacket
 {
 public:
    enum ReturnCodes : unsigned char
@@ -15,7 +16,7 @@ public:
    };
 
 public:
-   ConnackPacket(bool abSessionPresent, unsigned char abCode);
+   ConnackPacket( bool abSessionPresent, unsigned char abCode );
    ~ConnackPacket();
 
    bool GetSessionPresent() const;
@@ -30,3 +31,4 @@ private:
 };
 
 
+}

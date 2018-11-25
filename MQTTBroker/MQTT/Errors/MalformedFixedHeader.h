@@ -1,6 +1,7 @@
 #pragma once
 #include <exception>
-
+namespace me
+{
 class MalformedFixedHeader : public std::exception
 {
 public:
@@ -8,3 +9,4 @@ public:
    ~MalformedFixedHeader() {};
 };
 
+}

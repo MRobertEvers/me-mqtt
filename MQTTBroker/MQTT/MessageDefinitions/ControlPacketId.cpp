@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ControlPacketId.h"
-
+namespace me
+{
 ControlPacketId::ControlPacketId( unsigned char aPacketType, unsigned char aiReserved )
    : m_iPacketId( 0 ), ControlPacket( aPacketType, aiReserved )
 {
@@ -28,3 +29,4 @@ ControlPacketId::setPacketId( unsigned short aiPacketId)
    m_iPacketId = aiPacketId;
 }
 
+}

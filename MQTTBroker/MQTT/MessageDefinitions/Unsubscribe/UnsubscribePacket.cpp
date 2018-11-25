@@ -2,7 +2,8 @@
 #include "UnsubscribePacket.h"
 #include "MalformedPacket.h"
 #include "Utils.h"
-
+namespace me
+{
 
 UnsubscribePacket::UnsubscribePacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 10, 1 << 1 )
@@ -38,8 +39,8 @@ UnsubscribePacket::UnsubscribePacket( std::string const & aszData, unsigned char
 
 }
 
-UnsubscribePacket::UnsubscribePacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 10, 1<<1)
+UnsubscribePacket::UnsubscribePacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 10, 1 << 1 )
 {
 }
 
@@ -52,4 +53,5 @@ std::string
 UnsubscribePacket::SerializeBody() const
 {
    return std::string();
+}
 }

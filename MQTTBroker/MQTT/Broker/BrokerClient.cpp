@@ -5,8 +5,11 @@
 #include "Connack\ConnackPacket.h"
 #include "PingResp\PingRespPacket.h"
 
-BrokerClient::BrokerClient(AsioConnection* apConnection)
-   : m_pConnection(apConnection)
+namespace me
+{
+
+BrokerClient::BrokerClient( AsioConnection* apConnection )
+   : m_pConnection( apConnection )
 {
 
 }
@@ -16,7 +19,7 @@ BrokerClient::~BrokerClient()
 
 }
 
-std::string const & 
+std::string const &
 BrokerClient::GetClientName() const
 {
    return m_pConnectPacket->GetClientName();
@@ -66,7 +69,7 @@ BrokerClient::HandleDisconnect( std::shared_ptr<DisconnectPacket> apPacket )
    m_pConnection->Stop();
 }
 
-void 
+void
 BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 {
    assertConnected();
@@ -82,7 +85,7 @@ BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
    }
 }
 
-void 
+void
 BrokerClient::HandlePuback( std::shared_ptr<PubackPacket> apPacket )
 {
    assertConnected();
@@ -112,7 +115,7 @@ BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 
 }
 
-void 
+void
 BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 {
    assertConnected();
@@ -132,7 +135,7 @@ BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
    assertConnected();
 }
 
-void 
+void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
    assertConnected();
@@ -153,4 +156,6 @@ BrokerClient::assertConnected()
    {
       throw;
    }
+}
+
 }

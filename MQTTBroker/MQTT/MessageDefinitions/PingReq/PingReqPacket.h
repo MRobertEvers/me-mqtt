@@ -1,6 +1,7 @@
 #pragma once
 #include "ControlPacket.h"
-
+namespace me
+{
 class PingReqPacket :
    public ControlPacket
 {
@@ -11,3 +12,4 @@ public:
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 };
+}

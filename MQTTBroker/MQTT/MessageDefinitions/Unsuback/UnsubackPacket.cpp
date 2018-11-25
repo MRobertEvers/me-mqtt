@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "UnsubackPacket.h"
 
-
-UnsubackPacket::UnsubackPacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 11)
+namespace me
+{
+UnsubackPacket::UnsubackPacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 11 )
 {
 }
 
@@ -20,4 +21,5 @@ UnsubackPacket::SerializeBody() const
    szRetval.append( 1, id >> 8 );
    szRetval.append( 1, id & 0x0F );
    return szRetval;
+}
 }

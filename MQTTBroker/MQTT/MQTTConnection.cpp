@@ -3,16 +3,17 @@
 #include "MalformedFixedHeader.h"
 #include "MalformedPacket.h"
 #include "Broker\BrokerClient.h"
-
+namespace me
+{
 const MQTTConnection::StateVars MQTTConnection::StateVars::resetter;
 
 MQTTConnection::MQTTConnection(
    std::shared_ptr<asio::ip::tcp::socket> apSock,
    std::shared_ptr<ServerIOStream> apOStream )
-   : m_pIOStream(apOStream), AsioConnection( apSock )
+   : m_pIOStream( apOStream ), AsioConnection( apSock )
 {
-   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient(this) );
-   m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer( 
+   m_pClient = std::shared_ptr<BrokerClient>( new BrokerClient( this ) );
+   m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer(
       apSock->get_io_context()
    ) );
 }
@@ -23,7 +24,7 @@ MQTTConnection::~MQTTConnection()
    *m_pIOStream << "Deleted MQTTConnection" << std::endl;
 }
 
-void 
+void
 MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
 {
    m_szBuf.append( apBytes, aNumBytes );
@@ -47,7 +48,7 @@ MQTTConnection::OnReceiveBytes( char const* apBytes, size_t aNumBytes )
    }
 }
 
-void 
+void
 MQTTConnection::Start( AsioConnectionManager* aManager )
 {
    AsioConnection::Start( aManager );
@@ -57,13 +58,13 @@ MQTTConnection::Start( AsioConnectionManager* aManager )
 
    m_pConnectTimer->async_wait( GetStrand()->wrap(
       [this, self = shared_from_this()]( std::error_code ec )
-      {
-         this->onConnectTimer( ec );
-      } )
+   {
+      this->onConnectTimer( ec );
+   } )
    );
 }
 
-void 
+void
 MQTTConnection::Stop()
 {
    auto ec = GetLastError();
@@ -74,9 +75,9 @@ MQTTConnection::Stop()
 }
 
 
-void 
-MQTTConnection::dispatchMessage( 
-   std::string const& aszData, 
+void
+MQTTConnection::dispatchMessage(
+   std::string const& aszData,
    unsigned char aiFixedHeaderSize )
 {
    // Validate as much of the input that we can.
@@ -99,8 +100,8 @@ MQTTConnection::dispatchMessage(
    switch( type )
    {
    case ControlPacket::PacketTypes::CONNECT:
-      m_pClient->HandleConnect( 
-         std::make_shared<ConnectPacket>( aszData, aiFixedHeaderSize ) 
+      m_pClient->HandleConnect(
+         std::make_shared<ConnectPacket>( aszData, aiFixedHeaderSize )
       );
       break;
    case ControlPacket::PacketTypes::PUBLISH:
@@ -167,11 +168,11 @@ MQTTConnection::handleBytes()
       break;
    case FIXED_HEADER_MESSAGE_SIZE:
       {
-         memcpy_s( 
+         memcpy_s(
             &m_State.iMessageLenByte, 1,
             &m_szBuf[m_State.iReadIndex++], 1
          );
-         m_State.iMessageLenValue += 
+         m_State.iMessageLenValue +=
             (m_State.iMessageLenByte & 0x7F) * m_State.iMessageLenMultiplier;
          m_State.iMessageLenMultiplier = m_State.iMessageLenMultiplier << 7;
          if( m_State.iMessageLenMultiplier > 128 * 128 * 128 )
@@ -229,4 +230,5 @@ MQTTConnection::onConnectTimer( const asio::error_code& ec )
    {
       *m_pIOStream << "Closing" << std::endl;
    }
+}
 }

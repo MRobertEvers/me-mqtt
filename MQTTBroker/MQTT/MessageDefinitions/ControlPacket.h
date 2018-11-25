@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 
-
+namespace me
+{
 
 class ControlPacket
 {
@@ -45,3 +46,4 @@ private:
    unsigned char m_iReserved;
 };
 
+}

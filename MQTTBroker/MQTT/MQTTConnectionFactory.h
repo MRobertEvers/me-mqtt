@@ -5,6 +5,9 @@
 
 class ServerIOStream;
 
+namespace me
+{
+
 class MQTTConnectionFactory : public AsioConnectionFactory
 {
 public:
@@ -17,3 +20,4 @@ public:
 private:
    std::shared_ptr<ServerIOStream> m_pIOStream;
 };
+}

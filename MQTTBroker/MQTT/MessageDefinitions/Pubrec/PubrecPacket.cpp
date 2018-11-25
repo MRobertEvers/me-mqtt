@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "PubrecPacket.h"
 
-
+namespace me
+{
 PubrecPacket::PubrecPacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 5, 0x00 )
 {
@@ -16,8 +17,8 @@ PubrecPacket::PubrecPacket( std::string const & aszData, unsigned char aiFixedHe
    i += 2;
 }
 
-PubrecPacket::PubrecPacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 5, 0x00)
+PubrecPacket::PubrecPacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 5, 0x00 )
 {
 }
 
@@ -34,4 +35,5 @@ PubrecPacket::SerializeBody() const
    szRetval.append( 1, id >> 8 );
    szRetval.append( 1, id & 0x0F );
    return szRetval;
+}
 }

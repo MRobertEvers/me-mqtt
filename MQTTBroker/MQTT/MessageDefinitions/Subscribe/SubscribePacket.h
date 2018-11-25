@@ -1,13 +1,14 @@
 #pragma once
 #include "ControlPacketId.h"
-
+namespace me
+{
 struct SubscribeRequest
 {
    std::string Topic;
    unsigned char QOS;
    SubscribeRequest( char const* apData, size_t aSize, unsigned char aQOS )
    {
-      Topic = std::string(apData, aSize);
+      Topic = std::string( apData, aSize );
       QOS = aQOS;
    }
    SubscribeRequest( std::string aTopic, unsigned char aQOS )
@@ -22,7 +23,7 @@ class SubscribePacket :
 {
 public:
    SubscribePacket( std::string const& aszData, unsigned char aiFixedHeaderSize );
-   SubscribePacket(unsigned short aiPacketId);
+   SubscribePacket( unsigned short aiPacketId );
    ~SubscribePacket();
 
    std::vector<SubscribeRequest> const& GetSubscribeRequests();
@@ -33,3 +34,4 @@ public:
 private:
    std::vector<SubscribeRequest> m_vecTopicRequests;
 };
+}

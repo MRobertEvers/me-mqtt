@@ -1,6 +1,7 @@
 #pragma once
 #include "ControlPacket.h"
-
+namespace me
+{
 class ControlPacketId :
    public ControlPacket
 {
@@ -17,3 +18,4 @@ protected:
 private:
    unsigned short m_iPacketId;
 };
+}

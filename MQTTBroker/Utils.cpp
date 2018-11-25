@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Utils.h"
 
-
+namespace me
+{
 std::string
 utils::read_utf8_string( const char* apData, size_t aDataSize )
 {
@@ -12,4 +13,5 @@ utils::read_utf8_string( const char* apData, size_t aDataSize )
       szRetval.append( apData + 2, len );// std::string( apData + 2, len );
    }
    return szRetval;
+}
 }

@@ -1,7 +1,8 @@
 #pragma once
 #include "stdafx.h"
 #include <string>
-
+namespace me
+{
 namespace utils
 {
    inline
@@ -11,7 +12,6 @@ namespace utils
    }
 
    std::string
-      read_utf8_string( const char* apData, size_t aDataSize );
+   read_utf8_string( const char* apData, size_t aDataSize );
 }
-
-
+}

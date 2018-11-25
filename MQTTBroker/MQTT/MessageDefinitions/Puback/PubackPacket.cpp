@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "PubackPacket.h"
 
-
+namespace me
+{
 PubackPacket::PubackPacket( std::string const & aszData, unsigned char aiFixedHeaderSize )
    : ControlPacketId( 4, 0x00 )
 {
@@ -16,8 +17,8 @@ PubackPacket::PubackPacket( std::string const & aszData, unsigned char aiFixedHe
    i += 2;
 }
 
-PubackPacket::PubackPacket(unsigned short aiPacketId)
-  : ControlPacketId(aiPacketId, 4, 0x00)
+PubackPacket::PubackPacket( unsigned short aiPacketId )
+   : ControlPacketId( aiPacketId, 4, 0x00 )
 {
 }
 
@@ -34,4 +35,5 @@ PubackPacket::SerializeBody() const
    szRetval.append( 1, id >> 8 );
    szRetval.append( 1, id & 0x0F );
    return szRetval;
+}
 }

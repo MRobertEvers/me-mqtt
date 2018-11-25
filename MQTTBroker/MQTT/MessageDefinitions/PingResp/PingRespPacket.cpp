@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "PingRespPacket.h"
 
-
+namespace me
+{
 PingRespPacket::PingRespPacket()
-   : ControlPacket(13, 0x00)
+   : ControlPacket( 13, 0x00 )
 {
 }
 
@@ -16,4 +17,5 @@ std::string
 PingRespPacket::SerializeBody() const
 {
    return std::string();
+}
 }

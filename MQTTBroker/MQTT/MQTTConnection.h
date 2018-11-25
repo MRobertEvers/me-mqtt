@@ -6,14 +6,16 @@
 #include <string>
 #include <sstream>
 
+namespace me
+{
 class BrokerClient;
 class ControlPacket;
 class ConnectPacket;
 
-class MQTTConnection: public AsioConnection
+class MQTTConnection : public AsioConnection
 {
 public:
-   MQTTConnection( 
+   MQTTConnection(
       std::shared_ptr<asio::ip::tcp::socket> apSock,
       std::shared_ptr<ServerIOStream> apOStream );
    virtual ~MQTTConnection();
@@ -68,3 +70,4 @@ private:
 
    StateVars m_State;
 };
+}

@@ -16,6 +16,8 @@
 #include "Unsuback/UnsubackPacket.h"
 
 #include <memory>
+namespace me
+{
 
 class IMessageHandler
 {
@@ -37,3 +39,4 @@ public:
    virtual void HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket ) = 0;
 };
 
+} // End namespace me.
