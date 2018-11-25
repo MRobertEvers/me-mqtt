@@ -75,7 +75,9 @@ MQTTConnection::Stop()
 
 
 void 
-MQTTConnection::dispatchMessage( std::string const& aszData, unsigned char aiFixedHeaderSize )
+MQTTConnection::dispatchMessage( 
+   std::string const& aszData, 
+   unsigned char aiFixedHeaderSize )
 {
    // Validate as much of the input that we can.
    char const* data = aszData.data();
@@ -165,8 +167,12 @@ MQTTConnection::handleBytes()
       break;
    case FIXED_HEADER_MESSAGE_SIZE:
       {
-         memcpy_s( &m_State.iMessageLenByte, 1, &m_szBuf[m_State.iReadIndex++], 1 );
-         m_State.iMessageLenValue += (m_State.iMessageLenByte & 0x7F) * m_State.iMessageLenMultiplier;
+         memcpy_s( 
+            &m_State.iMessageLenByte, 1,
+            &m_szBuf[m_State.iReadIndex++], 1
+         );
+         m_State.iMessageLenValue += 
+            (m_State.iMessageLenByte & 0x7F) * m_State.iMessageLenMultiplier;
          m_State.iMessageLenMultiplier = m_State.iMessageLenMultiplier << 7;
          if( m_State.iMessageLenMultiplier > 128 * 128 * 128 )
          {
@@ -196,7 +202,7 @@ MQTTConnection::handleBytes()
          m_State.iReadIndex += m_State.iNeedBytes;
          m_pConnectTimer->cancel(); // We have received a message.
 
-         // *m_pIOStream << m_szCurrentMessage << std::endl;
+         *m_pIOStream << m_szCurrentMessage << std::endl;
          dispatchMessage( m_szCurrentMessage, m_State.iFixedHeaderSize );
 
          // Reset message reader state.

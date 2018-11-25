@@ -156,6 +156,9 @@
     <ClInclude Include="Asio\AsioServer.h" />
     <ClInclude Include="Asio\AsioService.h" />
     <ClInclude Include="IMessageHandler.h" />
+    <ClInclude Include="MQTT\Broker\ApplicationMessage.h" />
+    <ClInclude Include="MQTT\Broker\Broadcaster.h" />
+    <ClInclude Include="MQTT\Broker\BroadcasterClient.h" />
     <ClInclude Include="MQTT\Broker\BrokerClient.h" />
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
     <ClInclude Include="MQTT\Errors\MalformedPacket.h" />
@@ -189,6 +192,9 @@
     <ClCompile Include="Asio\AsioServer.cpp" />
     <ClCompile Include="Asio\AsioService.cpp" />
     <ClCompile Include="MQTTBroker.cpp" />
+    <ClCompile Include="MQTT\Broker\ApplicationMessage.cpp" />
+    <ClCompile Include="MQTT\Broker\Broadcaster.cpp" />
+    <ClCompile Include="MQTT\Broker\BroadcasterClient.cpp" />
     <ClCompile Include="MQTT\Broker\BrokerClient.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacketId.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\Disconnect\DisconnectPacket.cpp" />

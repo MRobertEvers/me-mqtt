@@ -180,6 +180,15 @@
     <ClInclude Include="MQTT\MessageDefinitions\Unsubscribe\UnsubscribePacket.h">
       <Filter>MQTT\MessageDefinitions\Unsubscribe</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\Broker\Broadcaster.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\BroadcasterClient.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\ApplicationMessage.h">
+      <Filter>MQTT\Broker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -271,6 +280,15 @@
     </ClCompile>
     <ClCompile Include="MQTT\MessageDefinitions\Unsubscribe\UnsubscribePacket.cpp">
       <Filter>MQTT\MessageDefinitions\Unsubscribe</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\Broadcaster.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\BroadcasterClient.cpp">
+      <Filter>MQTT\Broker</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\ApplicationMessage.cpp">
+      <Filter>MQTT\Broker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
