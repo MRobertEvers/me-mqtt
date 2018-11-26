@@ -35,22 +35,23 @@ BroadcasterClient::GetClient() const
    return m_pClient;
 }
 
+std::shared_ptr<ClientState> 
+BroadcasterClient::GetState()
+{
+   return m_pState;
+}
+
 void 
 BroadcasterClient::BroadcastPublishMessage( 
-   me::pcstring apszTopic, me::pcstring apszPayload, 
-   unsigned char aiQOS, bool abRetain ) const
+   std::shared_ptr<ApplicationMessage> apMsg ) const
 {
-   auto pMessage = std::make_shared<ApplicationMessage>( 
-      apszTopic, apszPayload, aiQOS, abRetain 
-      );
-
-   m_pBroadcaster->BroadcastMessage( pMessage );
+   m_pBroadcaster->BroadcastMessage( apMsg );
 }
 
 void
-BroadcasterClient::SubscribeToTopic( me::pcstring apszTopicFilter ) const
+BroadcasterClient::SubscribeToTopic( me::pcstring apszTopicFilter, unsigned char maxQOS ) const
 {
-   m_pBroadcaster->Subscribe( m_pState, apszTopicFilter );
+   m_pBroadcaster->Subscribe( m_pState, apszTopicFilter, maxQOS );
 }
 
 void 

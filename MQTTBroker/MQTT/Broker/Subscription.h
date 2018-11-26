@@ -1,7 +1,7 @@
 #pragma once
 #include "Definitions.h"
 #include <string>
-#include <set>
+#include <map>
 
 namespace me
 {
@@ -14,14 +14,14 @@ public:
    Subscription( me::pcstring apszFilter, std::weak_ptr<SubscriptionManager> apManager );
    ~Subscription();
 
-   void RecordClient( std::shared_ptr<ClientState> apszClient );
+   void RecordClient( std::shared_ptr<ClientState> apszClient, unsigned char maxQOS );
    void ReleaseClient( std::shared_ptr<ClientState> apszClient );
-   std::set<std::shared_ptr<ClientState>> GetSubscribers();
+   std::map<std::shared_ptr<ClientState>, unsigned char> GetSubscribers();
 
 private:
    me::pcstring m_szTopicFilter;
    std::weak_ptr<SubscriptionManager> m_pManager;
-   std::set<std::shared_ptr<ClientState>> m_setClients;
+   std::map<std::shared_ptr<ClientState>, unsigned char> m_setClients;
 };
 
 }

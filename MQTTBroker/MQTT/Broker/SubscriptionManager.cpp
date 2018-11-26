@@ -15,7 +15,7 @@ SubscriptionManager::~SubscriptionManager()
 
 }
 void
-SubscriptionManager::Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter )
+SubscriptionManager::Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter, unsigned char maxQOS )
 {
    std::shared_ptr<Subscription> pSub;
    auto iter_sub = m_mapFilters.find( apszTopicFilter );
@@ -30,7 +30,7 @@ SubscriptionManager::Subscribe( std::shared_ptr<ClientState> apszClientName, me:
       m_mapFilters.emplace( apszTopicFilter, pSub );
    }
 
-   apszClientName->Subscribe( pSub );
+   apszClientName->Subscribe( pSub, maxQOS );
 }
 
 void 
@@ -55,7 +55,7 @@ SubscriptionManager::GetSubscriptions( me::pcstring apszTopicName )
    std::vector<std::shared_ptr<Subscription>> m_vecSubs;
    for( auto filter : m_mapFilters )
    {
-      // Check if filter match.
+      // Check if filter match. TODO:
       m_vecSubs.push_back( filter.second.lock() );
    }
 

@@ -21,9 +21,9 @@ Subscription::~Subscription()
 }
 
 void 
-Subscription::RecordClient( std::shared_ptr<ClientState> apszClient )
+Subscription::RecordClient( std::shared_ptr<ClientState> apszClient, unsigned char maxQOS )
 {
-   m_setClients.insert( apszClient );
+   m_setClients.emplace( apszClient, maxQOS );
 }
 
 void
@@ -32,7 +32,7 @@ Subscription::ReleaseClient( std::shared_ptr<ClientState> apszClient )
    m_setClients.erase( apszClient );
 }
 
-std::set<std::shared_ptr<ClientState>>
+std::map<std::shared_ptr<ClientState>, unsigned char>
 Subscription::GetSubscribers()
 {
    return m_setClients;

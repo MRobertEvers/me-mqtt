@@ -14,7 +14,7 @@ public:
    SubscriptionManager();
    ~SubscriptionManager();
 
-   void Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter );
+   void Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter, unsigned char maxQOS );
    void Unsubscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter );
    std::vector<std::shared_ptr<Subscription>> GetSubscriptions( me::pcstring apszTopicName );
 

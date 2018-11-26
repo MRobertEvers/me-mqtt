@@ -5,6 +5,7 @@
 #include <string>
 #include <queue>
 #include <memory>
+#include <map>
 #include <set>
 
 namespace me
@@ -21,19 +22,23 @@ public:
    void SetWatcher( std::weak_ptr<BrokerClient> apSource );
    void DisconnectWatch();
 
-   std::queue<std::shared_ptr<ApplicationMessage>>& GetPendingOutbound();
    void AddPendingOutbound( std::shared_ptr<ApplicationMessage> apMsg );
+   std::shared_ptr<ApplicationMessage> PeekNextOutbound();
+   void ReleaseNextOutbound( );
 
-   std::queue<std::shared_ptr<ApplicationMessage>>& GetPendingPuback();
-   void AddPendingPuback( std::shared_ptr<ApplicationMessage> apMsg );
+   void AddPendingPuback( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg );
+   std::shared_ptr<ApplicationMessage> ReleasePendingPuback( unsigned short aiId );
 
-   std::queue<std::shared_ptr<ApplicationMessage>>& GetPendingPubrec();
-   void AddPendingPubrec( std::shared_ptr<ApplicationMessage> apMsg );
+   void AddPendingPubrec( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg );
+   std::shared_ptr<ApplicationMessage> ReleasePendingPubrec( unsigned short aiId );
 
-   std::queue<std::shared_ptr<ApplicationMessage>>& GetPendingPubcomp();
-   void AddPendingPubcomp( std::shared_ptr<ApplicationMessage> apMsg );
+   void AddPendingPubrel( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg );
+   std::shared_ptr<ApplicationMessage> ReleasePendingPubrel( unsigned short aiId );
 
-   void Subscribe( std::shared_ptr<Subscription> apSub );
+   void AddPendingPubcomp( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg );
+   std::shared_ptr<ApplicationMessage> ReleasePendingPubcomp( unsigned short aiId );
+
+   void Subscribe( std::shared_ptr<Subscription> apSub, unsigned char maxQOS );
    void Unsubscribe( std::shared_ptr<Subscription> apSub );
    void UnsubscribeAll();
 private:
@@ -44,13 +49,16 @@ private:
    // Messages waiting to be sent out.
    std::queue<std::shared_ptr<ApplicationMessage>> m_qPendingOutbound;
 
+   // 'Sent' below means TO THE CLIENT.
    // Sent QOS 1 messages that have not been puback'd by the client.
-   std::queue<std::shared_ptr<ApplicationMessage>> m_qPendingPuback;
+   std::map<unsigned short,std::shared_ptr<ApplicationMessage>> m_mapPendingPuback;
 
    // Sent QOS 2 message that have not been Pubrec'd by the client.
-   std::queue<std::shared_ptr<ApplicationMessage>> m_qPendingPubrec;
+   std::map<unsigned short, std::shared_ptr<ApplicationMessage>> m_mapPendingPubrec;
+   // Recved QOS 2 message that have been sent Pubrec have not been Pubrel'd by the client.
+   std::map<unsigned short, std::shared_ptr<ApplicationMessage>> m_mapPendingPubrel;
    // Sent QOS 2 message that have been sent Pubrel but have not been Pubcomp'd by the client.
-   std::queue<std::shared_ptr<ApplicationMessage>> m_qPendingPubcomp;
+   std::map<unsigned short, std::shared_ptr<ApplicationMessage>> m_mapPendingPubcomp;
 
    // STORE INFLIGHT IDS HERE??? TODO:
 

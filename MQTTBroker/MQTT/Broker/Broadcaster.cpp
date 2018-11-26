@@ -28,13 +28,13 @@ Broadcaster::~Broadcaster()
 }
 
 void
-Broadcaster::Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic )
+Broadcaster::Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS )
 {
    auto postCB =
-      [this, self=shared_from_this(), client= apClient, topic=apszTopic]
+      [this, self=shared_from_this(), client= apClient, topic=apszTopic, qos=maxQOS]
    ()
    {
-      self->subscribe( client, topic );
+      self->subscribe( client, topic, qos );
    };
 
    asio::post(
@@ -102,13 +102,13 @@ me::Broadcaster::ConnectClient( std::weak_ptr<BroadcasterClient> apClient )
 }
 
 void 
-Broadcaster::subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic )
+Broadcaster::subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS )
 {
    // I have a topic filter. I want all topic that match that filter with retained messages.
    // And register myself as listening to that topic.
    // Get Retained messages
    // Subscribe
-   m_pSubscriptionManager->Subscribe( apClient, apszTopic );
+   m_pSubscriptionManager->Subscribe( apClient, apszTopic, maxQOS );
 }
 
 void 
@@ -128,7 +128,15 @@ Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
       auto subers = sub->GetSubscribers();
       for( auto suber : subers )
       {
-         suber->AddPendingOutbound( apMessage );
+         auto maxQOS = suber.second;
+         std::shared_ptr<ApplicationMessage> pOutbound = apMessage;
+         if( maxQOS < apMessage->GetQOS() )
+         {
+            pOutbound = std::make_shared<ApplicationMessage>(
+               apMessage->GetTopic(), apMessage->GetPayload(),
+               maxQOS, apMessage->GetRetainFlag() );
+         }
+         suber.first->AddPendingOutbound( pOutbound );
       }
    }
 }

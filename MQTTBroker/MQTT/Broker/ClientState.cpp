@@ -29,12 +29,6 @@ ClientState::DisconnectWatch()
    }
 }
 
-std::queue<std::shared_ptr<ApplicationMessage>>& 
-ClientState::GetPendingOutbound()
-{
-   return m_qPendingOutbound;
-}
-
 void 
 ClientState::AddPendingOutbound( std::shared_ptr<ApplicationMessage> apMsg )
 {
@@ -49,44 +43,111 @@ ClientState::AddPendingOutbound( std::shared_ptr<ApplicationMessage> apMsg )
    }
 }
 
-std::queue<std::shared_ptr<ApplicationMessage>>& 
-ClientState::GetPendingPuback()
+std::shared_ptr<ApplicationMessage>
+ClientState::PeekNextOutbound()
 {
-   return m_qPendingPuback;
-}
-
-void 
-ClientState::AddPendingPuback( std::shared_ptr<ApplicationMessage> apMsg )
-{
-}
-
-std::queue<std::shared_ptr<ApplicationMessage>>& 
-ClientState::GetPendingPubrec()
-{
-   return m_qPendingPubrec;
-}
-
-void 
-ClientState::AddPendingPubrec( std::shared_ptr<ApplicationMessage> apMsg )
-{
-}
-
-std::queue<std::shared_ptr<ApplicationMessage>>& 
-ClientState::GetPendingPubcomp()
-{
-   return m_qPendingPubcomp;
-}
-
-void 
-ClientState::AddPendingPubcomp( std::shared_ptr<ApplicationMessage> apMsg )
-{
+   return m_qPendingOutbound.front();
 }
 
 void
-ClientState::Subscribe( std::shared_ptr<Subscription> apSub )
+ClientState::ReleaseNextOutbound(  )
+{
+   m_qPendingOutbound.pop( );
+}
+
+void 
+ClientState::AddPendingPuback( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
+{
+   m_mapPendingPuback.emplace( id, apMsg );
+}
+
+std::shared_ptr<ApplicationMessage>
+ClientState::ReleasePendingPuback( unsigned short aiId )
+{
+   auto iter_msg = m_mapPendingPuback.find( aiId );
+   if( iter_msg != m_mapPendingPuback.end() )
+   {
+      auto pMsg = iter_msg->second;
+      m_mapPendingPuback.erase( iter_msg );
+      return pMsg;
+   }
+   else
+   {
+      return nullptr;
+   }
+}
+
+void 
+ClientState::AddPendingPubrec( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
+{
+   m_mapPendingPubrec.emplace( id, apMsg );
+}
+
+std::shared_ptr<ApplicationMessage>
+ClientState::ReleasePendingPubrec( unsigned short aiId )
+{
+   auto iter_msg = m_mapPendingPubrec.find( aiId );
+   if( iter_msg != m_mapPendingPubrec.end() )
+   {
+      auto pMsg = iter_msg->second;
+      m_mapPendingPubrec.erase( iter_msg );
+      return pMsg;
+   }
+   else
+   {
+      return nullptr;
+   }
+}
+
+void 
+ClientState::AddPendingPubrel( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
+{
+   m_mapPendingPubrel.emplace( id, apMsg );
+}
+
+std::shared_ptr<ApplicationMessage>
+ClientState::ReleasePendingPubrel( unsigned short aiId )
+{
+   auto iter_msg = m_mapPendingPubrel.find( aiId );
+   if( iter_msg != m_mapPendingPubrel.end() )
+   {
+      auto pMsg = iter_msg->second;
+      m_mapPendingPubrel.erase( iter_msg );
+      return pMsg;
+   }
+   else
+   {
+      return nullptr;
+   }
+}
+
+void 
+ClientState::AddPendingPubcomp( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
+{
+   m_mapPendingPubcomp.emplace( id, apMsg );
+}
+
+std::shared_ptr<ApplicationMessage>
+ClientState::ReleasePendingPubcomp( unsigned short aiId )
+{
+   auto iter_msg = m_mapPendingPubcomp.find( aiId );
+   if( iter_msg != m_mapPendingPubcomp.end() )
+   {
+      auto pMsg = iter_msg->second;
+      m_mapPendingPubcomp.erase( iter_msg );
+      return pMsg;
+   }
+   else
+   {
+      return nullptr;
+   }
+}
+
+void
+ClientState::Subscribe( std::shared_ptr<Subscription> apSub, unsigned char maxQOS )
 {
    m_setSubscriptions.insert( apSub );
-   apSub->RecordClient( shared_from_this() );
+   apSub->RecordClient( shared_from_this(), maxQOS );
 }
 
 void

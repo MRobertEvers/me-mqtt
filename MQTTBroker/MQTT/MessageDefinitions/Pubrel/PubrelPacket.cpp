@@ -42,4 +42,5 @@ PubrelPacket::SerializeBody() const
    szRetval.append( 1, id & 0x0F );
    return szRetval;
 }
+
 }

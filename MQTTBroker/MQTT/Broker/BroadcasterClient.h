@@ -8,6 +8,7 @@ namespace me
 class Broadcaster;
 class ClientState;
 class BrokerClient;
+class ApplicationMessage;
 
 // Acts as the synchronization bridge between the Broadcaster and the client.
 class BroadcasterClient : public std::enable_shared_from_this<BroadcasterClient>
@@ -19,11 +20,11 @@ public:
 
    void ConnectClient( std::weak_ptr<BrokerClient> apClient );
    std::weak_ptr<BrokerClient> GetClient() const;
+   std::shared_ptr<ClientState> GetState();
 
    void BroadcastPublishMessage( 
-      me::pcstring apszTopic, me::pcstring apszPayload, 
-      unsigned char aiQOS, bool abRetain ) const;
-   void SubscribeToTopic( me::pcstring apszTopicFilter ) const;
+      std::shared_ptr<ApplicationMessage> apMsg ) const;
+   void SubscribeToTopic( me::pcstring apszTopicFilter, unsigned char maxQOS ) const;
    void UnsubscribeFromTopic( me::pcstring apszTopicFilter ) const;
 
 private:

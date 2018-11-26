@@ -5,6 +5,7 @@
 #include "Connack\ConnackPacket.h"
 #include "Broker/BroadcasterClient.h"
 #include "PingResp\PingRespPacket.h"
+#include "ClientState.h"
 #include "ApplicationMessage.h"
 #include "BroadcasterClient.h"
 
@@ -64,9 +65,23 @@ BrokerClient::GetClientName() const
 void 
 BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
+   unsigned short aiPacketId = 51;
+   // TODO need duplicate and packet id.
    m_pConnection->WriteAsync( PublishPacket(
-      apMsg->GetTopic(), apMsg->GetPayload(), false, 0, false, 0
+      apMsg->GetTopic(), apMsg->GetPayload(), false, apMsg->GetQOS(), apMsg->GetRetainFlag(), aiPacketId
    ).Serialize() );
+
+   auto qos = apMsg->GetQOS();
+   if( qos == 1 )
+   {
+      auto cState = m_pBroadcaster->GetState();
+      cState->AddPendingPuback( aiPacketId, apMsg );
+   }
+   else if( qos == 2 )
+   {
+      auto cState = m_pBroadcaster->GetState();
+      cState->AddPendingPubrec( aiPacketId, apMsg );
+   }
 }
 
 void
@@ -112,11 +127,11 @@ BrokerClient::HandleDisconnect( std::shared_ptr<DisconnectPacket> apPacket )
 void
 BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 {
-   m_pBroadcaster->BroadcastPublishMessage(
+   auto pMessage = std::make_shared<ApplicationMessage>(
       apPacket->GetTopicName(), apPacket->GetPayload(),
       apPacket->GetQOS(), apPacket->GetRetainFlag()
-   );
-
+      );
+   
    unsigned char iQos = apPacket->GetQOS();
    if( iQos == 1 )
    {
@@ -124,30 +139,83 @@ BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
    }
    else if( iQos == 2 )
    {
+      auto cState = m_pBroadcaster->GetState();
+      cState->AddPendingPubrel( apPacket->GetPacketId(), pMessage );
       m_pConnection->WriteAsync( PubrecPacket( apPacket->GetPacketId() ).Serialize() );
+   }
+
+   if( iQos < 2 )
+   {
+      m_pBroadcaster->BroadcastPublishMessage(
+         pMessage
+      );
    }
 }
 
 void
 BrokerClient::HandlePuback( std::shared_ptr<PubackPacket> apPacket )
 {
+   auto cState = m_pBroadcaster->GetState();
+   auto msg = cState->ReleasePendingPuback( apPacket->GetPacketId() );
+   if( msg )
+   {
+
+   }
+   else
+   {
+      // TODO: Stray puback?
+   }
 }
 
 void
 BrokerClient::HandlePubrec( std::shared_ptr<PubrecPacket> apPacket )
 {
-   m_pConnection->WriteAsync( PubrelPacket( apPacket->GetPacketId() ).Serialize() );
+   auto cState = m_pBroadcaster->GetState();
+   auto msg = cState->ReleasePendingPubrec( apPacket->GetPacketId() );
+   if( msg )
+   {
+      cState->AddPendingPubcomp( apPacket->GetPacketId(), msg );
+      m_pConnection->WriteAsync( PubrelPacket( apPacket->GetPacketId() ).Serialize() );
+   }
+   else
+   {
+      // TODO: Stray pubrec?
+   }
 }
 
 void
 BrokerClient::HandlePubrel( std::shared_ptr<PubrelPacket> apPacket )
 {
-   m_pConnection->WriteAsync( PubcompPacket( apPacket->GetPacketId() ).Serialize() );
+   auto cState = m_pBroadcaster->GetState();
+   auto msg = cState->ReleasePendingPubrel( apPacket->GetPacketId() );
+   if( msg )
+   {
+      m_pConnection->WriteAsync( PubcompPacket( apPacket->GetPacketId() ).Serialize() );
+
+      m_pBroadcaster->BroadcastPublishMessage(
+         msg
+      );
+   }
+   else
+   {
+      // TODO: Stray pubrel?
+   }
+   // We sent a pubrec, this is the client's response.
 }
 
 void
 BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 {
+   auto cState = m_pBroadcaster->GetState();
+   auto msg = cState->ReleasePendingPubcomp( apPacket->GetPacketId() );
+   if( msg )
+   {
+
+   }
+   else
+   {
+      // TODO: Stray pubcomp?
+   }
 }
 
 void
@@ -156,7 +224,7 @@ BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
    std::vector<unsigned char> vecResponses;
    for( auto subReqs : apPacket->GetSubscribeRequests() )
    {
-      m_pBroadcaster->SubscribeToTopic( subReqs.Topic );
+      m_pBroadcaster->SubscribeToTopic( subReqs.Topic, subReqs.QOS );
       vecResponses.push_back( subReqs.QOS );
    }
 

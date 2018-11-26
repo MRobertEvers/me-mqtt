@@ -54,7 +54,7 @@ ControlPacket::setType( unsigned char aiType )
 unsigned char
 ControlPacket::getFixedHeaderReserved() const
 {
-   return 0;
+   return m_iReserved;
 }
 
 void

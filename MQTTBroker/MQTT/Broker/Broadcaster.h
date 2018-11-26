@@ -18,7 +18,7 @@ public:
    Broadcaster( std::shared_ptr<AsioService> apIOService );
    ~Broadcaster();
 
-   void Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
+   void Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS );
    void Unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
@@ -26,7 +26,7 @@ public:
    std::shared_ptr<ClientState> ConnectClient( std::weak_ptr<BroadcasterClient> apClient );
 
 private:
-   void subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
+   void subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS );
    void unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );
 
