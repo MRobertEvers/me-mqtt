@@ -156,6 +156,7 @@ BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
    std::vector<unsigned char> vecResponses;
    for( auto subReqs : apPacket->GetSubscribeRequests() )
    {
+      m_pBroadcaster->SubscribeToTopic( subReqs.Topic );
       vecResponses.push_back( subReqs.QOS );
    }
 
@@ -171,6 +172,11 @@ BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
 void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
+   for( auto subReqs : apPacket->GetUnsubscribeRequests() )
+   {
+      m_pBroadcaster->UnsubscribeFromTopic( subReqs );
+   }
+
    m_pConnection->WriteAsync( UnsubackPacket( apPacket->GetPacketId() ).Serialize() );
 }
 

@@ -4,7 +4,7 @@ namespace me
 {
 
 PubcompPacket::PubcompPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacketId( 7, 0x00 )
+   : ControlPacketId( 0, 7, 0x00 )
 {
    // Parse the connect Packet
    const char* data = aszData->data();

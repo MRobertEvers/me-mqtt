@@ -85,6 +85,15 @@
     <Filter Include="MQTT\MessageDefinitions\Pubcomp">
       <UniqueIdentifier>{9e6a3c23-0bf8-4084-a9c9-a687ab8bb51d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MQTT\Broker\Subscription">
+      <UniqueIdentifier>{7321790d-912b-4ae1-9c9c-33b82a6ad2a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\Broker\Topics">
+      <UniqueIdentifier>{0d1da157-b6f1-4f8e-812b-8af2b337325b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MQTT\Broker\Session">
+      <UniqueIdentifier>{0736b69c-cae0-4b57-9d5f-971676344327}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -134,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
-    </ClInclude>
-    <ClInclude Include="MQTT\Broker\BrokerClient.h">
-      <Filter>MQTT\Broker</Filter>
     </ClInclude>
     <ClInclude Include="Asio\AsioConnectionFactory.h">
       <Filter>Asio\Server</Filter>
@@ -198,20 +204,26 @@
     <ClInclude Include="MQTT\Broker\ClientState.h">
       <Filter>MQTT\Broker</Filter>
     </ClInclude>
-    <ClInclude Include="MQTT\Broker\BrokerSession.h">
-      <Filter>MQTT\Broker</Filter>
-    </ClInclude>
     <ClInclude Include="MQTT\Broker\Subscription.h">
-      <Filter>MQTT\Broker</Filter>
-    </ClInclude>
-    <ClInclude Include="MQTT\Broker\Topic.h">
-      <Filter>MQTT\Broker</Filter>
-    </ClInclude>
-    <ClInclude Include="MQTT\Broker\TopicManager.h">
-      <Filter>MQTT\Broker</Filter>
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
     <ClInclude Include="MQTT\Broker\SubscriptionManager.h">
-      <Filter>MQTT\Broker</Filter>
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\TopicManager.h">
+      <Filter>MQTT\Broker\Topics</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\Topic.h">
+      <Filter>MQTT\Broker\Topics</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\BrokerSession.h">
+      <Filter>MQTT\Broker\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\BrokerClient.h">
+      <Filter>MQTT\Broker\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\SubscriptionStore.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +274,6 @@
     </ClCompile>
     <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
-    </ClCompile>
-    <ClCompile Include="MQTT\Broker\BrokerClient.cpp">
-      <Filter>MQTT\Broker</Filter>
     </ClCompile>
     <ClCompile Include="Asio\AsioConnectionFactory.cpp">
       <Filter>Asio\Server</Filter>
@@ -320,20 +329,26 @@
     <ClCompile Include="MQTT\Broker\ClientState.cpp">
       <Filter>MQTT\Broker</Filter>
     </ClCompile>
-    <ClCompile Include="MQTT\Broker\BrokerSession.cpp">
-      <Filter>MQTT\Broker</Filter>
-    </ClCompile>
     <ClCompile Include="MQTT\Broker\Subscription.cpp">
-      <Filter>MQTT\Broker</Filter>
-    </ClCompile>
-    <ClCompile Include="MQTT\Broker\Topic.cpp">
-      <Filter>MQTT\Broker</Filter>
-    </ClCompile>
-    <ClCompile Include="MQTT\Broker\TopicManager.cpp">
-      <Filter>MQTT\Broker</Filter>
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\Broker\SubscriptionManager.cpp">
-      <Filter>MQTT\Broker</Filter>
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\Topic.cpp">
+      <Filter>MQTT\Broker\Topics</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\TopicManager.cpp">
+      <Filter>MQTT\Broker\Topics</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\BrokerClient.cpp">
+      <Filter>MQTT\Broker\Session</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\BrokerSession.cpp">
+      <Filter>MQTT\Broker\Session</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\SubscriptionStore.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

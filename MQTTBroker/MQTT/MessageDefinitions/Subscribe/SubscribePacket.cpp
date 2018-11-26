@@ -6,7 +6,7 @@ namespace me
 {
 
 SubscribePacket::SubscribePacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacketId( 8, 1 << 1 )
+   : ControlPacketId( 0, 8, 1 << 1 )
 {
    if( ((aszData->data()[0] & 0xF) & (1 << 1)) == 0 )
    {

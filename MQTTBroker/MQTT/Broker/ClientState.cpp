@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ClientState.h"
+#include "Subscription.h"
 #include "BrokerClient.h"
 
 namespace me
@@ -10,7 +11,6 @@ ClientState::ClientState( )
 
 ClientState::~ClientState()
 {
-
 }
 
 void 
@@ -80,6 +80,30 @@ ClientState::GetPendingPubcomp()
 void 
 ClientState::AddPendingPubcomp( std::shared_ptr<ApplicationMessage> apMsg )
 {
+}
+
+void
+ClientState::Subscribe( std::shared_ptr<Subscription> apSub )
+{
+   m_setSubscriptions.insert( apSub );
+   apSub->RecordClient( shared_from_this() );
+}
+
+void
+ClientState::Unsubscribe( std::shared_ptr<Subscription> apSub )
+{
+   m_setSubscriptions.erase( apSub );
+   apSub->ReleaseClient( shared_from_this() );
+}
+
+void
+ClientState::UnsubscribeAll()
+{
+   for( auto sub : m_setSubscriptions )
+   {
+      sub->ReleaseClient( shared_from_this() );
+   }
+   m_setSubscriptions.clear();
 }
 
 }

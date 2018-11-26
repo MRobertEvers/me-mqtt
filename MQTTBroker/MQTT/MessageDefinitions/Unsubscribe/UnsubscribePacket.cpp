@@ -6,7 +6,7 @@ namespace me
 {
 
 UnsubscribePacket::UnsubscribePacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacketId( 10, 1 << 1 )
+   : ControlPacketId( 0, 10, 1 << 1 )
 {
    if( ((aszData->data()[0] & 0xF) & (1 << 1)) == 0 )
    {
@@ -47,6 +47,12 @@ UnsubscribePacket::UnsubscribePacket( unsigned short aiPacketId )
 
 UnsubscribePacket::~UnsubscribePacket()
 {
+}
+
+std::vector<me::pcstring> 
+UnsubscribePacket::GetUnsubscribeRequests() const
+{
+   return m_vecUnsubRequests;
 }
 
 std::string

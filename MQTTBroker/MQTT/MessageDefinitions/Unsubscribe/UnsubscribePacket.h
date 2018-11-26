@@ -13,6 +13,8 @@ public:
    UnsubscribePacket( unsigned short aiPacketId );
    ~UnsubscribePacket();
 
+   std::vector<me::pcstring> GetUnsubscribeRequests() const;
+
    // Inherited via ControlPacket
    virtual std::string SerializeBody() const override;
 private:

@@ -2,6 +2,7 @@
 #include "BroadcasterClient.h"
 #include "Broadcaster.h"
 #include "BrokerClient.h"
+#include "ClientState.h"
 #include "ApplicationMessage.h"
 
 namespace me
@@ -14,7 +15,7 @@ BroadcasterClient::BroadcasterClient(
 
 BroadcasterClient::~BroadcasterClient()
 {
-
+   m_pState->UnsubscribeAll();
 }
 
 void
@@ -24,15 +25,8 @@ BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
    if( pClient )
    {
       m_pClient = apClient;
-      m_pBroadcaster->ConnectClient( shared_from_this() );
-      m_szClientName = pClient->GetClientName();
+      m_pState = m_pBroadcaster->ConnectClient( shared_from_this() );
    }
-}
-
-me::pcstring 
-BroadcasterClient::GetClientName() const
-{
-   return m_szClientName;
 }
 
 std::weak_ptr<BrokerClient>
@@ -56,7 +50,13 @@ BroadcasterClient::BroadcastPublishMessage(
 void
 BroadcasterClient::SubscribeToTopic( me::pcstring apszTopicFilter ) const
 {
+   m_pBroadcaster->Subscribe( m_pState, apszTopicFilter );
+}
 
+void 
+BroadcasterClient::UnsubscribeFromTopic( me::pcstring apszTopicFilter ) const
+{
+   m_pBroadcaster->Unsubscribe( m_pState, apszTopicFilter );
 }
 
 }

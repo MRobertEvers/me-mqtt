@@ -166,6 +166,7 @@
     <ClInclude Include="MQTT\Broker\ClientStateLedger.h" />
     <ClInclude Include="MQTT\Broker\Subscription.h" />
     <ClInclude Include="MQTT\Broker\SubscriptionManager.h" />
+    <ClInclude Include="MQTT\Broker\SubscriptionStore.h" />
     <ClInclude Include="MQTT\Broker\Topic.h" />
     <ClInclude Include="MQTT\Broker\TopicManager.h" />
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="MQTT\Broker\ClientStateLedger.cpp" />
     <ClCompile Include="MQTT\Broker\Subscription.cpp" />
     <ClCompile Include="MQTT\Broker\SubscriptionManager.cpp" />
+    <ClCompile Include="MQTT\Broker\SubscriptionStore.cpp" />
     <ClCompile Include="MQTT\Broker\Topic.cpp" />
     <ClCompile Include="MQTT\Broker\TopicManager.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\ControlPacketId.cpp" />

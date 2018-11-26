@@ -4,7 +4,7 @@
 namespace me
 {
 UnsubackPacket::UnsubackPacket( unsigned short aiPacketId )
-   : ControlPacketId( aiPacketId, 11 )
+   : ControlPacketId( aiPacketId, 11, 0x00 )
 {
 }
 

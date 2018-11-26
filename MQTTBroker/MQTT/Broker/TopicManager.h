@@ -6,7 +6,7 @@
 namespace me
 {
 
-class TopicManager
+class TopicManager : public std::enable_shared_from_this<TopicManager>
 {
 public:
    TopicManager();

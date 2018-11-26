@@ -5,7 +5,7 @@
 namespace me
 {
 PubrelPacket::PubrelPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacketId( 5, 1 << 1 )
+   : ControlPacketId( 0, 5, 1 << 1 )
 {
    if( ((aszData->data()[0] & 0xF) & (1 << 1)) == 0 )
    {

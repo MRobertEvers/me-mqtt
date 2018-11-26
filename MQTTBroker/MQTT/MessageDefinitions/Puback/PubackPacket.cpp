@@ -4,7 +4,7 @@
 namespace me
 {
 PubackPacket::PubackPacket( me::pcstring aszData, unsigned char aiFixedHeaderSize )
-   : ControlPacketId( 4, 0x00 )
+   : ControlPacketId( 0, 4, 0x00 )
 {
    // Parse the connect Packet
    const char* data = aszData->data();
