@@ -2,10 +2,12 @@
 #include "ClientState.h"
 #include "Subscription.h"
 #include "BrokerClient.h"
+#include "ClientStateLedger.h"
 
 namespace me
 {
-ClientState::ClientState( )
+ClientState::ClientState( me::pcstring apszClientName, std::weak_ptr<ClientStateLedger> apManager )
+   : m_pManager(apManager), m_pszClientName(apszClientName)
 {
 }
 
@@ -165,6 +167,14 @@ ClientState::UnsubscribeAll()
       sub->ReleaseClient( shared_from_this() );
    }
    m_setSubscriptions.clear();
+}
+
+void 
+ClientState::Destroy()
+{
+   UnsubscribeAll();
+
+   m_pManager.lock()->DeleteClient( m_pszClientName );
 }
 
 }

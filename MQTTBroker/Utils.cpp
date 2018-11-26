@@ -3,6 +3,12 @@
 
 namespace me
 {
+bool 
+utils::pcstringless::operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
+{
+   return *lhs < *rhs;
+}
+
 std::string
 utils::read_utf8_string( const char* apData, size_t aDataSize )
 {

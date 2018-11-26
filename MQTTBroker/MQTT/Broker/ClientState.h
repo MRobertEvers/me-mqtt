@@ -12,11 +12,13 @@ namespace me
 {
 class BrokerClient;
 class Subscription;
+class ClientStateLedger;
 
+// ClientState shared_ptrs are stored by the Subscription class and is owned by the ClientStateLedger.
 class ClientState : public std::enable_shared_from_this<ClientState>
 {
 public:
-   ClientState( );
+   ClientState( me::pcstring apszClientName, std::weak_ptr<ClientStateLedger> apManager );
    ~ClientState();
 
    void SetWatcher( std::weak_ptr<BrokerClient> apSource );
@@ -41,6 +43,8 @@ public:
    void Subscribe( std::shared_ptr<Subscription> apSub, unsigned char maxQOS );
    void Unsubscribe( std::shared_ptr<Subscription> apSub );
    void UnsubscribeAll();
+
+   void Destroy();
 private:
    // ClientStates own subscriptions. When a subscription no longer has any subscribers
    // then the subscription removes itself from the sub manager.
@@ -62,6 +66,10 @@ private:
 
    // STORE INFLIGHT IDS HERE??? TODO:
 
+   // This is the "observer"
    std::weak_ptr<BrokerClient> m_pSource;
+
+   std::weak_ptr<ClientStateLedger> m_pManager;
+   me::pcstring m_pszClientName;
 };
 }

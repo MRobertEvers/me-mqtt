@@ -7,7 +7,7 @@ namespace me
 {
 class ClientState;
 
-class ClientStateLedger
+class ClientStateLedger : public std::enable_shared_from_this<ClientStateLedger>
 {
 public:
    ClientStateLedger();

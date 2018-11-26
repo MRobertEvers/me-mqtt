@@ -85,6 +85,7 @@ Broadcaster::CreateClient()
 std::shared_ptr<ClientState>
 me::Broadcaster::ConnectClient( std::weak_ptr<BroadcasterClient> apClient )
 {
+   // This needs to be synchronized.
    auto pClient = apClient.lock()->GetClient().lock();
 
    auto pExistState = m_pClients->FindClient( pClient->GetClientName() );
@@ -99,6 +100,12 @@ me::Broadcaster::ConnectClient( std::weak_ptr<BroadcasterClient> apClient )
 
    pExistState->SetWatcher( pClient );
    return pExistState;
+}
+
+void 
+Broadcaster::DisconnectClient( std::weak_ptr<BroadcasterClient> apClient )
+{
+   // This needs to be synchronized.
 }
 
 void 

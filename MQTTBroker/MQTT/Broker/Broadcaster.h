@@ -24,6 +24,7 @@ public:
    std::shared_ptr<BroadcasterClient> CreateClient();
 
    std::shared_ptr<ClientState> ConnectClient( std::weak_ptr<BroadcasterClient> apClient );
+   void DisconnectClient( std::weak_ptr<BroadcasterClient> apClient );
 
 private:
    void subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS );

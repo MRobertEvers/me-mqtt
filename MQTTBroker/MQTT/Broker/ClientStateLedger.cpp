@@ -37,7 +37,11 @@ ClientStateLedger::CreateClient( me::pcstring apszClientname )
       throw;
    }
 
-   auto p = std::make_shared<ClientState>();
+   auto p = std::make_shared<ClientState>( 
+      apszClientname, 
+      shared_from_this()->weak_from_this() 
+      );
+
    m_mapStates.emplace( apszClientname, p );
    
    return p;

@@ -10,10 +10,7 @@ namespace utils
 struct pcstringless
 {
 public:
-   bool operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
-   {
-      return *lhs < *rhs;
-   }
+   bool operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const;
 };
 
 inline

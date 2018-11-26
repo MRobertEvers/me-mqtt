@@ -15,6 +15,8 @@ BroadcasterClient::BroadcasterClient(
 
 BroadcasterClient::~BroadcasterClient()
 {
+   // If the client disconnects and the clean session flag was set, then
+   // the session needs to be released.
    m_pState->UnsubscribeAll();
 }
 

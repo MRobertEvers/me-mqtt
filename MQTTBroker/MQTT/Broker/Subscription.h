@@ -11,6 +11,7 @@ class ClientState;
 class Subscription
 {
 public:
+   // Weak pointer to the manager so a subscription can release itself
    Subscription( me::pcstring apszFilter, std::weak_ptr<SubscriptionManager> apManager );
    ~Subscription();
 

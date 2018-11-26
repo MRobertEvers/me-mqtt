@@ -27,6 +27,10 @@ BrokerClient::~BrokerClient()
    // Unsubscribe to state; Actually we dont need to do 
    // this because the weak pointer will see
    // we have disconnected.
+   if( m_pConnectPacket->GetCleanSession() )
+   {
+      m_pBroadcaster->GetState()->Destroy();
+   }
 }
 
 void 
