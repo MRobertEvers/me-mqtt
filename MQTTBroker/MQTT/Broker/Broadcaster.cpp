@@ -185,8 +185,8 @@ Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 void
 Broadcaster::disconnect( std::weak_ptr<BroadcasterClient> apClient )
 {
-   auto pClient = apClient.lock()->GetClient().lock();
-   m_pClients->DeleteClient( pClient->GetClientName() );
+   auto pszClient = apClient.lock()->GetClientName();
+   m_pClients->DeleteClient( pszClient );
 }
 
 }

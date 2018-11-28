@@ -21,6 +21,7 @@ public:
 
    void ConnectClient( std::weak_ptr<BrokerClient> apClient );
    void DisconnectClient( bool abSaveState );
+   me::pcstring GetClientName() const;
    std::weak_ptr<BrokerClient> GetClient() const;
    std::shared_ptr<ClientState> GetState();
 
@@ -30,6 +31,7 @@ public:
    void UnsubscribeFromTopics( unsigned short aiRequestIds, std::vector<me::pcstring> apszTopicFilter ) const;
 
 private:
+   me::pcstring m_pszClientName;
    std::shared_ptr<ClientState> m_pState;
    std::shared_ptr<Broadcaster> m_pBroadcaster;
    std::weak_ptr<BrokerClient> m_pClient;

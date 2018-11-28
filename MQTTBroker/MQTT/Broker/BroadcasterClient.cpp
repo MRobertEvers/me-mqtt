@@ -27,6 +27,7 @@ BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
    if( pClient )
    {
       m_pClient = apClient;
+      m_pszClientName = pClient->GetClientName();
       m_pState = m_pBroadcaster->ConnectClient( shared_from_this() );
    }
 }
@@ -34,10 +35,16 @@ BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
 void
 BroadcasterClient::DisconnectClient( bool abSaveState )
 {
-   if( abSaveState )
+   if( !abSaveState )
    {
       m_pBroadcaster->DisconnectClient( shared_from_this() );
    }
+}
+
+me::pcstring
+BroadcasterClient::GetClientName() const
+{
+   return m_pszClientName;
 }
 
 std::weak_ptr<BrokerClient>
