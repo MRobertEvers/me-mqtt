@@ -41,17 +41,24 @@ public:
    std::shared_ptr<ApplicationMessage> ReleasePendingPubcomp( unsigned short aiId );
 
    void Subscribe( std::shared_ptr<Subscription> apSub, unsigned char maxQOS );
+   void NotifySubscribe( unsigned short aiRequestId, std::vector<unsigned char> avecSub );
    void Unsubscribe( std::shared_ptr<Subscription> apSub );
+   void NotifyUnubscribe( unsigned short aiRequestId );
    void UnsubscribeAll();
 
    void Destroy();
 private:
+
+   // STATE HANDLED ON BROADCASTER STRAND
+
    // ClientStates own subscriptions. When a subscription no longer has any subscribers
    // then the subscription removes itself from the sub manager.
    std::set<std::shared_ptr<Subscription>> m_setSubscriptions;
 
    // Messages waiting to be sent out.
    std::queue<std::shared_ptr<ApplicationMessage>> m_qPendingOutbound;
+
+   // STATE HANDLED BY BROKERCLIENT
 
    // 'Sent' below means TO THE CLIENT.
    // Sent QOS 1 messages that have not been puback'd by the client.

@@ -153,10 +153,30 @@ ClientState::Subscribe( std::shared_ptr<Subscription> apSub, unsigned char maxQO
 }
 
 void
+ClientState::NotifySubscribe( unsigned short aiRequestId, std::vector<unsigned char> avecSub )
+{
+   auto s = m_pSource.lock();
+   if( s )
+   {
+      s->NotifySubscribed( aiRequestId, avecSub );
+   }
+}
+
+void
 ClientState::Unsubscribe( std::shared_ptr<Subscription> apSub )
 {
    m_setSubscriptions.erase( apSub );
    apSub->ReleaseClient( shared_from_this() );
+}
+
+void 
+ClientState::NotifyUnubscribe(unsigned short aiRequestId)
+{
+   auto s = m_pSource.lock();
+   if( s )
+   {
+      s->NotifyUnsubscribed( aiRequestId );
+   }
 }
 
 void

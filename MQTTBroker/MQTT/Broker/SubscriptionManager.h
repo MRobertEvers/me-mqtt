@@ -1,6 +1,7 @@
 #pragma once
 #include "Definitions.h"
 #include "ClientStateLedger.h"
+#include "Broker\SubscribeRequest.h"
 #include "Utils.h"
 #include <string>
 #include <map>
@@ -14,8 +15,10 @@ public:
    SubscriptionManager();
    ~SubscriptionManager();
 
-   void Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter, unsigned char maxQOS );
-   void Unsubscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter );
+   void Subscribe( std::shared_ptr<ClientState> apszClientName,
+      unsigned short aiRequestId, std::vector<SubscribeRequest> avecTopics );
+   void Unsubscribe( std::shared_ptr<ClientState> apszClientName,
+      unsigned short aiRequestId, std::vector<me::pcstring> avecTopics );
    std::vector<std::shared_ptr<Subscription>> GetSubscriptions( me::pcstring apszTopicName );
 
    void ReleaseSubscription( me::pcstring apszTopicFilter );

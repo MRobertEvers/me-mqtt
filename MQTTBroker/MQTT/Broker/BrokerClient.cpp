@@ -6,6 +6,7 @@
 #include "Broker/BroadcasterClient.h"
 #include "PingResp\PingRespPacket.h"
 #include "ClientState.h"
+#include "asio.hpp"
 #include "ApplicationMessage.h"
 #include "BroadcasterClient.h"
 
@@ -27,10 +28,7 @@ BrokerClient::~BrokerClient()
    // Unsubscribe to state; Actually we dont need to do 
    // this because the weak pointer will see
    // we have disconnected.
-   if( m_pConnectPacket->GetCleanSession() )
-   {
-      m_pBroadcaster->GetState()->Destroy();
-   }
+   m_pBroadcaster->DisconnectClient( !m_pConnectPacket->GetCleanSession() );
 }
 
 void 
@@ -49,7 +47,8 @@ void
 BrokerClient::Respond( bool abSessionPresent, unsigned char aiResponse )
 {
    // Does not perform any validation of response.
-   m_pConnection->WriteAsync( ConnackPacket( aiResponse, aiResponse ).Serialize() );
+   m_pConnection->WriteAsync( 
+      ConnackPacket( aiResponse, aiResponse ).Serialize() );
 }
 
 void
@@ -65,27 +64,22 @@ BrokerClient::GetClientName() const
 }
 
 
-
 void 
 BrokerClient::PublishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
-   unsigned short aiPacketId = 51;
-   // TODO need duplicate and packet id.
-   m_pConnection->WriteAsync( PublishPacket(
-      apMsg->GetTopic(), apMsg->GetPayload(), false, apMsg->GetQOS(), apMsg->GetRetainFlag(), aiPacketId
-   ).Serialize() );
+   publishTo( apMsg );
+}
 
-   auto qos = apMsg->GetQOS();
-   if( qos == 1 )
-   {
-      auto cState = m_pBroadcaster->GetState();
-      cState->AddPendingPuback( aiPacketId, apMsg );
-   }
-   else if( qos == 2 )
-   {
-      auto cState = m_pBroadcaster->GetState();
-      cState->AddPendingPubrec( aiPacketId, apMsg );
-   }
+void
+BrokerClient::NotifyUnsubscribed( unsigned short aiRequestId )
+{
+   notifyUnsubscribed( aiRequestId );
+}
+
+void
+BrokerClient::NotifySubscribed( unsigned short aiRequestId, std::vector<unsigned char> avecResponses )
+{
+   notifySubscribed( aiRequestId, avecResponses );
 }
 
 void
@@ -107,7 +101,7 @@ BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
 void
 BrokerClient::HandleConnack( std::shared_ptr<ConnackPacket> apPacket )
 {
-
+   m_pConnection->Stop();
 }
 
 void
@@ -119,7 +113,7 @@ BrokerClient::HandlePingReq( std::shared_ptr<PingReqPacket> apPacket )
 void
 BrokerClient::HandlePingResp( std::shared_ptr<PingRespPacket> apPacket )
 {
-
+   m_pConnection->Stop();
 }
 
 void
@@ -139,13 +133,15 @@ BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
    unsigned char iQos = apPacket->GetQOS();
    if( iQos == 1 )
    {
-      m_pConnection->WriteAsync( PubackPacket( apPacket->GetPacketId() ).Serialize() );
+      m_pConnection->WriteAsync(
+         PubackPacket( apPacket->GetPacketId() ).Serialize() );
    }
    else if( iQos == 2 )
    {
       auto cState = m_pBroadcaster->GetState();
       cState->AddPendingPubrel( apPacket->GetPacketId(), pMessage );
-      m_pConnection->WriteAsync( PubrecPacket( apPacket->GetPacketId() ).Serialize() );
+      m_pConnection->WriteAsync(
+         PubrecPacket( apPacket->GetPacketId() ).Serialize() );
    }
 
    if( iQos < 2 )
@@ -179,7 +175,8 @@ BrokerClient::HandlePubrec( std::shared_ptr<PubrecPacket> apPacket )
    if( msg )
    {
       cState->AddPendingPubcomp( apPacket->GetPacketId(), msg );
-      m_pConnection->WriteAsync( PubrelPacket( apPacket->GetPacketId() ).Serialize() );
+      m_pConnection->WriteAsync( 
+         PubrelPacket( apPacket->GetPacketId() ).Serialize() );
    }
    else
    {
@@ -194,7 +191,8 @@ BrokerClient::HandlePubrel( std::shared_ptr<PubrelPacket> apPacket )
    auto msg = cState->ReleasePendingPubrel( apPacket->GetPacketId() );
    if( msg )
    {
-      m_pConnection->WriteAsync( PubcompPacket( apPacket->GetPacketId() ).Serialize() );
+      m_pConnection->WriteAsync( 
+         PubcompPacket( apPacket->GetPacketId() ).Serialize() );
 
       m_pBroadcaster->BroadcastPublishMessage(
          msg
@@ -225,36 +223,97 @@ BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 void
 BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 {
-   std::vector<unsigned char> vecResponses;
-   for( auto subReqs : apPacket->GetSubscribeRequests() )
-   {
-      m_pBroadcaster->SubscribeToTopic( subReqs.Topic, subReqs.QOS );
-      vecResponses.push_back( subReqs.QOS );
-   }
-
-   SubackPacket pc( apPacket->GetPacketId(), vecResponses );
-   m_pConnection->WriteAsync( pc.Serialize() );
+   m_pBroadcaster->SubscribeToTopics( apPacket->GetPacketId(), apPacket->GetSubscribeRequests() );
 }
 
 void
 BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
 {
+   m_pConnection->Stop();
 }
 
 void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
-   for( auto subReqs : apPacket->GetUnsubscribeRequests() )
-   {
-      m_pBroadcaster->UnsubscribeFromTopic( subReqs );
-   }
-
-   m_pConnection->WriteAsync( UnsubackPacket( apPacket->GetPacketId() ).Serialize() );
+   m_pBroadcaster->UnsubscribeFromTopics( apPacket->GetPacketId(), apPacket->GetUnsubscribeRequests() );
 }
 
 void
 BrokerClient::HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket )
 {
+   m_pConnection->Stop();
+}
+
+void 
+BrokerClient::publishTo( std::shared_ptr<ApplicationMessage> apMsg )
+{
+   auto pPublish = 
+      [this, self=shared_from_this(), msg = apMsg]()
+   {
+      unsigned short aiPacketId = 51;
+      // TODO need duplicate and packet id.
+      m_pConnection->WriteAsync( PublishPacket(
+         msg->GetTopic(), msg->GetPayload(), false,
+         msg->GetQOS(), msg->GetRetainFlag(), aiPacketId
+      ).Serialize() );
+
+      auto qos = msg->GetQOS();
+      if( qos == 1 )
+      {
+         auto cState = m_pBroadcaster->GetState();
+         cState->AddPendingPuback( aiPacketId, msg );
+      }
+      else if( qos == 2 )
+      {
+         auto cState = m_pBroadcaster->GetState();
+         cState->AddPendingPubrec( aiPacketId, msg );
+      }
+   };
+
+   asio::post(
+      m_pConnection->GetStrand()->get_io_context().get_executor(),
+      m_pConnection->GetStrand()->wrap( pPublish )
+   );
+
+}
+
+void 
+BrokerClient::notifyUnsubscribed(unsigned short aiPacketId)
+{
+   auto pUnsubscribe =
+      [this, self = shared_from_this(), aiPacketId]()
+   {
+      m_pConnection->WriteAsync(
+         UnsubackPacket( aiPacketId ).Serialize() );
+   };
+
+   asio::post(
+      m_pConnection->GetStrand()->get_io_context().get_executor(),
+      m_pConnection->GetStrand()->wrap( pUnsubscribe )
+   );
+}
+
+void 
+BrokerClient::notifySubscribed(
+   unsigned short aiPacketId, std::vector<unsigned char> avecResponses )
+{
+   auto pSubscribe =
+      [this, self = shared_from_this(), aiPacketId, avecResponses]()
+   {
+      std::vector<unsigned char> vecResponses;
+      for( auto subReqs : avecResponses )
+      {
+         vecResponses.push_back( subReqs );
+      }
+
+      SubackPacket pc( aiPacketId, vecResponses );
+      m_pConnection->WriteAsync( pc.Serialize() );
+   };
+
+   asio::post(
+      m_pConnection->GetStrand()->get_io_context().get_executor(),
+      m_pConnection->GetStrand()->wrap( pSubscribe )
+   );
 }
 
 }

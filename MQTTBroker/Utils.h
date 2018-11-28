@@ -6,23 +6,17 @@ namespace me
 {
 namespace utils
 {
-
 struct pcstringless
 {
 public:
    bool operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const;
 };
 
-inline
-unsigned short read_utf8_string_size( const char* apData )
-{
-   return (((unsigned short)apData[0]) << 8) | apData[1];
-}
+unsigned short read_utf8_string_size( const char* apData );
 
-std::string
-read_utf8_string( const char* apData, size_t aDataSize );
+std::string read_utf8_string( const char* apData, size_t aDataSize );
 
-void
-encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize );
+void encode_utf8_string( 
+   std::string const& aszStr, char* rpBuf, unsigned short aiBufSize );
 }
 }

@@ -28,13 +28,17 @@ Broadcaster::~Broadcaster()
 }
 
 void
-Broadcaster::Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS )
+Broadcaster::Subscribe( 
+   std::shared_ptr<ClientState> apClient,
+   unsigned short aiRequestId,
+   std::vector<SubscribeRequest> avecTopics )
 {
    auto postCB =
-      [this, self=shared_from_this(), client= apClient, topic=apszTopic, qos=maxQOS]
+      [this, self=shared_from_this(), 
+      client=apClient, topics= avecTopics, aiRequestId]
    ()
    {
-      self->subscribe( client, topic, qos );
+      self->subscribe( client, aiRequestId, topics );
    };
 
    asio::post(
@@ -44,13 +48,17 @@ Broadcaster::Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apsz
 }
 
 void 
-Broadcaster::Unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic )
+Broadcaster::Unsubscribe( 
+   std::shared_ptr<ClientState> apClient,
+   unsigned short aiRequestId,
+   std::vector<me::pcstring> avecTopics )
 {
    auto postCB =
-      [this, self = shared_from_this(), client = apClient, topic = apszTopic]
+      [this, self = shared_from_this(), 
+      aiRequestId, client = apClient, topics = avecTopics]
    ()
    {
-      self->unsubscribe( client, topic );
+      self->unsubscribe( client, aiRequestId, topics );
    };
 
    asio::post(
@@ -106,30 +114,56 @@ void
 Broadcaster::DisconnectClient( std::weak_ptr<BroadcasterClient> apClient )
 {
    // This needs to be synchronized.
+   auto pDisconnect =
+      [this, self = shared_from_this(), pClient = apClient.lock()]
+   ()
+   {
+      self->disconnect( pClient );
+   };
+
+   asio::post(
+      m_pService->GetService()->get_executor(),
+      m_pStrand->wrap( pDisconnect )
+   );
 }
 
 void 
-Broadcaster::subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS )
+Broadcaster::subscribe( 
+   std::shared_ptr<ClientState> apClient,
+   unsigned short aiRequestId,
+   std::vector<SubscribeRequest> avecTopics )
 {
-   // I have a topic filter. I want all topic that match that filter with retained messages.
+   // I have a topic filter. I want all topic that match that filter with 
+   // retained messages.
    // And register myself as listening to that topic.
    // Get Retained messages
    // Subscribe
-   m_pSubscriptionManager->Subscribe( apClient, apszTopic, maxQOS );
+
+      // TODO: Get result from subscribe, then notify client
+   m_pSubscriptionManager->Subscribe( apClient, aiRequestId, avecTopics );
 }
 
 void 
-Broadcaster::unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic )
+Broadcaster::unsubscribe( 
+   std::shared_ptr<ClientState> apClient,
+   unsigned short aiRequestId, 
+   std::vector<me::pcstring> avecTopics )
 {
-   // I have a topic filter. I want to find the topic filter that matches exactly.
-   m_pSubscriptionManager->Unsubscribe( apClient, apszTopic );
+   // I have a topic filter. I want to find the topic filter that
+   // matches exactly.
+
+   m_pSubscriptionManager->Unsubscribe( apClient, aiRequestId, avecTopics );
+   
 }
 
 void
 Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {
-   // I have a topic name. I want to find all clients subscribed toa  matching filter
-   auto subs = m_pSubscriptionManager->GetSubscriptions( apMessage->GetTopic() );
+   // I have a topic name. I want to find all clients subscribed to
+   // matching filter
+   auto subs = m_pSubscriptionManager->GetSubscriptions( 
+      apMessage->GetTopic() 
+   );
    for( auto sub : subs )
    {
       auto subers = sub->GetSubscribers();
@@ -146,6 +180,13 @@ Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
          suber.first->AddPendingOutbound( pOutbound );
       }
    }
+}
+
+void
+Broadcaster::disconnect( std::weak_ptr<BroadcasterClient> apClient )
+{
+   auto pClient = apClient.lock()->GetClient().lock();
+   m_pClients->DeleteClient( pClient->GetClientName() );
 }
 
 }

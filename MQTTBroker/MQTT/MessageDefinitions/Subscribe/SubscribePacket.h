@@ -1,24 +1,11 @@
 #pragma once
 #include "ControlPacketId.h"
 #include "Definitions.h"
+#include "Broker\SubscribeRequest.h"
+
 
 namespace me
 {
-struct SubscribeRequest
-{
-   me::pcstring Topic;
-   unsigned char QOS;
-   SubscribeRequest( char const* apData, size_t aSize, unsigned char aQOS )
-   {
-      Topic = std::make_shared<std::string>( apData, aSize );
-      QOS = aQOS;
-   }
-   SubscribeRequest( std::string aTopic, unsigned char aQOS )
-   {
-      Topic = std::make_shared<std::string>(aTopic);
-      QOS = aQOS;
-   }
-};
 
 class SubscribePacket :
    public ControlPacketId

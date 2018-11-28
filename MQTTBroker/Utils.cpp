@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "Utils.h"
 
-namespace me
-{
 bool 
-utils::pcstringless::operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
+me::utils::pcstringless::operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
 {
    return *lhs < *rhs;
 }
 
+unsigned short
+me::utils::read_utf8_string_size( const char* apData )
+{
+   return (((unsigned short)apData[0]) << 8) | apData[1];
+}
+
 std::string
-utils::read_utf8_string( const char* apData, size_t aDataSize )
+me::utils::read_utf8_string( const char* apData, size_t aDataSize )
 {
    std::string szRetval;
    unsigned short len = read_utf8_string_size( apData );
@@ -22,7 +26,7 @@ utils::read_utf8_string( const char* apData, size_t aDataSize )
 }
 
 void
-utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
+me::utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
 {
    char const* data = aszStr.data();
    size_t len = aszStr.size() & 0xFFFF;
@@ -30,5 +34,4 @@ utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned shor
    rpBuf[0] = len >> 8;
    rpBuf[1] = len & 0x00FF;
    memcpy_s( rpBuf+2, aiBufSize-2, data, len );
-}
 }

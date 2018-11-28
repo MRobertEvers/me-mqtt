@@ -225,6 +225,12 @@
     <ClInclude Include="MQTT\Broker\SubscriptionStore.h">
       <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\Broker\SubscribeRequest.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -237,12 +243,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RingBuffer.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.h">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\MQTTConnection.cpp">
@@ -349,6 +349,12 @@
     </ClCompile>
     <ClCompile Include="MQTT\Broker\SubscriptionStore.cpp">
       <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\SubscribeRequest.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

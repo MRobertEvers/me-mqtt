@@ -1,5 +1,6 @@
 #pragma once
 #include "Definitions.h"
+#include "SubscribeRequest.h"
 #include <string>
 #include <memory>
 
@@ -19,13 +20,14 @@ public:
    ~BroadcasterClient();
 
    void ConnectClient( std::weak_ptr<BrokerClient> apClient );
+   void DisconnectClient( bool abSaveState );
    std::weak_ptr<BrokerClient> GetClient() const;
    std::shared_ptr<ClientState> GetState();
 
    void BroadcastPublishMessage( 
       std::shared_ptr<ApplicationMessage> apMsg ) const;
-   void SubscribeToTopic( me::pcstring apszTopicFilter, unsigned char maxQOS ) const;
-   void UnsubscribeFromTopic( me::pcstring apszTopicFilter ) const;
+   void SubscribeToTopics( unsigned short aiRequestIds, std::vector<SubscribeRequest> avecTopics ) const;
+   void UnsubscribeFromTopics( unsigned short aiRequestIds, std::vector<me::pcstring> apszTopicFilter ) const;
 
 private:
    std::shared_ptr<ClientState> m_pState;

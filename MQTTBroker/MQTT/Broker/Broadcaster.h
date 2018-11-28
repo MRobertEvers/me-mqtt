@@ -2,6 +2,7 @@
 #include "AsioService.h"
 #include "ApplicationMessage.h"
 #include "Definitions.h"
+#include "SubscribeRequest.h"
 #include <map>
 
 namespace me
@@ -18,8 +19,10 @@ public:
    Broadcaster( std::shared_ptr<AsioService> apIOService );
    ~Broadcaster();
 
-   void Subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS );
-   void Unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
+   void Subscribe( std::shared_ptr<ClientState> apClient, 
+      unsigned short aiRequestId, std::vector<SubscribeRequest> avecTopics );
+   void Unsubscribe( std::shared_ptr<ClientState> apClient,
+      unsigned short aiRequestId, std::vector<me::pcstring> avecTopics );
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
 
@@ -27,9 +30,12 @@ public:
    void DisconnectClient( std::weak_ptr<BroadcasterClient> apClient );
 
 private:
-   void subscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic, unsigned char maxQOS );
-   void unsubscribe( std::shared_ptr<ClientState> apClient, me::pcstring apszTopic );
+   void subscribe( std::shared_ptr<ClientState> apClient,
+      unsigned short aiRequestId, std::vector<SubscribeRequest> avecTopics );
+   void unsubscribe( std::shared_ptr<ClientState> apClient,
+      unsigned short aiRequestId, std::vector<me::pcstring> avecTopics );
    void broadcast( std::shared_ptr<ApplicationMessage> apMessage );
+   void disconnect( std::weak_ptr<BroadcasterClient> apClient );
 
    std::shared_ptr<AsioService> m_pService;
    std::shared_ptr<asio::io_service::work> m_pWork;

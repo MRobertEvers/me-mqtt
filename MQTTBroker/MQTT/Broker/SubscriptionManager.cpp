@@ -15,38 +15,54 @@ SubscriptionManager::~SubscriptionManager()
 
 }
 void
-SubscriptionManager::Subscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter, unsigned char maxQOS )
+SubscriptionManager::Subscribe( 
+   std::shared_ptr<ClientState> apszClientName,
+   unsigned short aiRequestId,
+   std::vector<SubscribeRequest> avecTopics )
 {
-   std::shared_ptr<Subscription> pSub;
-   auto iter_sub = m_mapFilters.find( apszTopicFilter );
-   if( iter_sub != m_mapFilters.end() )
+   std::vector<unsigned char> vecResponses;
+   for( auto topic : avecTopics )
    {
-      pSub = iter_sub->second.lock();
-   }
-   
-   if( !pSub )
-   {
-      pSub = std::make_shared<Subscription>( apszTopicFilter, shared_from_this() );
-      m_mapFilters.emplace( apszTopicFilter, pSub );
+      std::shared_ptr<Subscription> pSub;
+      auto iter_sub = m_mapFilters.find( topic.Topic );
+      if( iter_sub != m_mapFilters.end() )
+      {
+         pSub = iter_sub->second.lock();
+      }
+
+      if( !pSub )
+      {
+         pSub = std::make_shared<Subscription>( topic.Topic, shared_from_this() );
+         m_mapFilters.emplace( topic.Topic, pSub );
+      }
+      vecResponses.push_back( topic.QOS );
+      apszClientName->Subscribe( pSub, topic.QOS );
    }
 
-   apszClientName->Subscribe( pSub, maxQOS );
+   apszClientName->NotifySubscribe( aiRequestId, vecResponses );
 }
 
 void 
-SubscriptionManager::Unsubscribe( std::shared_ptr<ClientState> apszClientName, me::pcstring apszTopicFilter )
+SubscriptionManager::Unsubscribe( 
+   std::shared_ptr<ClientState> apszClientName,
+   unsigned short aiRequestId,
+   std::vector<me::pcstring> avecTopics )
 {
-   std::shared_ptr<Subscription> pSub;
-   auto iter_sub = m_mapFilters.find( apszTopicFilter );
-   if( iter_sub != m_mapFilters.end() )
+   for( auto topic : avecTopics )
    {
-      pSub = iter_sub->second.lock();
-   }
+      std::shared_ptr<Subscription> pSub;
+      auto iter_sub = m_mapFilters.find( topic );
+      if( iter_sub != m_mapFilters.end() )
+      {
+         pSub = iter_sub->second.lock();
+      }
 
-   if( pSub )
-   {
-      pSub->ReleaseClient( apszClientName );
+      if( pSub )
+      {
+         pSub->ReleaseClient( apszClientName );
+      }
    }
+   apszClientName->NotifyUnubscribe( aiRequestId );
 }
 
 std::vector<std::shared_ptr<Subscription>>

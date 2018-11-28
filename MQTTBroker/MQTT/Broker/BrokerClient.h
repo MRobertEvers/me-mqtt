@@ -26,6 +26,8 @@ public:
    me::pcstring GetClientName() const;
 
    void PublishTo( std::shared_ptr<ApplicationMessage> apMsg );
+   void NotifyUnsubscribed( unsigned short aiRequestId );
+   void NotifySubscribed( unsigned short aiRequestId, std::vector<unsigned char> avecResponses);
 
    // Inherited via IMessageHandler
    virtual void HandleConnect( std::shared_ptr<ConnectPacket> apPacket ) override;
@@ -43,6 +45,9 @@ public:
    virtual void HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket ) override;
    virtual void HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket ) override;
 private:
+   void publishTo( std::shared_ptr<ApplicationMessage> apMsg );
+   void notifyUnsubscribed( unsigned short aiPacketId );
+   void notifySubscribed( unsigned short aiPacketId, std::vector<unsigned char> avecResponses );
 
    std::shared_ptr<ConnectPacket> m_pConnectPacket;
    std::shared_ptr<BroadcasterClient> m_pBroadcaster;

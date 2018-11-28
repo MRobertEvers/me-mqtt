@@ -31,6 +31,15 @@ BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
    }
 }
 
+void
+BroadcasterClient::DisconnectClient( bool abSaveState )
+{
+   if( abSaveState )
+   {
+      m_pBroadcaster->DisconnectClient( shared_from_this() );
+   }
+}
+
 std::weak_ptr<BrokerClient>
 BroadcasterClient::GetClient() const
 {
@@ -51,15 +60,19 @@ BroadcasterClient::BroadcastPublishMessage(
 }
 
 void
-BroadcasterClient::SubscribeToTopic( me::pcstring apszTopicFilter, unsigned char maxQOS ) const
+BroadcasterClient::SubscribeToTopics( 
+   unsigned short aiRequestIds,
+   std::vector<SubscribeRequest> avecTopics ) const
 {
-   m_pBroadcaster->Subscribe( m_pState, apszTopicFilter, maxQOS );
+   m_pBroadcaster->Subscribe( m_pState, aiRequestIds, avecTopics );
 }
 
 void 
-BroadcasterClient::UnsubscribeFromTopic( me::pcstring apszTopicFilter ) const
+BroadcasterClient::UnsubscribeFromTopics(
+   unsigned short aiRequestIds,
+   std::vector<me::pcstring> apszTopicFilter ) const
 {
-   m_pBroadcaster->Unsubscribe( m_pState, apszTopicFilter );
+   m_pBroadcaster->Unsubscribe( m_pState, aiRequestIds, apszTopicFilter );
 }
 
 }
