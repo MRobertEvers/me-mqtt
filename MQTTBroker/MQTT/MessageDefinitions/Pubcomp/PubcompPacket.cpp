@@ -33,7 +33,7 @@ PubcompPacket::SerializeBody() const
    std::string szRetval;
    unsigned short id = GetPacketId();
    szRetval.append( 1, id >> 8 );
-   szRetval.append( 1, id & 0x0F );
+   szRetval.append( 1, id & 0xFF );
    return szRetval;
 }
 }

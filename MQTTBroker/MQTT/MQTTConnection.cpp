@@ -6,6 +6,7 @@
 #include "Broker\Broadcaster.h"
 #include "Broker\BroadcasterClient.h"
 #include "Broker\BrokerClient.h"
+#include <iostream>
 
 namespace me
 {
@@ -212,7 +213,13 @@ MQTTConnection::handleBytes()
          m_State.iReadIndex += m_State.iNeedBytes;
          m_pConnectTimer->cancel(); // We have received a message.
 
-         *m_pIOStream << *m_pszCurrentMessage << std::endl;
+         for( int i = 0; i < m_pszCurrentMessage->size(); ++i )
+         {
+            std::cout << std::hex << ((int)(*m_pszCurrentMessage)[i]) << " ";
+
+         }
+         std::cout << std::endl;
+         // *m_pIOStream << std::hex << *m_pszCurrentMessage << std::endl;
          dispatchMessage( 
             std::shared_ptr<const std::string>(m_pszCurrentMessage),
             m_State.iFixedHeaderSize 

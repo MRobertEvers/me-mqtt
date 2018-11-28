@@ -133,7 +133,7 @@ AsioConnection::resetReceive()
    // But! Other objects use the strand to interact with this connection.
    m_pSock->async_receive(
       *m_pMutableBuffer,
-      recvCB
+      m_pStrand->wrap( recvCB )
    );
 }
 
