@@ -146,6 +146,7 @@ MatchNode::AddSubscription(
    auto iter_exists = m_mapChildren.find( next );
    if( iter_exists != m_mapChildren.end() )
    {
+      // TODO: Check if the filter is shorter and use the shorter filter.
       return iter_exists->second->AddSubscription( apszFilter, apszClientName );
    }
    else

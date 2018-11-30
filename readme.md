@@ -2,7 +2,7 @@
 
 ## Next Steps
 
-Still need Will message, retain messages and appropriate topic matching lookup.
+Still need Will message, retain messages.
 
 ## Compiling
 
