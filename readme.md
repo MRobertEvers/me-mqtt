@@ -1,10 +1,8 @@
 ## me-mqtt
 
-## Ideas
+## Next Steps
 
-Perhaps a shared_ptr<std::string const> to minimize string copying...
-
-Wrap all in namespaces 'me'.
+Still need Will message, retain messages and appropriate topic matching lookup.
 
 ## Compiling
 

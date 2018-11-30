@@ -2,6 +2,7 @@
 #include "Definitions.h"
 #include "ClientStateLedger.h"
 #include "Broker\SubscribeRequest.h"
+#include "SubscriptionStore.h"
 #include "Utils.h"
 #include <string>
 #include <map>
@@ -19,12 +20,16 @@ public:
       unsigned short aiRequestId, std::vector<SubscribeRequest> avecTopics );
    void Unsubscribe( std::shared_ptr<ClientState> apszClientName,
       unsigned short aiRequestId, std::vector<me::pcstring> avecTopics );
-   std::vector<std::shared_ptr<Subscription>> GetSubscriptions( me::pcstring apszTopicName );
+   std::vector<std::shared_ptr<Subscription>> GetSubscriptions(
+      me::pcstring apszTopicName );
 
    void ReleaseSubscription( me::pcstring apszTopicFilter );
 
 private:
-   std::map<me::pcstring, std::weak_ptr<Subscription>, me::utils::pcstringless> m_mapFilters;
+   std::map<me::pcstring, std::weak_ptr<Subscription>, me::utils::pcstringless>
+      m_mapFilters;
+
+   std::shared_ptr<SubscriptionStore> m_pSubStore;
 };
 
 }
