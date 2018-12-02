@@ -2,7 +2,9 @@
 
 ## Next Steps
 
-Still need Will message, retain messages.
+Most MQTT 3.1.1 features supported. Needs better error handling. lots of refactoring.
+
+Broadcaster should be multithreaded, only lock on sub/unsub...
 
 ## Compiling
 
