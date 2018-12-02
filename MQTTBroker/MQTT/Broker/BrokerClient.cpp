@@ -20,7 +20,13 @@ BrokerClient::BrokerClient(
    : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster),
    m_pConnectPacket(apConnectPacket)
 {
-
+   if( m_pConnectPacket->GetWillPresent() )
+   {
+      m_pWillMessage = std::make_shared<ApplicationMessage>(
+         m_pConnectPacket->GetWillTopic(), m_pConnectPacket->GetWillPayload(),
+         m_pConnectPacket->GetWillQOS(), m_pConnectPacket->GetWillRetain()
+         );
+   }
 }
 
 BrokerClient::~BrokerClient()
@@ -29,6 +35,10 @@ BrokerClient::~BrokerClient()
    // this because the weak pointer will see
    // we have disconnected.
    m_pBroadcaster->DisconnectClient( !m_pConnectPacket->GetCleanSession() );
+   if( m_pWillMessage )
+   {
+      m_pBroadcaster->BroadcastPublishMessage( m_pWillMessage );
+   }
 }
 
 void 
@@ -119,6 +129,8 @@ BrokerClient::HandlePingResp( std::shared_ptr<PingRespPacket> apPacket )
 void
 BrokerClient::HandleDisconnect( std::shared_ptr<DisconnectPacket> apPacket )
 {
+   // Delete will.
+   m_pWillMessage = nullptr;
    m_pConnection->Stop();
 }
 

@@ -4,6 +4,7 @@
 #include "Subscription.h"
 #include "RetainedTopic.h"
 #include "RetainedTopicStore.h"
+#include "ApplicationMessage.h"
 
 namespace me
 {
@@ -20,8 +21,15 @@ RetainedTopicManager::~RetainedTopicManager()
 void 
 RetainedTopicManager::RetainMessage( std::shared_ptr<ApplicationMessage> apMsg )
 {
-   auto topic = m_pTopicStore->Retain( apMsg );
-   topic->RecordMessage( apMsg );
+   if( apMsg->GetPayload()->size() != 0 )
+   {
+      auto topic = m_pTopicStore->Retain( apMsg );
+      topic->RecordMessage( apMsg );
+   }
+   else
+   {
+      m_pTopicStore->ReleaseRetainedMessage( apMsg->GetTopic() );
+   }
 }
 
 std::vector<std::shared_ptr<RetainedTopic>> 

@@ -53,6 +53,7 @@ private:
    std::shared_ptr<BroadcasterClient> m_pBroadcaster;
    AsioConnection* m_pConnection;
 
+   std::shared_ptr<ApplicationMessage> m_pWillMessage;
 };
 
 }

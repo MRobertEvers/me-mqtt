@@ -7,7 +7,6 @@
 #include "SubscriptionManager.h"
 #include "RetainedTopicManager.h"
 #include "RetainedTopic.h"
-#include "TopicManager.h"
 #include <iostream>
 
 
@@ -20,7 +19,6 @@ Broadcaster::Broadcaster( std::shared_ptr<AsioService> apService )
 {
    m_pRetainedTopicManager = std::make_shared<RetainedTopicManager>();
    m_pSubscriptionManager = std::make_shared<SubscriptionManager>();
-   m_pTopicManager = std::make_shared<TopicManager>();
    m_pWork =
       std::make_shared<asio::io_service::work>( *m_pService->GetService() );
    m_pClients = std::make_shared<ClientStateLedger>();
@@ -156,7 +154,10 @@ Broadcaster::subscribe(
    {
       for( auto msg : topic->GetMessages() )
       {
-         apClient->AddPendingOutbound( msg );
+         auto pOutbound = std::make_shared<ApplicationMessage>(
+            msg->GetTopic(), msg->GetPayload(),
+            msg->GetQOS(), true );
+         apClient->AddPendingOutbound( pOutbound );
       }
    }
 }
@@ -177,6 +178,8 @@ Broadcaster::unsubscribe(
 void
 Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {
+   // This is only for NON-RETAINED MESSAGES
+   // All messages through here are a result of being subscribed to a topic.
    // I have a topic name. I want to find all clients subscribed to
    // matching filter
    if( apMessage->GetRetainFlag() )
@@ -197,8 +200,14 @@ Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
          if( maxQOS < apMessage->GetQOS() )
          {
             pOutbound = std::make_shared<ApplicationMessage>(
-               apMessage->GetTopic(), apMessage->GetPayload(),
-               maxQOS, apMessage->GetRetainFlag() );
+               pOutbound->GetTopic(), pOutbound->GetPayload(),
+               maxQOS, false );
+         }
+         if( pOutbound->GetRetainFlag() )
+         {
+            pOutbound = std::make_shared<ApplicationMessage>(
+               pOutbound->GetTopic(), pOutbound->GetPayload(),
+               pOutbound->GetQOS(), false );
          }
          suber.first->AddPendingOutbound( pOutbound );
       }

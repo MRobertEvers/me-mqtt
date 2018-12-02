@@ -46,7 +46,7 @@ SubscriptionStore::Unsubscribe(
    // Fast lookup
    auto iter_sub = m_mapFastSubLookup.find( apszFilter );
    if( iter_sub != m_mapFastSubLookup.end() && 
-      iter_sub->second->GetSubscribers().size() > 1 )
+      iter_sub->second->GetSubscriberCount() > 1 )
    {
       iter_sub->second->ReleaseClient( apszClientName );
    }
@@ -61,6 +61,10 @@ SubscriptionStore::Unsubscribe(
          {
             m_pNewRoot->DeleteNode( apszFilter );
          }
+      }
+      if( iter_sub != m_mapFastSubLookup.end() )
+      {
+         m_mapFastSubLookup.erase( iter_sub );
       }
    }
 }

@@ -210,9 +210,6 @@
     <ClInclude Include="MQTT\Broker\SubscriptionManager.h">
       <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
-    <ClInclude Include="MQTT\Broker\TopicManager.h">
-      <Filter>MQTT\Broker\Topics</Filter>
-    </ClInclude>
     <ClInclude Include="MQTT\Broker\Topic.h">
       <Filter>MQTT\Broker\Topics</Filter>
     </ClInclude>
@@ -348,9 +345,6 @@
       <Filter>MQTT\Broker\Subscription</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\Broker\Topic.cpp">
-      <Filter>MQTT\Broker\Topics</Filter>
-    </ClCompile>
-    <ClCompile Include="MQTT\Broker\TopicManager.cpp">
       <Filter>MQTT\Broker\Topics</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\Broker\BrokerClient.cpp">

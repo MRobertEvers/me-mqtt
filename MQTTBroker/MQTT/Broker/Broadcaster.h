@@ -44,7 +44,6 @@ private:
 
    std::shared_ptr<RetainedTopicManager> m_pRetainedTopicManager;
    std::shared_ptr<SubscriptionManager> m_pSubscriptionManager;
-   std::shared_ptr<TopicManager> m_pTopicManager;
    std::shared_ptr<ClientStateLedger> m_pClients;
 };
 }
