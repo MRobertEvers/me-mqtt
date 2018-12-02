@@ -38,6 +38,10 @@ Subscription::GetSubscribers()
    return m_setClients;
 }
 
-
+size_t
+Subscription::GetSubscriberCount() const
+{
+   return m_setClients.size();
+}
 
 }

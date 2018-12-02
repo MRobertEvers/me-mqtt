@@ -67,8 +67,7 @@ SubscriptionManager::GetSubscriptions( me::pcstring apszTopicName )
    {
       m_pSubStore = std::make_shared<SubscriptionStore>( shared_from_this() );
    }
-   std::vector<std::shared_ptr<Subscription>> m_vecSubs = m_pSubStore->GetSubscriptions( apszTopicName );
-   return m_vecSubs;
+   return m_pSubStore->GetSubscriptions( apszTopicName );
 }
 void 
 SubscriptionManager::ReleaseSubscription( me::pcstring apszTopicFilter )

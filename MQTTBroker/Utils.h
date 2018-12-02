@@ -20,6 +20,7 @@ public:
 
    bool operator==( const pcview& rhs ) const;
    bool operator==( const std::string& rhs ) const;
+   bool operator<( const pcview& rhs ) const;
 
 private:
    me::pcstring m_szSource;

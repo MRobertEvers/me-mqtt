@@ -50,15 +50,22 @@ me::utils::pcview::operator==( const std::string& rhs ) const
    return memcmp( m_szStart, rhs.data(), m_iLen );
 }
 
-bool
-me::utils::pcviewless::operator()( const me::utils::pcview& lhs, const me::utils::pcview& rhs ) const
+bool 
+me::utils::pcview::operator<( const pcview& rhs ) const
 {
-   bool res = strncmp( lhs.data(), rhs.data(), lhs.size() ) < 0;
-   return res;
+   return strncmp( data(), rhs.data(), size() ) < 0;
+}
+
+bool
+me::utils::pcviewless::operator()(
+   const me::utils::pcview& lhs, const me::utils::pcview& rhs ) const
+{
+   return strncmp( lhs.data(), rhs.data(), lhs.size() ) < 0;
 }
 
 bool 
-me::utils::pcstringless::operator()( const me::pcstring& lhs, const me::pcstring& rhs ) const
+me::utils::pcstringless::operator()(
+   const me::pcstring& lhs, const me::pcstring& rhs ) const
 {
    return *lhs < *rhs;
 }
@@ -76,13 +83,14 @@ me::utils::read_utf8_string( const char* apData, size_t aDataSize )
    unsigned short len = read_utf8_string_size( apData );
    if( len <= aDataSize )
    {
-      szRetval.append( apData + 2, len );// std::string( apData + 2, len );
+      szRetval.append( apData + 2, len );
    }
    return szRetval;
 }
 
 void
-me::utils::encode_utf8_string( std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
+me::utils::encode_utf8_string(
+   std::string const& aszStr, char* rpBuf, unsigned short aiBufSize )
 {
    char const* data = aszStr.data();
    size_t len = aszStr.size() & 0xFFFF;

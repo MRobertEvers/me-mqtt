@@ -3,7 +3,7 @@
 #include "ClientStateLedger.h"
 #include "Broker\SubscribeRequest.h"
 #include "SubscriptionStore.h"
-#include "RetainedTopicStore.h"
+#include "TPathTree.h"
 #include "Utils.h"
 #include "Topic.h"
 #include <string>
@@ -34,7 +34,6 @@ private:
       m_mapFilters;
 
    std::shared_ptr<SubscriptionStore> m_pSubStore;
-   std::shared_ptr<SubStore> m_pStore;
 };
 
 }

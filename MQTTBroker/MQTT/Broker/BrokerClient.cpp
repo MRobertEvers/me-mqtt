@@ -247,10 +247,11 @@ BrokerClient::HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket )
 void 
 BrokerClient::publishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
+   static int id = 1;
    auto pPublish = 
       [this, self=shared_from_this(), msg = apMsg]()
    {
-      unsigned short aiPacketId = 51;
+      unsigned short aiPacketId = 51 + id++;
       // TODO need duplicate and packet id.
       m_pConnection->WriteAsync( PublishPacket(
          msg->GetTopic(), msg->GetPayload(), false,

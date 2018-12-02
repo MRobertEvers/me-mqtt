@@ -18,6 +18,7 @@ public:
    void RecordClient( std::shared_ptr<ClientState> apszClient, unsigned char maxQOS );
    void ReleaseClient( std::shared_ptr<ClientState> apszClient );
    std::map<std::shared_ptr<ClientState>, unsigned char> GetSubscribers();
+   size_t GetSubscriberCount() const;
 
 private:
    me::pcstring m_szTopicFilter;
