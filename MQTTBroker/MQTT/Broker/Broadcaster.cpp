@@ -5,6 +5,8 @@
 #include "ClientState.h"
 #include "ClientStateLedger.h"
 #include "SubscriptionManager.h"
+#include "RetainedTopicManager.h"
+#include "RetainedTopic.h"
 #include "TopicManager.h"
 #include <iostream>
 
@@ -16,6 +18,7 @@ Broadcaster::Broadcaster( std::shared_ptr<AsioService> apService )
    : m_pService(apService),
    m_pStrand( new asio::io_context::strand( *apService->GetService() ) )
 {
+   m_pRetainedTopicManager = std::make_shared<RetainedTopicManager>();
    m_pSubscriptionManager = std::make_shared<SubscriptionManager>();
    m_pTopicManager = std::make_shared<TopicManager>();
    m_pWork =
@@ -141,6 +144,21 @@ Broadcaster::subscribe(
 
       // TODO: Get result from subscribe, then notify client
    m_pSubscriptionManager->Subscribe( apClient, aiRequestId, avecTopics );
+
+   std::vector<std::shared_ptr<RetainedTopic>> vecMsgs;
+   for( auto topic : avecTopics )
+   {
+      auto d = m_pRetainedTopicManager->GetRetainedMessages( topic.Topic );
+      vecMsgs.insert( vecMsgs.begin(), d.begin(), d.end() );
+   }
+
+   for( auto topic : vecMsgs )
+   {
+      for( auto msg : topic->GetMessages() )
+      {
+         apClient->AddPendingOutbound( msg );
+      }
+   }
 }
 
 void 
@@ -161,6 +179,11 @@ Broadcaster::broadcast( std::shared_ptr<ApplicationMessage> apMessage )
 {
    // I have a topic name. I want to find all clients subscribed to
    // matching filter
+   if( apMessage->GetRetainFlag() )
+   {
+      m_pRetainedTopicManager->RetainMessage( apMessage );
+   }
+
    auto subs = m_pSubscriptionManager->GetSubscriptions( 
       apMessage->GetTopic() 
    );

@@ -77,6 +77,8 @@ SubscriptionManager::ReleaseSubscription( me::pcstring apszTopicFilter )
    auto iter_sub = m_mapFilters.find( apszTopicFilter );
    if( iter_sub != m_mapFilters.end() )
    {
+      m_pSubStore->RemoveSubscription( apszTopicFilter );
+
       m_mapFilters.erase( iter_sub );
    }
 }

@@ -234,6 +234,15 @@
     <ClInclude Include="MQTT\Broker\TPathTree.h">
       <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\Broker\RetainedTopicStore.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\RetainedTopicManager.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT\Broker\RetainedTopic.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -358,6 +367,15 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\RetainedTopicStore.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\RetainedTopicManager.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\RetainedTopic.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

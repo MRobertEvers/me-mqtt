@@ -11,6 +11,7 @@ class BroadcasterClient;
 class ClientState;
 class ClientStateLedger;
 class SubscriptionManager;
+class RetainedTopicManager;
 class TopicManager;
 
 class Broadcaster : public std::enable_shared_from_this<Broadcaster>
@@ -41,6 +42,7 @@ private:
    std::shared_ptr<asio::io_service::work> m_pWork;
    std::shared_ptr<asio::io_context::strand> m_pStrand;
 
+   std::shared_ptr<RetainedTopicManager> m_pRetainedTopicManager;
    std::shared_ptr<SubscriptionManager> m_pSubscriptionManager;
    std::shared_ptr<TopicManager> m_pTopicManager;
    std::shared_ptr<ClientStateLedger> m_pClients;

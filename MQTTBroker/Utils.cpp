@@ -41,13 +41,19 @@ me::utils::pcview::data() const
 bool
 me::utils::pcview::operator==( const pcview& rhs ) const
 {
-   return memcmp( m_szStart, rhs.m_szStart, m_iLen );
+   return memcmp( m_szStart, rhs.m_szStart, m_iLen ) == 0;
 }
 
 bool
 me::utils::pcview::operator==( const std::string& rhs ) const
 {
-   return memcmp( m_szStart, rhs.data(), m_iLen );
+   return memcmp( m_szStart, rhs.data(), m_iLen ) == 0;
+}
+
+bool 
+me::utils::pcview::operator==( const char* rhs ) const
+{
+   return memcmp( m_szStart, rhs, m_iLen ) == 0;
 }
 
 bool 

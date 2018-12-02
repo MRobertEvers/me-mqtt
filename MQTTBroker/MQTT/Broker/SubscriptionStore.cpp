@@ -82,8 +82,7 @@ SubscriptionStore::GetSubscriptions( Topic apszFilter )
    {
       if( pCurStk->empty() )
       {
-         std::stack<std::shared_ptr<SubscriptionTreeNode>>* tmp;
-         tmp = pCurStk;
+         auto tmp = pCurStk;
          pCurStk = pNextStk;
          pNextStk = tmp;
 
@@ -113,6 +112,7 @@ SubscriptionStore::GetSubscriptions( Topic apszFilter )
             pNextStk->push( match_node );
          }
       }
+
       match_node = pNode->FindDirectChild( szLevel );
       if( match_node )
       {
@@ -125,7 +125,6 @@ SubscriptionStore::GetSubscriptions( Topic apszFilter )
             pNextStk->push( match_node );
          }
       }
-   
    }
 
    delete pCurStk;
@@ -137,7 +136,7 @@ SubscriptionStore::GetSubscriptions( Topic apszFilter )
 void 
 SubscriptionStore::RemoveSubscription( me::pcstring apszFilter )
 {
-
+   m_pNewRoot->DeleteNode( apszFilter );
 }
 
 std::shared_ptr<Subscription> 
@@ -146,63 +145,6 @@ SubscriptionStore::Create( Topic apTopic )
    return std::make_shared<Subscription>( apTopic.GetFilter(), m_pManager.lock() );
 }
 
-//
-//std::vector<std::shared_ptr<Subscription>> 
-//MatchNode::FindSubscriptions( Topic apszTopicName )
-//{
-//   std::vector<std::shared_ptr<Subscription>> m_vecSubs;
-//   std::map<utils::pcview, std::shared_ptr<MatchNode>, utils::pcviewless>* mapCurLevel = &m_mapChildren;
-//   std::stack<MatchNode*> stk;
-//
-//   stk.push( this );
-//
-//   size_t iLevels = apszTopicName.Levels();
-//   size_t iCurLevel = m_iLevel;
-//   while( !stk.empty() )
-//   {
-//      auto szLevel = apszTopicName.PeekLevel( iCurLevel + 1 );
-//      auto pNode = stk.top();
-//      stk.pop();
-//      mapCurLevel = &pNode->m_mapChildren;
-//
-//      // Find matches for this level;
-//      auto iter_find_match = mapCurLevel->find( "#" );
-//      if( iter_find_match != mapCurLevel->end() && iter_find_match->second->m_wpSub )
-//      {
-//         m_vecSubs.push_back( iter_find_match->second->m_wpSub );
-//      }
-//
-//      iter_find_match = mapCurLevel->find( "+" );
-//      if( iter_find_match != mapCurLevel->end() )
-//      {
-//         if( iCurLevel + 1 == iLevels && iter_find_match->second->m_wpSub )
-//         {
-//            m_vecSubs.push_back( iter_find_match->second->m_wpSub );
-//         }
-//         else if( iCurLevel + 1 < iLevels )
-//         {
-//            stk.push( &*iter_find_match->second );
-//         }
-//      }
-//
-//      iter_find_match = mapCurLevel->find( szLevel );
-//      if( iter_find_match != mapCurLevel->end() )
-//      {
-//         if( iCurLevel + 1 == iLevels && iter_find_match->second->m_wpSub )
-//         {
-//            m_vecSubs.push_back( iter_find_match->second->m_wpSub );
-//         }
-//         else if( iCurLevel + 1 < iLevels )
-//         {
-//            stk.push( &*iter_find_match->second );
-//         }
-//      }
-//
-//      iCurLevel++;
-//   }
-//
-//   return m_vecSubs;
-//}
 
 }
 
