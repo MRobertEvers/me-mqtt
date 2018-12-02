@@ -3,18 +3,14 @@
 #include "SubscriptionStore.h"
 #include "ClientState.h"
 #include "Subscription.h"
+#include "Topic.h"
 #include "SubscriptionManager.h"
 #include <algorithm>
 #include <stack>
 
 namespace me
 {
-bool
-pcviewless::operator()( const me::pcview& lhs, const me::pcview& rhs ) const
-{
-   bool res = strncmp( lhs.data(), rhs.data(), lhs.size() ) < 0;
-   return res;
-}
+
 
 SubscriptionStore::SubscriptionStore( std::weak_ptr<SubscriptionManager> apManager )
    : m_pManager(apManager)
@@ -24,6 +20,7 @@ SubscriptionStore::SubscriptionStore( std::weak_ptr<SubscriptionManager> apManag
       std::make_shared<std::string>( "" ),
       m_pManager
       );
+   m_pNewRoot = std::make_shared<SubStore>( 0, this );
 }
 
 SubscriptionStore::~SubscriptionStore()
@@ -31,16 +28,37 @@ SubscriptionStore::~SubscriptionStore()
 }
 
 std::shared_ptr<Subscription>
-SubscriptionStore::Subscribe( me::pcstring apszFilter, std::shared_ptr<ClientState>  awpSub )
+SubscriptionStore::Subscribe( me::pcstring apszFilter )
 {
-   return m_pRoot->AddSubscription( apszFilter, awpSub );
+   // Fast lookup
+   auto iter_sub = m_mapFastSubLookup.find( apszFilter );
+   if( iter_sub != m_mapFastSubLookup.end() )
+   {
+      return iter_sub->second;
+   }
+   else
+   {
+      auto pNewSub = m_pNewRoot->AddNode( apszFilter );
+      m_mapFastSubLookup.emplace( apszFilter, pNewSub );
+      return pNewSub;
+      // return m_pRoot->AddSubscription( apszFilter );
+   }
 }
 
 void
 SubscriptionStore::Unsubscribe( 
    me::pcstring apszFilter, std::shared_ptr<ClientState> apszClientName )
 {
-   m_pRoot->RemoveSubscriber( apszFilter, apszClientName );
+   // Fast lookup
+   auto iter_sub = m_mapFastSubLookup.find( apszFilter );
+   if( iter_sub != m_mapFastSubLookup.end() && iter_sub->second->GetSubscribers().size() > 1 )
+   {
+      iter_sub->second->ReleaseClient( apszClientName );
+   }
+   else
+   {
+      m_pRoot->RemoveSubscriber( apszFilter, apszClientName );
+   }
 }
 
 std::shared_ptr<Subscription>
@@ -61,6 +79,12 @@ SubscriptionStore::RemoveSubscription( me::pcstring apszFilter )
 
 }
 
+std::shared_ptr<Subscription> 
+SubscriptionStore::Create( Topic apTopic )
+{
+   return std::make_shared<Subscription>( apTopic.GetFilter(), m_pManager.lock() );
+}
+
 MatchNode::MatchNode( 
    unsigned int aiLevel, me::pcstring apszFilter, std::weak_ptr<SubscriptionManager> apManager )
    : m_pManager(apManager), m_iLevel(aiLevel)
@@ -73,10 +97,10 @@ MatchNode::~MatchNode()
 }
 
 std::vector<std::shared_ptr<Subscription>> 
-MatchNode::FindSubscriptions( Filter apszTopicName )
+MatchNode::FindSubscriptions( Topic apszTopicName )
 {
    std::vector<std::shared_ptr<Subscription>> m_vecSubs;
-   std::map<pcview, std::shared_ptr<MatchNode>, pcviewless>* mapCurLevel = &m_mapChildren;
+   std::map<utils::pcview, std::shared_ptr<MatchNode>, utils::pcviewless>* mapCurLevel = &m_mapChildren;
    std::stack<MatchNode*> stk;
 
    stk.push( this );
@@ -117,7 +141,7 @@ MatchNode::FindSubscriptions( Filter apszTopicName )
          {
             m_vecSubs.push_back( iter_find_match->second->m_wpSub );
          }
-         else if( iCurLevel+1 < iLevels )
+         else if( iCurLevel + 1 < iLevels )
          {
             stk.push( &*iter_find_match->second );
          }
@@ -131,8 +155,9 @@ MatchNode::FindSubscriptions( Filter apszTopicName )
 
 std::shared_ptr<Subscription>
 MatchNode::AddSubscription( 
-   Filter apszFilter, std::shared_ptr<ClientState> apszClientName )
+   Topic apszFilter )
 {
+
    if( apszFilter.Levels() == m_iLevel )
    {
       if( !m_wpSub )
@@ -147,18 +172,18 @@ MatchNode::AddSubscription(
    if( iter_exists != m_mapChildren.end() )
    {
       // TODO: Check if the filter is shorter and use the shorter filter.
-      return iter_exists->second->AddSubscription( apszFilter, apszClientName );
+      return iter_exists->second->AddSubscription( apszFilter );
    }
    else
    {
       auto item = m_mapChildren.emplace( next, std::make_shared<MatchNode>( m_iLevel + 1, apszFilter.GetFilter(), m_pManager ) );
-      return item.first->second->AddSubscription( apszFilter, apszClientName );
+      return item.first->second->AddSubscription( apszFilter );
    }
 }
 
 bool 
 MatchNode::RemoveSubscriber(
-   Filter apszTopicName, std::shared_ptr<ClientState> apszClientName )
+   Topic apszTopicName, std::shared_ptr<ClientState> apszClientName )
 {
    if( apszTopicName.Levels() == m_iLevel )
    {
@@ -190,112 +215,5 @@ MatchNode::RemoveSubscriber(
    }
 }
 
-pcview 
-MatchNode::PeekLevel( unsigned int aiLevel, me::pcstring apszFilter ) const
-{
-
-   std::string const& szTopic = *apszFilter;
-
-   size_t i = 0;
-   while( i  )
-
-   return pcview();
-}
-
-pcview::pcview()
-
-{
-   m_szSource = (std::make_shared<std::string>());
-   m_szStart = m_szSource->data();
-   m_iLen = (0);
-}
-
-pcview::pcview( char const * aszBase )
-{
-   m_szStart = ( aszBase );
-   m_iLen = strlen( aszBase );
-}
-
-pcview::pcview( me::pcstring apszSource, char const* aszStart, size_t aiLen )
-   : m_szSource(apszSource), m_szStart(aszStart), m_iLen(aiLen)
-{
-
-}
-
-pcview::~pcview()
-{
-
-}
-
-size_t
-pcview::size() const
-{
-   return m_iLen;
-}
-
-char const*
-pcview::data() const
-{
-   return m_szStart;
-}
-
-bool 
-pcview::operator==( const pcview& rhs ) const
-{
-   return memcmp( m_szStart, rhs.m_szStart, m_iLen );
-}
-
-bool 
-pcview::operator==( const std::string& rhs ) const
-{
-   return memcmp( m_szStart, rhs.data(), m_iLen );
-}
-Filter::Filter( me::pcstring apszSource )
-   : m_pszFilter(apszSource)
-{
-}
-Filter::~Filter()
-{
-}
-
-me::pcstring Filter::GetFilter() const
-{
-   return m_pszFilter;
-}
-
-
-pcview
-Filter::PeekLevel( unsigned int aiLevel ) const
-{
-   if( aiLevel == 0 || aiLevel > Levels() )
-   {
-      return pcview();
-   }
-   int i = 0;
-   int iOff = 0;
-   int iEnd = -1;
-   while( i < aiLevel )
-   {
-      size_t iNextOff = m_pszFilter->find( '/', iEnd + 1 );
-      if( iNextOff != std::string::npos )
-      {
-         iOff = iEnd + 1;
-         iEnd = iNextOff;
-      }
-      else
-      {
-         iOff = iEnd + 1;
-         iEnd = m_pszFilter->size();
-      }
-      i++;
-   }
-
-   return pcview( m_pszFilter, m_pszFilter->data()+iOff, iEnd - iOff );
-}
-size_t 
-Filter::Levels() const
-{
-   return 1 + std::count( m_pszFilter->begin(), m_pszFilter->end(), '/' );
-}
 }
 

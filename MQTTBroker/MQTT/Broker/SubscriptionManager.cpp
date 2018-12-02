@@ -8,7 +8,6 @@ namespace me
 {
 SubscriptionManager::SubscriptionManager()
 {
-
 }
 
 SubscriptionManager::~SubscriptionManager()
@@ -28,7 +27,7 @@ SubscriptionManager::Subscribe(
    std::vector<unsigned char> vecResponses;
    for( auto topic : avecTopics )
    {
-      auto pSub = m_pSubStore->Subscribe( topic.Topic, apszClientName );
+      auto pSub = m_pSubStore->Subscribe( topic.Topic );
       //std::shared_ptr<Subscription> pSub;
       //auto iter_sub = m_mapFilters.find( topic.Topic );
       //if( iter_sub != m_mapFilters.end() )

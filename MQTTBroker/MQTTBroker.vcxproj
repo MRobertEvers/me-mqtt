@@ -164,6 +164,7 @@
     <ClInclude Include="MQTT\Broker\BrokerSession.h" />
     <ClInclude Include="MQTT\Broker\ClientState.h" />
     <ClInclude Include="MQTT\Broker\ClientStateLedger.h" />
+    <ClInclude Include="MQTT\Broker\RetainedTopicStore.h" />
     <ClInclude Include="MQTT\Broker\SubscribeRequest.h" />
     <ClInclude Include="MQTT\Broker\Subscription.h" />
     <ClInclude Include="MQTT\Broker\SubscriptionManager.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="MQTT\Broker\BrokerSession.cpp" />
     <ClCompile Include="MQTT\Broker\ClientState.cpp" />
     <ClCompile Include="MQTT\Broker\ClientStateLedger.cpp" />
+    <ClCompile Include="MQTT\Broker\RetainedTopicStore.cpp" />
     <ClCompile Include="MQTT\Broker\SubscribeRequest.cpp" />
     <ClCompile Include="MQTT\Broker\Subscription.cpp" />
     <ClCompile Include="MQTT\Broker\SubscriptionManager.cpp" />

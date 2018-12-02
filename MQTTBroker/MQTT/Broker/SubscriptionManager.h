@@ -3,9 +3,13 @@
 #include "ClientStateLedger.h"
 #include "Broker\SubscribeRequest.h"
 #include "SubscriptionStore.h"
+#include "RetainedTopicStore.h"
 #include "Utils.h"
+#include "Topic.h"
 #include <string>
 #include <map>
+
+
 namespace me
 {
 class Subscription;
@@ -30,6 +34,7 @@ private:
       m_mapFilters;
 
    std::shared_ptr<SubscriptionStore> m_pSubStore;
+   std::shared_ptr<SubStore> m_pStore;
 };
 
 }

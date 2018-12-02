@@ -6,6 +6,33 @@ namespace me
 {
 namespace utils
 {
+
+class pcview
+{
+public:
+   pcview();
+   pcview( char const* aszBase );
+   pcview( me::pcstring apszSource, char const* aszStart, size_t aiLen );
+   ~pcview();
+
+   size_t size() const;
+   char const* data() const;
+
+   bool operator==( const pcview& rhs ) const;
+   bool operator==( const std::string& rhs ) const;
+
+private:
+   me::pcstring m_szSource;
+   char const* m_szStart;
+   size_t m_iLen;
+};
+
+struct pcviewless
+{
+public:
+   bool operator()( const me::utils::pcview& lhs, const me::utils::pcview& rhs ) const;
+};
+
 struct pcstringless
 {
 public:

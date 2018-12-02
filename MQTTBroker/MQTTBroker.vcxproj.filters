@@ -231,6 +231,9 @@
     <ClInclude Include="Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="MQTT\Broker\RetainedTopicStore.h">
+      <Filter>MQTT\Broker\Subscription</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -355,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MQTT\Broker\RetainedTopicStore.cpp">
+      <Filter>MQTT\Broker\Subscription</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
