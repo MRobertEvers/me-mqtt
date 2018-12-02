@@ -200,7 +200,7 @@ DeleteNode( TPathType apPathType )
    {
       auto pNodeIter = stk_visited.top();
       auto pNode = pNodeIter->second;
-      stk.pop();
+      stk_visited.pop();
 
       auto pParentIter = stk_visited.top();
       auto pParent = pParentIter->second;
