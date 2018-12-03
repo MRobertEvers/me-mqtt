@@ -28,18 +28,6 @@ SubscriptionManager::Subscribe(
    for( auto topic : avecTopics )
    {
       auto pSub = m_pSubStore->Subscribe( topic.Topic );
-      //std::shared_ptr<Subscription> pSub;
-      //auto iter_sub = m_mapFilters.find( topic.Topic );
-      //if( iter_sub != m_mapFilters.end() )
-      //{
-      //   pSub = iter_sub->second.lock();
-      //}
-
-      //if( !pSub )
-      //{
-      //   pSub = std::make_shared<Subscription>( topic.Topic, shared_from_this() );
-      //   m_mapFilters.emplace( topic.Topic, pSub );
-      //}
       vecResponses.push_back( topic.QOS );
       apszClientName->Subscribe( pSub, topic.QOS );
    }

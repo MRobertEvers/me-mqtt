@@ -27,8 +27,12 @@ public:
 
    void BroadcastPublishMessage( 
       std::shared_ptr<ApplicationMessage> apMsg ) const;
-   void SubscribeToTopics( unsigned short aiRequestIds, std::vector<SubscribeRequest> avecTopics ) const;
-   void UnsubscribeFromTopics( unsigned short aiRequestIds, std::vector<me::pcstring> apszTopicFilter ) const;
+   void SubscribeToTopics( 
+      unsigned short aiRequestIds,
+      std::vector<SubscribeRequest> avecTopics ) const;
+   void UnsubscribeFromTopics(
+      unsigned short aiRequestIds, 
+      std::vector<me::pcstring> apszTopicFilter ) const;
 
 private:
    me::pcstring m_pszClientName;

@@ -60,6 +60,7 @@ ClientState::ReleaseNextOutbound(  )
 void 
 ClientState::AddPendingPuback( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
 {
+   m_setInflightIds.insert( id );
    m_mapPendingPuback.emplace( id, apMsg );
 }
 
@@ -69,6 +70,7 @@ ClientState::ReleasePendingPuback( unsigned short aiId )
    auto iter_msg = m_mapPendingPuback.find( aiId );
    if( iter_msg != m_mapPendingPuback.end() )
    {
+      m_setInflightIds.erase( aiId );
       auto pMsg = iter_msg->second;
       m_mapPendingPuback.erase( iter_msg );
       return pMsg;
@@ -82,6 +84,7 @@ ClientState::ReleasePendingPuback( unsigned short aiId )
 void 
 ClientState::AddPendingPubrec( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
 {
+   m_setInflightIds.insert( id );
    m_mapPendingPubrec.emplace( id, apMsg );
 }
 
@@ -91,6 +94,7 @@ ClientState::ReleasePendingPubrec( unsigned short aiId )
    auto iter_msg = m_mapPendingPubrec.find( aiId );
    if( iter_msg != m_mapPendingPubrec.end() )
    {
+      m_setInflightIds.erase( aiId );
       auto pMsg = iter_msg->second;
       m_mapPendingPubrec.erase( iter_msg );
       return pMsg;
@@ -104,6 +108,7 @@ ClientState::ReleasePendingPubrec( unsigned short aiId )
 void 
 ClientState::AddPendingPubrel( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
 {
+   m_setInflightIds.insert( id );
    m_mapPendingPubrel.emplace( id, apMsg );
 }
 
@@ -113,6 +118,7 @@ ClientState::ReleasePendingPubrel( unsigned short aiId )
    auto iter_msg = m_mapPendingPubrel.find( aiId );
    if( iter_msg != m_mapPendingPubrel.end() )
    {
+      m_setInflightIds.erase( aiId );
       auto pMsg = iter_msg->second;
       m_mapPendingPubrel.erase( iter_msg );
       return pMsg;
@@ -126,6 +132,7 @@ ClientState::ReleasePendingPubrel( unsigned short aiId )
 void 
 ClientState::AddPendingPubcomp( unsigned short id, std::shared_ptr<ApplicationMessage> apMsg )
 {
+   m_setInflightIds.insert( id );
    m_mapPendingPubcomp.emplace( id, apMsg );
 }
 
@@ -135,6 +142,7 @@ ClientState::ReleasePendingPubcomp( unsigned short aiId )
    auto iter_msg = m_mapPendingPubcomp.find( aiId );
    if( iter_msg != m_mapPendingPubcomp.end() )
    {
+      m_setInflightIds.erase( aiId );
       auto pMsg = iter_msg->second;
       m_mapPendingPubcomp.erase( iter_msg );
       return pMsg;
@@ -187,6 +195,27 @@ ClientState::UnsubscribeAll()
       sub->ReleaseClient( shared_from_this() );
    }
    m_setSubscriptions.clear();
+}
+
+unsigned short 
+ClientState::GetNewPacketId() const
+{
+   static unsigned short iIdCound = 0;
+   unsigned short iRetVal = 0;
+   while( iRetVal == 0 )
+   {
+      if( iIdCound == 0xFFFF )
+      {
+         iIdCound = 0;
+      }
+      ++iIdCound;
+      auto iter_inflight = m_setInflightIds.find( iIdCound );
+      if( iter_inflight == m_setInflightIds.end() )
+      {
+         iRetVal = iIdCound;
+      }
+   }
+   return iRetVal;
 }
 
 void 

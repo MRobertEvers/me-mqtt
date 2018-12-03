@@ -1,5 +1,5 @@
 #pragma once
-#include "AsioConnectionFactory.h"
+#include "IAsioConnectionFactory.h"
 #include <set>
 #include <memory>
 
@@ -10,7 +10,7 @@ namespace me
 {
 class Broadcaster;
 
-class MQTTConnectionFactory : public AsioConnectionFactory
+class MQTTConnectionFactory : public IAsioConnectionFactory
 {
 public:
    MQTTConnectionFactory( 

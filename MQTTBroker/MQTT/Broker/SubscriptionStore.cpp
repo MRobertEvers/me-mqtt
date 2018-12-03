@@ -12,7 +12,8 @@ namespace me
 {
 
 
-SubscriptionStore::SubscriptionStore( std::weak_ptr<SubscriptionManager> apManager )
+SubscriptionStore::SubscriptionStore(
+   std::weak_ptr<SubscriptionManager> apManager )
    : m_pManager(apManager)
 {
    m_pNewRoot = std::make_shared<SubscriptionTreeNode>( 0, this );
@@ -146,7 +147,8 @@ SubscriptionStore::RemoveSubscription( me::pcstring apszFilter )
 std::shared_ptr<Subscription> 
 SubscriptionStore::Create( Topic apTopic )
 {
-   return std::make_shared<Subscription>( apTopic.GetFilter(), m_pManager.lock() );
+   return std::make_shared<Subscription>(
+      apTopic.GetFilter(), m_pManager.lock() );
 }
 
 

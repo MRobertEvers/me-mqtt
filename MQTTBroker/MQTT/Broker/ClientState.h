@@ -18,7 +18,9 @@ class ClientStateLedger;
 class ClientState : public std::enable_shared_from_this<ClientState>
 {
 public:
-   ClientState( me::pcstring apszClientName, std::weak_ptr<ClientStateLedger> apManager );
+   ClientState( 
+      me::pcstring apszClientName,
+      std::weak_ptr<ClientStateLedger> apManager );
    ~ClientState();
 
    void SetWatcher( std::weak_ptr<BrokerClient> apSource );
@@ -46,6 +48,8 @@ public:
    void NotifyUnubscribe( unsigned short aiRequestId );
    void UnsubscribeAll();
 
+   unsigned short GetNewPacketId() const;
+
    void Destroy();
 private:
 
@@ -72,6 +76,7 @@ private:
    std::map<unsigned short, std::shared_ptr<ApplicationMessage>> m_mapPendingPubcomp;
 
    // STORE INFLIGHT IDS HERE??? TODO:
+   std::set<unsigned short> m_setInflightIds;
 
    // This is the "observer"
    std::weak_ptr<BrokerClient> m_pSource;

@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ASIO_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ASIO_STANDALONE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\Errors;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\Asio;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\MessageDefinitions;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>
@@ -121,8 +121,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ASIO_STANDALONE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\Errors;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\Asio;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT\MessageDefinitions;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\MQTT;C:\Users\Matthew\Documents\GitHub\me-mqtt\MQTTBroker\asio-1.12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Asio\AsioConnection.h" />
-    <ClInclude Include="Asio\AsioConnectionFactory.h" />
+    <ClInclude Include="Asio\IAsioConnectionFactory.h" />
     <ClInclude Include="Asio\AsioConnectionManager.h" />
     <ClInclude Include="Asio\AsioServer.h" />
     <ClInclude Include="Asio\AsioService.h" />
@@ -201,7 +202,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Asio\AsioConnection.cpp" />
-    <ClCompile Include="Asio\AsioConnectionFactory.cpp" />
     <ClCompile Include="Asio\AsioConnectionManager.cpp" />
     <ClCompile Include="Asio\AsioServer.cpp" />
     <ClCompile Include="Asio\AsioService.cpp" />

@@ -4,7 +4,7 @@
 
 
 AsioServer::AsioServer( std::shared_ptr<AsioService> apIOService,
-                        std::shared_ptr<AsioConnectionFactory> apFactory,
+                        std::shared_ptr<IAsioConnectionFactory> apFactory,
                         std::shared_ptr<ServerIOStream> apIOStream )
    : 
       m_pFactory(apFactory),
@@ -25,7 +25,9 @@ AsioServer::~AsioServer()
 
 
 void 
-AsioServer::StartListener( const std::string& aszHost, const std::string& aszPort )
+AsioServer::StartListener( 
+   const std::string& aszHost, 
+   const std::string& aszPort )
 {
    try
    {
@@ -36,7 +38,9 @@ AsioServer::StartListener( const std::string& aszHost, const std::string& aszPor
       );
       asio::ip::tcp::endpoint endpoint = *resolver.resolve( query );
       m_pAcceptSock->open( endpoint.protocol() );
-      m_pAcceptSock->set_option( asio::ip::tcp::acceptor::reuse_address( false ) );
+      m_pAcceptSock->set_option( 
+         asio::ip::tcp::acceptor::reuse_address( false ) 
+      );
       m_pAcceptSock->bind( endpoint );
       m_pAcceptSock->listen( asio::socket_base::max_connections );
    
@@ -65,7 +69,9 @@ void AsioServer::awaitConnection()
 
 
 void
-AsioServer::handleConnect( const asio::error_code & ec, std::shared_ptr<asio::ip::tcp::socket> sock )
+AsioServer::handleConnect( 
+   const asio::error_code & ec,
+   std::shared_ptr<asio::ip::tcp::socket> sock )
 {
    awaitConnection();
 

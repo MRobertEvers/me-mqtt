@@ -10,14 +10,16 @@ AsioConnectionManager::~AsioConnectionManager()
 }
 
 void
-AsioConnectionManager::AddConnection( std::shared_ptr<AsioConnection> apConnection )
+AsioConnectionManager::AddConnection(
+   std::shared_ptr<AsioConnection> apConnection )
 {
    m_setConnections.insert( apConnection );
    apConnection->Start(this);
 }
 
 void 
-AsioConnectionManager::CloseConnection( std::shared_ptr<AsioConnection> apConnection )
+AsioConnectionManager::CloseConnection(
+   std::shared_ptr<AsioConnection> apConnection )
 {
    m_setConnections.erase( apConnection );
    apConnection->ManagerClose();

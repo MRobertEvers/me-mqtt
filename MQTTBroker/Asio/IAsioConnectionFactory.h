@@ -3,12 +3,9 @@
 
 class AsioConnection;
 
-class AsioConnectionFactory
+class IAsioConnectionFactory
 {
 public:
-   AsioConnectionFactory();
-   virtual ~AsioConnectionFactory();
-
    virtual std::shared_ptr<AsioConnection>
       NewConnection( std::shared_ptr<asio::ip::tcp::socket> sock ) = 0;
 };

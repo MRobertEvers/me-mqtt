@@ -27,7 +27,8 @@ public:
    void BroadcastMessage( std::shared_ptr<ApplicationMessage> apMessage );
    std::shared_ptr<BroadcasterClient> CreateClient();
 
-   std::shared_ptr<ClientState> ConnectClient( std::weak_ptr<BroadcasterClient> apClient );
+   std::shared_ptr<ClientState> ConnectClient( 
+      std::weak_ptr<BroadcasterClient> apClient );
    void DisconnectClient( std::weak_ptr<BroadcasterClient> apClient );
 
 private:

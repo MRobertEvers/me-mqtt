@@ -54,7 +54,8 @@ BrokerClient::Reject( unsigned char aiReason )
 }
 
 void
-BrokerClient::Respond( bool abSessionPresent, unsigned char aiResponse )
+BrokerClient::Respond( 
+   bool abSessionPresent, unsigned char aiResponse )
 {
    // Does not perform any validation of response.
    m_pConnection->WriteAsync( 
@@ -87,7 +88,9 @@ BrokerClient::NotifyUnsubscribed( unsigned short aiRequestId )
 }
 
 void
-BrokerClient::NotifySubscribed( unsigned short aiRequestId, std::vector<unsigned char> avecResponses )
+BrokerClient::NotifySubscribed(
+   unsigned short aiRequestId, 
+   std::vector<unsigned char> avecResponses )
 {
    notifySubscribed( aiRequestId, avecResponses );
 }
@@ -235,7 +238,9 @@ BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 void
 BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 {
-   m_pBroadcaster->SubscribeToTopics( apPacket->GetPacketId(), apPacket->GetSubscribeRequests() );
+   m_pBroadcaster->SubscribeToTopics( 
+      apPacket->GetPacketId(), 
+      apPacket->GetSubscribeRequests() );
 }
 
 void
@@ -247,7 +252,9 @@ BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
 void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
-   m_pBroadcaster->UnsubscribeFromTopics( apPacket->GetPacketId(), apPacket->GetUnsubscribeRequests() );
+   m_pBroadcaster->UnsubscribeFromTopics( 
+      apPacket->GetPacketId(), 
+      apPacket->GetUnsubscribeRequests() );
 }
 
 void
@@ -259,12 +266,12 @@ BrokerClient::HandleUnsuback( std::shared_ptr<UnsubackPacket> apPacket )
 void 
 BrokerClient::publishTo( std::shared_ptr<ApplicationMessage> apMsg )
 {
-   static int id = 1;
    auto pPublish = 
       [this, self=shared_from_this(), msg = apMsg]()
    {
-      unsigned short aiPacketId = 51 + id++;
-      // TODO need duplicate and packet id.
+      unsigned short aiPacketId = m_pBroadcaster->GetState()->GetNewPacketId();
+
+      // TODO retry if message no acked.
       m_pConnection->WriteAsync( PublishPacket(
          msg->GetTopic(), msg->GetPayload(), false,
          msg->GetQOS(), msg->GetRetainFlag(), aiPacketId

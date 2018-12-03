@@ -17,12 +17,14 @@ RetainedTopic::~RetainedTopic()
 {
 }
 
-void RetainedTopic::RecordMessage( std::shared_ptr<ApplicationMessage> apMsg )
+void 
+RetainedTopic::RecordMessage( std::shared_ptr<ApplicationMessage> apMsg )
 {
    m_vecMessage.push_back( apMsg );
 }
 
-void RetainedTopic::ReleaseMessages()
+void 
+RetainedTopic::ReleaseMessages()
 {
    m_vecMessage.clear();
 }

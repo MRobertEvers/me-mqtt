@@ -144,9 +144,6 @@
     <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
     </ClInclude>
-    <ClInclude Include="Asio\AsioConnectionFactory.h">
-      <Filter>Asio\Server</Filter>
-    </ClInclude>
     <ClInclude Include="MQTT\MQTTConnectionFactory.h">
       <Filter>MQTT</Filter>
     </ClInclude>
@@ -240,6 +237,9 @@
     <ClInclude Include="MQTT\Broker\RetainedTopic.h">
       <Filter>MQTT\Broker\Subscription</Filter>
     </ClInclude>
+    <ClInclude Include="Asio\IAsioConnectionFactory.h">
+      <Filter>Asio\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -283,9 +283,6 @@
     </ClCompile>
     <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp">
       <Filter>MQTT\MessageDefinitions\PingResp</Filter>
-    </ClCompile>
-    <ClCompile Include="Asio\AsioConnectionFactory.cpp">
-      <Filter>Asio\Server</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\MQTTConnectionFactory.cpp">
       <Filter>MQTT</Filter>

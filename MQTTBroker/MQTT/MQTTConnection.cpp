@@ -213,12 +213,12 @@ MQTTConnection::handleBytes()
          m_State.iReadIndex += m_State.iNeedBytes;
          m_pConnectTimer->cancel(); // We have received a message.
 
-         for( int i = 0; i < m_pszCurrentMessage->size(); ++i )
-         {
-            std::cout << std::hex << ((int)(*m_pszCurrentMessage)[i]) << " ";
+         //for( int i = 0; i < m_pszCurrentMessage->size(); ++i )
+         //{
+         //   std::cout << std::hex << ((int)(*m_pszCurrentMessage)[i]) << " ";
 
-         }
-         std::cout << std::endl;
+         //}
+         //std::cout << std::endl;
          // *m_pIOStream << std::hex << *m_pszCurrentMessage << std::endl;
          dispatchMessage( 
             std::shared_ptr<const std::string>(m_pszCurrentMessage),

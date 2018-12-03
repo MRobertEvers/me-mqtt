@@ -27,9 +27,14 @@ public:
    ~SubscriptionStore();
 
    // Filter needs to match exactly.
-   std::shared_ptr<Subscription>  Subscribe( me::pcstring apszFilter );
-   void Unsubscribe( me::pcstring apszFilter, std::shared_ptr<ClientState> apszClientName );
-   std::vector<std::shared_ptr<Subscription>> GetSubscriptions( Topic apszFilter );
+   std::shared_ptr<Subscription> Subscribe( me::pcstring apszFilter );
+   void Unsubscribe( 
+      me::pcstring apszFilter, 
+      std::shared_ptr<ClientState> apszClientName );
+
+   std::vector<std::shared_ptr<Subscription>> GetSubscriptions( 
+      Topic apszFilter );
+
    void RemoveSubscription( me::pcstring apszFilter );
 
    std::shared_ptr<Subscription> Create( Topic apTopic );
@@ -38,7 +43,11 @@ private:
    std::shared_ptr<SubscriptionTreeNode> m_pNewRoot;
    std::weak_ptr<SubscriptionManager> m_pManager;
 
-   std::map<me::pcstring, std::shared_ptr<Subscription>, me::utils::pcstringless> m_mapFastSubLookup;
+   std::map<
+      me::pcstring,
+      std::shared_ptr<Subscription>,
+      me::utils::pcstringless
+   > m_mapFastSubLookup;
 };
 
 }

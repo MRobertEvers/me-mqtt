@@ -23,8 +23,10 @@ public:
    RetainedTopicStore(  );
    ~RetainedTopicStore();
 
-   std::shared_ptr<RetainedTopic> Retain( std::shared_ptr<ApplicationMessage> apMsg );
-   std::vector<std::shared_ptr<RetainedTopic>> GetRetainedMessages( Topic apszFilter );
+   std::shared_ptr<RetainedTopic> Retain( 
+      std::shared_ptr<ApplicationMessage> apMsg );
+   std::vector<std::shared_ptr<RetainedTopic>> GetRetainedMessages( 
+      Topic apszFilter );
    void ReleaseRetainedMessage( Topic apszFilter );
 
    std::shared_ptr<RetainedTopic> Create( Topic aTopic );
@@ -32,7 +34,11 @@ public:
 private:
    std::shared_ptr<RetainTreeNode> m_pNewRoot;
 
-   std::map<me::pcstring, std::shared_ptr<RetainedTopic>, me::utils::pcstringless> m_mapFastSubLookup;
+   std::map<
+      me::pcstring,
+      std::shared_ptr<RetainedTopic>,
+      me::utils::pcstringless
+   > m_mapFastSubLookup;
 };
 
 }
