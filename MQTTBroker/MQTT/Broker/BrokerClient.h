@@ -1,5 +1,6 @@
 #pragma once
 #include "IMessageHandler.h"
+#include "asio.hpp"
 #include <memory>
 
 class AsioConnection;
@@ -22,6 +23,7 @@ public:
    void Reject( unsigned char aiReason );
    void Respond( bool abSessionPresent, unsigned char aiResponse );
    void Disconnect();
+   void Cleanup();
 
    me::pcstring GetClientName() const;
 
@@ -48,7 +50,8 @@ private:
    void publishTo( std::shared_ptr<ApplicationMessage> apMsg );
    void notifyUnsubscribed( unsigned short aiPacketId );
    void notifySubscribed( unsigned short aiPacketId, std::vector<unsigned char> avecResponses );
-
+   void resetTimeout();
+   std::shared_ptr<asio::steady_timer> m_pConnectTimer;
    std::shared_ptr<ConnectPacket> m_pConnectPacket;
    std::shared_ptr<BroadcasterClient> m_pBroadcaster;
    AsioConnection* m_pConnection;

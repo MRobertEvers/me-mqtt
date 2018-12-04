@@ -52,9 +52,6 @@
     <Filter Include="MQTT\Broker">
       <UniqueIdentifier>{3d875fc1-6df5-4f4d-b308-f91a3bfe771b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MQTT\Server">
-      <UniqueIdentifier>{1b549460-827a-4f8d-a17b-f267a667419d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MQTT\MessageDefinitions\Disconnect">
       <UniqueIdentifier>{5bf5a732-1041-4764-b945-4b190358cad0}</UniqueIdentifier>
     </Filter>
@@ -104,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="ServerIOStream.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RingBuffer.h">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="MQTT\Errors\MalformedFixedHeader.h">
       <Filter>MQTT\Errors</Filter>
@@ -250,9 +244,6 @@
     </ClCompile>
     <ClCompile Include="ServerIOStream.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RingBuffer.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="MQTT\MQTTConnection.cpp">
       <Filter>MQTT</Filter>

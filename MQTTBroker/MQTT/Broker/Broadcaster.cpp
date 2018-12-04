@@ -91,6 +91,13 @@ Broadcaster::CreateClient()
    return std::make_shared<BroadcasterClient>( shared_from_this() );
 }
 
+bool
+Broadcaster::ClientExists( me::pcstring apClientName )
+{
+   auto pExistState = m_pClients->FindClient( apClientName );
+   return pExistState != nullptr;
+}
+
 std::shared_ptr<ClientState>
 me::Broadcaster::ConnectClient( std::weak_ptr<BroadcasterClient> apClient )
 {

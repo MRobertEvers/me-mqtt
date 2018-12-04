@@ -20,6 +20,13 @@ BrokerClient::BrokerClient(
    : m_pConnection( apConnection ), m_pBroadcaster(apBroadcaster),
    m_pConnectPacket(apConnectPacket)
 {
+   if( m_pConnectPacket->GetKeepAlive() > 0 )
+   {
+      m_pConnectTimer = std::shared_ptr<asio::steady_timer>( new asio::steady_timer(
+         apConnection->GetStrand()->get_io_context()
+      ) );
+   }
+
    if( m_pConnectPacket->GetWillPresent() )
    {
       m_pWillMessage = std::make_shared<ApplicationMessage>(
@@ -34,6 +41,10 @@ BrokerClient::~BrokerClient()
    // Unsubscribe to state; Actually we dont need to do 
    // this because the weak pointer will see
    // we have disconnected.
+   if( m_pConnectTimer )
+   {
+      m_pConnectTimer->cancel();
+   }
    m_pBroadcaster->DisconnectClient( !m_pConnectPacket->GetCleanSession() );
    if( m_pWillMessage )
    {
@@ -66,6 +77,12 @@ void
 BrokerClient::Disconnect()
 {
    m_pConnection->Stop();
+}
+
+void
+BrokerClient::Cleanup()
+{
+   m_pConnectTimer->cancel();
 }
 
 me::pcstring
@@ -102,8 +119,9 @@ BrokerClient::HandleConnect( std::shared_ptr<ConnectPacket> apPacket )
    if( m_pConnectPacket == apPacket ) 
    {
       // TODO: Validate packet.
-      Accept(false);
-      m_pBroadcaster->ConnectClient( shared_from_this() );
+      resetTimeout();
+      auto bSessionPresent = m_pBroadcaster->ConnectClient( shared_from_this() );
+      Accept(bSessionPresent);
    }
    else
    {
@@ -120,6 +138,7 @@ BrokerClient::HandleConnack( std::shared_ptr<ConnackPacket> apPacket )
 void
 BrokerClient::HandlePingReq( std::shared_ptr<PingReqPacket> apPacket )
 {
+   resetTimeout();
    m_pConnection->WriteAsync( PingRespPacket().Serialize() );
 }
 
@@ -140,6 +159,7 @@ BrokerClient::HandleDisconnect( std::shared_ptr<DisconnectPacket> apPacket )
 void
 BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 {
+   resetTimeout();
    auto pMessage = std::make_shared<ApplicationMessage>(
       apPacket->GetTopicName(), apPacket->GetPayload(),
       apPacket->GetQOS(), apPacket->GetRetainFlag()
@@ -170,6 +190,7 @@ BrokerClient::HandlePublish( std::shared_ptr<PublishPacket> apPacket )
 void
 BrokerClient::HandlePuback( std::shared_ptr<PubackPacket> apPacket )
 {
+   resetTimeout();
    auto cState = m_pBroadcaster->GetState();
    auto msg = cState->ReleasePendingPuback( apPacket->GetPacketId() );
    if( msg )
@@ -185,6 +206,7 @@ BrokerClient::HandlePuback( std::shared_ptr<PubackPacket> apPacket )
 void
 BrokerClient::HandlePubrec( std::shared_ptr<PubrecPacket> apPacket )
 {
+   resetTimeout();
    auto cState = m_pBroadcaster->GetState();
    auto msg = cState->ReleasePendingPubrec( apPacket->GetPacketId() );
    if( msg )
@@ -202,6 +224,7 @@ BrokerClient::HandlePubrec( std::shared_ptr<PubrecPacket> apPacket )
 void
 BrokerClient::HandlePubrel( std::shared_ptr<PubrelPacket> apPacket )
 {
+   resetTimeout();
    auto cState = m_pBroadcaster->GetState();
    auto msg = cState->ReleasePendingPubrel( apPacket->GetPacketId() );
    if( msg )
@@ -223,6 +246,7 @@ BrokerClient::HandlePubrel( std::shared_ptr<PubrelPacket> apPacket )
 void
 BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 {
+   resetTimeout();
    auto cState = m_pBroadcaster->GetState();
    auto msg = cState->ReleasePendingPubcomp( apPacket->GetPacketId() );
    if( msg )
@@ -238,6 +262,7 @@ BrokerClient::HandlePubcomp( std::shared_ptr<PubcompPacket> apPacket )
 void
 BrokerClient::HandleSubscribe( std::shared_ptr<SubscribePacket> apPacket )
 {
+   resetTimeout();
    m_pBroadcaster->SubscribeToTopics( 
       apPacket->GetPacketId(), 
       apPacket->GetSubscribeRequests() );
@@ -252,6 +277,7 @@ BrokerClient::HandleSuback( std::shared_ptr<SubackPacket> apPacket )
 void
 BrokerClient::HandleUnsubscribe( std::shared_ptr<UnsubscribePacket> apPacket )
 {
+   resetTimeout();
    m_pBroadcaster->UnsubscribeFromTopics( 
       apPacket->GetPacketId(), 
       apPacket->GetUnsubscribeRequests() );
@@ -334,6 +360,32 @@ BrokerClient::notifySubscribed(
       m_pConnection->GetStrand()->get_io_context().get_executor(),
       m_pConnection->GetStrand()->wrap( pSubscribe )
    );
+}
+
+void 
+BrokerClient::resetTimeout()
+{
+   if( m_pConnectTimer )
+   {
+      size_t iTimeout = (size_t)(m_pConnectPacket->GetKeepAlive()*1.5);
+      m_pConnectTimer->expires_after(
+         std::chrono::seconds( iTimeout )
+      );
+
+      std::weak_ptr<BrokerClient> pwSelf = shared_from_this();
+      auto pDisconnectCb = [this, self = pwSelf]( std::error_code ec )
+      {
+         auto pSelf = self.lock();
+         if( !ec && pSelf )
+         {
+            pSelf->Disconnect();
+         }
+      };
+
+      m_pConnectTimer->async_wait( m_pConnection->GetStrand()->wrap(
+         pDisconnectCb
+      ) );
+   }
 }
 
 }

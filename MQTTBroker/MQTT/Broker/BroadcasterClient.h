@@ -19,7 +19,7 @@ public:
    BroadcasterClient( std::shared_ptr<Broadcaster> pBroadcaster );
    ~BroadcasterClient();
 
-   void ConnectClient( std::weak_ptr<BrokerClient> apClient );
+   bool ConnectClient( std::weak_ptr<BrokerClient> apClient );
    void DisconnectClient( bool abSaveState );
    me::pcstring GetClientName() const;
    std::weak_ptr<BrokerClient> GetClient() const;

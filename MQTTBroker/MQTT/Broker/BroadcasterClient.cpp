@@ -20,7 +20,7 @@ BroadcasterClient::~BroadcasterClient()
    m_pState->UnsubscribeAll();
 }
 
-void
+bool
 BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
 {
    auto pClient = apClient.lock();
@@ -28,8 +28,12 @@ BroadcasterClient::ConnectClient( std::weak_ptr<BrokerClient> apClient )
    {
       m_pClient = apClient;
       m_pszClientName = pClient->GetClientName();
+
+      auto bSessionPresent = m_pBroadcaster->ClientExists( m_pszClientName );
       m_pState = m_pBroadcaster->ConnectClient( shared_from_this() );
+      return bSessionPresent;
    }
+   return false;
 }
 
 void
