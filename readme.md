@@ -4,8 +4,6 @@
 
 Most MQTT 3.1.1 features supported. Needs better error handling. lots of refactoring.
 
-Need to implement keepalive timeout.
-
 Broadcaster should be multithreaded, only lock on sub/unsub...
 
 ## Compiling
