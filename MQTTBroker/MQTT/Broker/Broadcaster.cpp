@@ -8,7 +8,7 @@
 #include "RetainedTopicManager.h"
 #include "RetainedTopic.h"
 #include <iostream>
-
+#include <thread>
 
 namespace me
 {
@@ -39,7 +39,14 @@ Broadcaster::Subscribe(
       client=apClient, topics= avecTopics, aiRequestId]
    ()
    {
+
+      std::lock_guard<std::mutex>( self->m_ReaderTurnstile );
+
+      // Technically don't need writers lock because writing is on a
+      // strand, but still.
+      self->m_WritersMutex.lock();
       self->subscribe( client, aiRequestId, topics );
+      self->m_WritersMutex.unlock();
    };
 
    asio::post(
@@ -59,7 +66,13 @@ Broadcaster::Unsubscribe(
       aiRequestId, client = apClient, topics = avecTopics]
    ()
    {
+      std::lock_guard<std::mutex>( self->m_ReaderTurnstile );
+
+      // Technically don't need writers lock because writing is on a
+      // strand, but still.
+      self->m_WritersMutex.lock();
       self->unsubscribe( client, aiRequestId, topics );
+      self->m_WritersMutex.unlock();
    };
 
    asio::post(
@@ -72,17 +85,28 @@ void
 Broadcaster::BroadcastMessage( 
    std::shared_ptr<ApplicationMessage> apMessage )
 {
-   auto postCB = 
-      [this, self = shared_from_this(), msg = apMessage]
-   ()
-   {
-      self->broadcast( msg );
-   };
+   // The calling strand//thread will do the broadcast.
+   m_ReaderTurnstile.lock();
+   m_ReaderTurnstile.unlock();
 
-   asio::post(
-      m_pService->GetService()->get_executor(),
-      m_pStrand->wrap( postCB )
-   );
+   m_ReadersLightSwitch.lock();
+   ++m_iReaders;
+   if( m_iReaders == 1 )
+   {
+      m_WritersMutex.lock();
+   }
+   m_ReadersLightSwitch.unlock();
+
+   broadcast( apMessage );
+
+   m_ReadersLightSwitch.lock();
+   --m_iReaders;
+   if( m_iReaders == 0 )
+   {
+      m_WritersMutex.unlock();
+   }
+   m_ReadersLightSwitch.unlock();
+
 }
 
 std::shared_ptr<BroadcasterClient>

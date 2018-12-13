@@ -4,6 +4,7 @@
 #include "Definitions.h"
 #include "SubscribeRequest.h"
 #include <map>
+#include <mutex>
 
 namespace me
 {
@@ -47,5 +48,11 @@ private:
    std::shared_ptr<RetainedTopicManager> m_pRetainedTopicManager;
    std::shared_ptr<SubscriptionManager> m_pSubscriptionManager;
    std::shared_ptr<ClientStateLedger> m_pClients;
+
+   std::mutex m_ReaderTurnstile;
+   std::mutex m_ReadersLightSwitch;
+   unsigned int m_iReaders;
+
+   std::mutex m_WritersMutex;
 };
 }
