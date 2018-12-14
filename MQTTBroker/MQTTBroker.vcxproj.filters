@@ -234,6 +234,9 @@
     <ClInclude Include="Asio\IAsioConnectionFactory.h">
       <Filter>Asio\Server</Filter>
     </ClInclude>
+    <ClInclude Include="Semaphore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -358,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="MQTT\Broker\RetainedTopic.cpp">
       <Filter>MQTT\Broker\Subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="Semaphore.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

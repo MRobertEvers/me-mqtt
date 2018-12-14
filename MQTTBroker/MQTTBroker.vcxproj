@@ -196,6 +196,7 @@
     <ClInclude Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.h" />
     <ClInclude Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.h" />
     <ClInclude Include="MQTT\MQTTConnection.h" />
+    <ClInclude Include="Semaphore.h" />
     <ClInclude Include="ServerIOStream.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="MQTT\MessageDefinitions\PingReq\PingReqPacket.cpp" />
     <ClCompile Include="MQTT\MessageDefinitions\PingResp\PingRespPacket.cpp" />
     <ClCompile Include="MQTT\MQTTConnection.cpp" />
+    <ClCompile Include="Semaphore.cpp" />
     <ClCompile Include="ServerIOStream.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

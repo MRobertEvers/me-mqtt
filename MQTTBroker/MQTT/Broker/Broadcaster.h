@@ -3,7 +3,9 @@
 #include "ApplicationMessage.h"
 #include "Definitions.h"
 #include "SubscribeRequest.h"
+#include "Semaphore.h"
 #include <map>
+#include <condition_variable>
 #include <mutex>
 
 namespace me
@@ -51,8 +53,8 @@ private:
 
    std::mutex m_ReaderTurnstile;
    std::mutex m_ReadersLightSwitch;
+   me::Semaphore m_WritersSemaphore;
    unsigned int m_iReaders;
 
-   std::mutex m_WritersMutex;
 };
 }

@@ -15,7 +15,8 @@ namespace me
 
 Broadcaster::Broadcaster( std::shared_ptr<AsioService> apService )
    : m_pService(apService),
-   m_pStrand( new asio::io_context::strand( *apService->GetService() ) )
+   m_pStrand( new asio::io_context::strand( *apService->GetService() ) ),
+   m_WritersSemaphore(1)
 {
    m_pRetainedTopicManager = std::make_shared<RetainedTopicManager>();
    m_pSubscriptionManager = std::make_shared<SubscriptionManager>();
@@ -39,14 +40,14 @@ Broadcaster::Subscribe(
       client=apClient, topics= avecTopics, aiRequestId]
    ()
    {
-
-      std::lock_guard<std::mutex>( self->m_ReaderTurnstile );
+      std::unique_lock<std::mutex> lk( self->m_ReaderTurnstile );
 
       // Technically don't need writers lock because writing is on a
       // strand, but still.
-      self->m_WritersMutex.lock();
+      self->m_WritersSemaphore.Wait();
       self->subscribe( client, aiRequestId, topics );
-      self->m_WritersMutex.unlock();
+      lk.unlock();
+      self->m_WritersSemaphore.Notify();
    };
 
    asio::post(
@@ -66,13 +67,14 @@ Broadcaster::Unsubscribe(
       aiRequestId, client = apClient, topics = avecTopics]
    ()
    {
-      std::lock_guard<std::mutex>( self->m_ReaderTurnstile );
+      std::unique_lock<std::mutex> lk( self->m_ReaderTurnstile );
 
       // Technically don't need writers lock because writing is on a
       // strand, but still.
-      self->m_WritersMutex.lock();
+      self->m_WritersSemaphore.Wait();
       self->unsubscribe( client, aiRequestId, topics );
-      self->m_WritersMutex.unlock();
+      lk.unlock();
+      self->m_WritersSemaphore.Notify();
    };
 
    asio::post(
@@ -93,7 +95,7 @@ Broadcaster::BroadcastMessage(
    ++m_iReaders;
    if( m_iReaders == 1 )
    {
-      m_WritersMutex.lock();
+      m_WritersSemaphore.Wait();
    }
    m_ReadersLightSwitch.unlock();
 
@@ -103,7 +105,7 @@ Broadcaster::BroadcastMessage(
    --m_iReaders;
    if( m_iReaders == 0 )
    {
-      m_WritersMutex.unlock();
+      m_WritersSemaphore.Notify();
    }
    m_ReadersLightSwitch.unlock();
 

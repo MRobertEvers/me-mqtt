@@ -28,7 +28,7 @@ MQTTConnection::MQTTConnection(
 
 MQTTConnection::~MQTTConnection()
 {
-   *m_pIOStream << "Deleted MQTTConnection" << std::endl;
+   // *m_pIOStream << "Deleted MQTTConnection" << std::endl;
 }
 
 void
@@ -75,8 +75,8 @@ void
 MQTTConnection::Stop()
 {
    auto ec = GetLastError();
-   *m_pIOStream << "[" << std::this_thread::get_id()
-      << "] Error: " << ec << ", " << ec.message() << std::endl;
+   //*m_pIOStream << "[" << std::this_thread::get_id()
+   //   << "] Error: " << ec << ", " << ec.message() << std::endl;
    AsioConnection::Stop();
    m_pConnectTimer->cancel();
 }
@@ -241,13 +241,13 @@ MQTTConnection::onConnectTimer( const asio::error_code& ec )
    if( ec )
    {
       SetError( ec );
-      *m_pIOStream << "Message received within time limit." << std::endl;
+      // *m_pIOStream << "Message received within time limit." << std::endl;
       //*m_pIOStream << "[" << std::this_thread::get_id()
       //   << "] Error: " << ec << ", " << ec.message() << std::endl;
    }
    else
    {
-      *m_pIOStream << "Closing" << std::endl;
+      // *m_pIOStream << "Closing" << std::endl;
    }
 }
 }

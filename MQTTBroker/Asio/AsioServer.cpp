@@ -77,13 +77,13 @@ AsioServer::handleConnect(
 
    if( ec )
    {
-      *m_pIOStream << "[" << std::this_thread::get_id()
-         << "] Error: " << ec << std::endl;
+      //*m_pIOStream << "[" << std::this_thread::get_id()
+      //   << "] Error: " << ec << std::endl;
    }
    else
    {
-      *m_pIOStream << "[" << std::this_thread::get_id()
-         << "] Accepted!" << std::endl;
+      //*m_pIOStream << "[" << std::this_thread::get_id()
+      //   << "] Accepted!" << std::endl;
 
       m_pConnectionsManager->AddConnection( m_pFactory->NewConnection( sock ) );
    }
